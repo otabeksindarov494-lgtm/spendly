@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>spendly</string>
+	<string>Spendly</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Ishga kelish va ketish vaqtini selfie bilan qayd etish uchun kamera kerak.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Profil rasmini galereyadan tanlash uchun ruxsat kerak.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Qarzni ovoz orqali qo'shish uchun mikrofon kerak.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Aytganingizni matnga o'girib, qarz ma'lumotini avtomatik to'ldirish uchun kerak.</string>
 </dict>
 </plist>
