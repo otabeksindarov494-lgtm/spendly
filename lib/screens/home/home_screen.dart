@@ -10,13 +10,18 @@ import '../../providers/profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../utils/salary_calculator.dart';
+import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
+import '../../services/attendance_service.dart';
+import '../../widgets/common/app_card.dart';
 import '../../widgets/common/progress_dialog.dart';
+import '../../widgets/common/progress_ring.dart';
+import '../../widgets/common/stat_bar.dart';
 import '../../widgets/common/stat_card.dart';
 
 /// 1-tab: bugungi check-in / check-out va joriy holat (PROJECT.md 5.1).
@@ -74,6 +79,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
 
       if (!mounted) return;
+      // Yig'ma raqamlar aggregate so'rov orqali olinadi — o'zi yangilanmaydi.
+      ref.invalidate(attendanceTotalsProvider);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -109,6 +116,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ref.invalidate(todayAttendanceProvider);
             ref.invalidate(last7DaysProvider);
             ref.invalidate(currentMonthAttendanceProvider);
+            ref.invalidate(attendanceTotalsProvider);
           },
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -135,6 +143,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               const SizedBox(height: 20),
               _buildStats(theme, profileAsync.value, todayAsync.value),
+              const SizedBox(height: 24),
+              const SectionTitle(title: 'Statistika'),
+              _buildStatistics(theme, profileAsync.value),
               const SizedBox(height: 24),
               const SectionTitle(title: 'Oxirgi 7 kun'),
               weekAsync.when(
@@ -379,6 +390,117 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Halqa + chiziqli barlar: oy davomidagi holat va umumiy ishlagan vaqt.
+  Widget _buildStatistics(CustomTheme theme, UserProfile? profile) {
+    final MonthlySummary? summary = ref.watch(currentMonthSummaryProvider);
+    final AsyncValue<AttendanceTotals> totalsAsync = ref.watch(
+      attendanceTotalsProvider,
+    );
+
+    if (summary == null || profile == null) {
+      return const ShimmerBox(height: 260, borderRadius: 22);
+    }
+
+    final AttendanceTotals totals = totalsAsync.value ?? AttendanceTotals.empty;
+
+    // Oyda kutilayotgan soat: ish kunlari x smena uzunligi.
+    final double shift = SalaryCalculator.shiftHours(
+      workStartMinutes: TimeUtils.minutesFromHmOr(profile.workStartTime, 540),
+      workEndMinutes: TimeUtils.minutesFromHmOr(profile.workEndTime, 1080),
+      lunchBreakMinutes: profile.lunchBreakMinutes,
+    );
+    final double expectedHours = summary.plannedWorkDays * shift;
+    final double attendanceRate = summary.elapsedWorkDays == 0
+        ? 0
+        : summary.presentDays / summary.elapsedWorkDays;
+
+    return AppCard(
+      padding: const EdgeInsets.fromLTRB(18, 20, 18, 16),
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              ProgressRing(
+                value: summary.progress,
+                centerLabel: '${(summary.progress * 100).round()}%',
+                centerCaption:
+                    '${summary.elapsedWorkDays}/${summary.plannedWorkDays}\nish kuni',
+                size: 124,
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Jami ishlagan vaqt',
+                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      totalsAsync.isLoading && totalsAsync.value == null
+                          ? '...'
+                          : '${totals.workedHours.round()} soat',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        height: 1.1,
+                        color: theme.mainDarkBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${totals.recordedDays} kun davomida',
+                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                    ),
+                    const SizedBox(height: 14),
+                    Text(
+                      'Shu oyda',
+                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      Formatters.hours(summary.workedHours),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: theme.blue,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 22),
+          StatBar(
+            label: 'Ishlangan soat',
+            value:
+                '${summary.workedHours.round()} / '
+                '${expectedHours.round()} soat',
+            progress: expectedHours == 0
+                ? 0
+                : summary.workedHours / expectedHours,
+            color: theme.blue,
+          ),
+          StatBar(
+            label: 'Davomat',
+            value: '${summary.presentDays} / ${summary.elapsedWorkDays} kun',
+            progress: attendanceRate,
+            color: theme.green,
+          ),
+          StatBar(
+            label: 'Kechikish',
+            value: Formatters.minutes(summary.lateMinutes),
+            // Oyiga 10 soat kechikishni "to'liq shkala" deb olamiz.
+            progress: summary.lateMinutes / 600,
+            color: theme.yellow,
+          ),
+        ],
+      ),
     );
   }
 

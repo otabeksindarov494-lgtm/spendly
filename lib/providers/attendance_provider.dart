@@ -109,3 +109,14 @@ final Provider<MonthlySummary?> currentMonthSummaryProvider =
     month: DateTime.now(),
   );
 });
+
+/// Butun davr bo'yicha yig'ma raqamlar (aggregate so'rov orqali).
+///
+/// `Stream` emas, chunki aggregate so'rov bir martalik. Davomat
+/// o'zgarganda ekranlar `ref.invalidate` bilan yangilaydi.
+final FutureProvider<AttendanceTotals> attendanceTotalsProvider =
+    FutureProvider<AttendanceTotals>((Ref ref) async {
+  final String? userId = ref.watch(currentUserIdProvider);
+  if (userId == null) return AttendanceTotals.empty;
+  return ref.watch(attendanceServiceProvider).fetchTotals(userId);
+});

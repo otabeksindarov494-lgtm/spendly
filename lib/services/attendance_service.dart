@@ -5,6 +5,37 @@ import '../models/user_profile_model.dart';
 import '../utils/salary_calculator.dart';
 import '../utils/time_utils.dart';
 
+/// Ilova ishlatilgan butun davr bo'yicha yig'ma raqamlar.
+class AttendanceTotals {
+  const AttendanceTotals({
+    required this.recordedDays,
+    required this.workedHours,
+    required this.earnedAmount,
+    required this.lateMinutes,
+    required this.penaltyAmount,
+  });
+
+  /// Davomat yozilgan kunlar soni.
+  final int recordedDays;
+
+  /// Jami ishlangan soat.
+  final double workedHours;
+
+  /// Jami ishlab topilgan (fixed maoshda 0 bo'ladi — u kunlarga bo'linmaydi).
+  final double earnedAmount;
+
+  final int lateMinutes;
+  final double penaltyAmount;
+
+  static const AttendanceTotals empty = AttendanceTotals(
+    recordedDays: 0,
+    workedHours: 0,
+    earnedAmount: 0,
+    lateMinutes: 0,
+    penaltyAmount: 0,
+  );
+}
+
 /// Davomat yozuvlari va ular ustidagi hisob-kitob (PROJECT.md 4- va
 /// 5.2-bo'limlar).
 ///
@@ -127,6 +158,32 @@ class AttendanceService {
         'status': AttendanceStatus.present.value,
       },
       SetOptions(merge: true),
+    );
+  }
+
+  /// Butun davr bo'yicha yig'ma raqamlar.
+  ///
+  /// Firestore'ning **aggregate** so'rovi ishlatiladi — hujjatlar
+  /// yuklanmaydi, hisob server tomonida bajariladi. Bu muhim: har bir
+  /// davomat hujjatida ikkita selfie Base64 sifatida turadi (~300 KB),
+  /// oddiy o'qish yuzlab megabayt trafik degani bo'lardi.
+  Future<AttendanceTotals> fetchTotals(String userId) async {
+    final AggregateQuerySnapshot snapshot = await _collection(userId)
+        .aggregate(
+          count(),
+          sum('workedHours'),
+          sum('dailyEarning'),
+          sum('lateMinutes'),
+          sum('penaltyAmount'),
+        )
+        .get();
+
+    return AttendanceTotals(
+      recordedDays: snapshot.count ?? 0,
+      workedHours: snapshot.getSum('workedHours') ?? 0,
+      earnedAmount: snapshot.getSum('dailyEarning') ?? 0,
+      lateMinutes: (snapshot.getSum('lateMinutes') ?? 0).round(),
+      penaltyAmount: snapshot.getSum('penaltyAmount') ?? 0,
     );
   }
 
