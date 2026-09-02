@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/app_theme.dart';
+import 'chat/chat_list_screen.dart';
 import 'debts/debts_screen.dart';
 import 'home/home_screen.dart';
 import 'profile/profile_screen.dart';
@@ -25,6 +26,7 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
   static const List<Widget> _screens = <Widget>[
     HomeScreen(),
     ReportScreen(),
+    ChatListScreen(),
     DebtsScreen(),
     ProfileScreen(),
   ];
@@ -33,11 +35,8 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
       <(IconData, IconData, String)>[
     (BootstrapIcons.house, BootstrapIcons.house_fill, 'Bosh sahifa'),
     (BootstrapIcons.bar_chart, BootstrapIcons.bar_chart_fill, 'Hisobot'),
-    (
-      BootstrapIcons.wallet2,
-      BootstrapIcons.wallet_fill,
-      'Qarzlar',
-    ),
+    (BootstrapIcons.chat_dots, BootstrapIcons.chat_dots_fill, 'Chat'),
+    (BootstrapIcons.wallet2, BootstrapIcons.wallet_fill, 'Qarzlar'),
     (BootstrapIcons.person, BootstrapIcons.person_fill, 'Profil'),
   ];
 
@@ -108,7 +107,7 @@ class _NavItem extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                 color: color,
               ),

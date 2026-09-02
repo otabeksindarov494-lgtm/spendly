@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/user_profile_model.dart';
 import '../../providers/core_providers.dart';
+import '../../services/image_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/common/app_button.dart';
@@ -147,6 +148,14 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       );
 
       await ref.read(profileServiceProvider).save(userId, profile);
+
+      // Chat ro'yxatida ko'rinishi uchun ochiq profil ham yoziladi.
+      await ref.read(profileServiceProvider).syncPublicProfile(
+            userId,
+            fullName: _fullName,
+            avatarBase64:
+                await ImageService.avatarThumbnailBase64(_photoBase64),
+          );
       // Saqlangach `profileProvider` o'zi yangilanadi va AuthGate
       // foydalanuvchini asosiy ekranga o'tkazadi.
     } catch (e) {

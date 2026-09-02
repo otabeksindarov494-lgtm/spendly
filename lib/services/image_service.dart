@@ -78,6 +78,29 @@ class ImageService {
     return result;
   }
 
+  /// Chat ro'yxatidagi avatar uchun juda kichik nusxa (~128px).
+  ///
+  /// To'liq profil rasmi ~220 KB. Agar u `publicProfiles`ga ham yozilsa,
+  /// 30 ta foydalanuvchili ro'yxat 6-7 MB yuklab olardi. Shu sabab ochiq
+  /// profilga faqat shu kichik nusxa boradi.
+  static Future<String?> avatarThumbnailBase64(String? fullBase64) async {
+    final Uint8List? source = decode(fullBase64);
+    if (source == null) return null;
+    try {
+      final Uint8List thumb = await FlutterImageCompress.compressWithList(
+        source,
+        quality: 70,
+        minWidth: 128,
+        minHeight: 128,
+        format: CompressFormat.jpeg,
+      );
+      return base64Encode(thumb);
+    } catch (_) {
+      // Siqish ishlamasa avatarsiz davom etamiz — bu oqimni to'xtatmaydi.
+      return null;
+    }
+  }
+
   /// Base64 matnni baytlarga qaytaradi. Buzuq matnda `null`.
   static Uint8List? decode(String? base64Text) {
     if (base64Text == null || base64Text.isEmpty) return null;

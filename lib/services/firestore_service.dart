@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/public_profile_model.dart';
 import '../models/user_profile_model.dart';
 
 /// Profil ma'lumotlari bilan ishlash (PROJECT.md 3.2).
@@ -40,6 +41,29 @@ class ProfileService {
   /// Faqat ayrim maydonlarni yangilaydi.
   Future<void> updateFields(String userId, Map<String, dynamic> fields) {
     return userDoc(userId).set(fields, SetOptions(merge: true));
+  }
+
+  DocumentReference<Map<String, dynamic>> publicDoc(String userId) =>
+      _db.collection('publicProfiles').doc(userId);
+
+  /// Chat ro'yxatida ko'rinadigan ochiq profilni yangilaydi.
+  ///
+  /// Bu yerga FAQAT ism va kichik avatar yoziladi — maosh, davomat va
+  /// qarzlar `users/{userId}` da qoladi va boshqalarga ko'rinmaydi.
+  Future<void> syncPublicProfile(
+    String userId, {
+    required String fullName,
+    String? avatarBase64,
+  }) {
+    return publicDoc(userId).set(
+      PublicProfile(
+        userId: userId,
+        fullName: fullName.trim().isEmpty ? 'Foydalanuvchi' : fullName.trim(),
+        avatarBase64: avatarBase64,
+        updatedAt: DateTime.now(),
+      ).toMap(),
+      SetOptions(merge: true),
+    );
   }
 
   /// Yangi foydalanuvchi uchun bo'sh profil yaratadi (onboarding'gacha).
