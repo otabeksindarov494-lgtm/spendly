@@ -226,10 +226,13 @@ class AttendanceService {
       workStartMinutes:
           TimeUtils.minutesFromHmOr(profile.workStartTime, 9 * 60),
       workEndMinutes: TimeUtils.minutesFromHmOr(profile.workEndTime, 18 * 60),
+      lunchBreakMinutes: profile.lunchBreakMinutes,
       dailyRate: SalaryCalculator.dailyRate(
         monthlySalary: profile.salaryAmount,
         workDaysCount: workDaysCount,
       ),
+      penaltyEnabled: profile.penaltyEnabled,
+      isFixedSalary: profile.salaryType == SalaryType.fixed,
     );
   }
 
@@ -290,7 +293,12 @@ class AttendanceService {
     }
 
     return MonthlySummary(
-      earnedAmount: earned,
+      earnedAmount: SalaryCalculator.monthlyEarning(
+        isFixedSalary: profile.salaryType == SalaryType.fixed,
+        monthlySalary: profile.salaryAmount,
+        sumOfDailyEarnings: earned,
+        totalPenalty: penalty,
+      ),
       penaltyAmount: penalty,
       workedHours: hours,
       presentDays: present,

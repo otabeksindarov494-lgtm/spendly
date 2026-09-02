@@ -231,4 +231,169 @@ void main() {
       expect(result.workedHours, 0);
     });
   });
+
+  newRulesTests();
+}
+
+/// Fixed maosh, tushlik tanaffusi va jarima siyosati — yangi qoidalar.
+void newRulesTests() {
+  final int start = TimeUtils.minutesFromHm('09:00');
+  final int end = TimeUtils.minutesFromHm('18:00');
+
+  group('tushlik tanaffusi', () {
+    test('09:00-18:00 + 60 daq tushlik = 8 soat smena', () {
+      expect(
+        SalaryCalculator.shiftHours(
+          workStartMinutes: start,
+          workEndMinutes: end,
+          lunchBreakMinutes: 60,
+        ),
+        8.0,
+      );
+    });
+
+    test('tanaffus soatlik stavkani oshiradi', () {
+      final double withoutLunch = SalaryCalculator.hourlyRate(
+        dailyRate: 240000,
+        workStartMinutes: start,
+        workEndMinutes: end,
+      );
+      final double withLunch = SalaryCalculator.hourlyRate(
+        dailyRate: 240000,
+        workStartMinutes: start,
+        workEndMinutes: end,
+        lunchBreakMinutes: 60,
+      );
+      // Bir xil kunlik summa kamroq soatga bo'linadi.
+      expect(withLunch, greaterThan(withoutLunch));
+      expect(withLunch, 30000);
+    });
+
+    test('tanaffus smenadan uzun bo\'lsa 0 qaytadi, crash bo\'lmaydi', () {
+      expect(
+        SalaryCalculator.shiftHours(
+          workStartMinutes: start,
+          workEndMinutes: end,
+          lunchBreakMinutes: 10 * 60,
+        ),
+        0,
+      );
+    });
+
+    test('ishlagan soatdan tanaffus ayiriladi', () {
+      expect(
+        SalaryCalculator.workedHours(
+          checkIn: DateTime(2026, 9, 2, 9, 0),
+          checkOut: DateTime(2026, 9, 2, 18, 0),
+          lunchBreakMinutes: 60,
+        ),
+        8.0,
+      );
+    });
+
+    test('qisqa muddat tanaffusdan kam bo\'lsa manfiyga tushmaydi', () {
+      expect(
+        SalaryCalculator.workedHours(
+          checkIn: DateTime(2026, 9, 2, 9, 0),
+          checkOut: DateTime(2026, 9, 2, 9, 30),
+          lunchBreakMinutes: 60,
+        ),
+        0.5,
+      );
+    });
+  });
+
+  group('jarima siyosati', () {
+    test('penaltyEnabled=false bo\'lsa jarima 0, lekin kechikish yoziladi', () {
+      final DailyCalculation result = SalaryCalculator.calculateDay(
+        checkIn: DateTime(2026, 9, 2, 10, 0),
+        checkOut: DateTime(2026, 9, 2, 17, 0),
+        workStartMinutes: start,
+        workEndMinutes: end,
+        dailyRate: 250000,
+        penaltyEnabled: false,
+      );
+      expect(result.lateMinutes, 60, reason: 'statistika saqlanadi');
+      expect(result.earlyLeaveMinutes, 60);
+      expect(result.penaltyAmount, 0, reason: 'pul ushlanmaydi');
+      expect(result.dailyEarning, 250000, reason: 'to\'liq kunlik stavka');
+    });
+
+    test('penaltyEnabled=true bo\'lsa jarima ayiriladi', () {
+      final DailyCalculation result = SalaryCalculator.calculateDay(
+        checkIn: DateTime(2026, 9, 2, 10, 0),
+        checkOut: DateTime(2026, 9, 2, 18, 0),
+        workStartMinutes: start,
+        workEndMinutes: end,
+        dailyRate: 250000,
+      );
+      expect(result.penaltyAmount, greaterThan(0));
+      expect(result.dailyEarning, lessThan(250000));
+    });
+  });
+
+  group('fixed maosh', () {
+    test('kunlik maosh yozilmaydi — pul kunlarga bo\'linmaydi', () {
+      final DailyCalculation result = SalaryCalculator.calculateDay(
+        checkIn: DateTime(2026, 9, 2, 9, 0),
+        checkOut: DateTime(2026, 9, 2, 18, 0),
+        workStartMinutes: start,
+        workEndMinutes: end,
+        dailyRate: 250000,
+        isFixedSalary: true,
+      );
+      expect(result.dailyEarning, 0);
+      expect(result.workedHours, 9.0, reason: 'soat baribir yoziladi');
+    });
+
+    test('kelmagan kun uchun oylikdan ushlanmaydi', () {
+      // 22 ta ish kunidan faqat 10 tasiga kelgan bo'lsa ham summa to'liq.
+      expect(
+        SalaryCalculator.monthlyEarning(
+          isFixedSalary: true,
+          monthlySalary: 5000000,
+          sumOfDailyEarnings: 0,
+          totalPenalty: 0,
+        ),
+        5000000,
+      );
+    });
+
+    test('jarima yoqilgan bo\'lsa faqat u ayiriladi', () {
+      expect(
+        SalaryCalculator.monthlyEarning(
+          isFixedSalary: true,
+          monthlySalary: 5000000,
+          sumOfDailyEarnings: 0,
+          totalPenalty: 150000,
+        ),
+        4850000,
+      );
+    });
+
+    test('jarima oylikdan oshsa ham manfiy bo\'lmaydi', () {
+      expect(
+        SalaryCalculator.monthlyEarning(
+          isFixedSalary: true,
+          monthlySalary: 5000000,
+          sumOfDailyEarnings: 0,
+          totalPenalty: 9000000,
+        ),
+        0,
+      );
+    });
+
+    test('kunlik hisobda esa kunlik summalar yig\'indisi olinadi', () {
+      expect(
+        SalaryCalculator.monthlyEarning(
+          isFixedSalary: false,
+          monthlySalary: 5000000,
+          sumOfDailyEarnings: 3250000,
+          totalPenalty: 150000,
+        ),
+        3250000,
+        reason: 'jarima allaqachon har kunning ichida ayirilgan',
+      );
+    });
+  });
 }

@@ -69,7 +69,9 @@ class ReportScreen extends ConsumerWidget {
                       AttendanceTile(
                         attendance: record,
                         currency: currency,
-                        showEarning: true,
+                        // Fixed maoshda pul kunlarga bo'linmaydi — kunlik
+                        // summa ko'rsatilsa "0 so'm" bo'lib chalg'itardi.
+                        showEarning: profile?.salaryType != SalaryType.fixed,
                       ),
                   ],
                 );

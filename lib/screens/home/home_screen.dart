@@ -252,7 +252,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           else if (!today.hasCheckedOut)
             _buildInProgressBody(profile, today)
           else
-            _buildCompletedBody(today),
+            _buildCompletedBody(today, profile),
         ],
       ),
     );
@@ -327,7 +327,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildCompletedBody(Attendance today) {
+  Widget _buildCompletedBody(Attendance today, UserProfile profile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -358,18 +358,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: <Widget>[
               Icon(
                 BootstrapIcons.check_circle_fill,
-                size: 16,
-                color: context.theme.mainDarkBlue,
+                size: 15,
+                color: context.theme.green,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Bugungi ish kuni yopildi — '
-                  '${Formatters.money(today.dailyEarning)}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.theme.mainDarkBlue,
-                  ),
+                  // Fixed maoshda kunlik summa yozilmaydi — o'rniga
+                  // ishlangan vaqt ko'rsatiladi, aks holda "0 so'm"
+                  // chiqib chalg'itardi.
+                  profile.salaryType == SalaryType.fixed
+                      ? 'Bugungi ish kuni yopildi — '
+                            '${Formatters.hours(today.workedHours)} ishladingiz'
+                      : 'Bugungi ish kuni yopildi — '
+                            '${Formatters.money(today.dailyEarning, currency: profile.currency)}',
+                  style: TextStyle(fontSize: 12, color: context.theme.green),
                 ),
               ),
             ],

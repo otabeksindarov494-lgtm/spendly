@@ -104,16 +104,23 @@ abstract final class SalaryCalculator {
     return monthlySalary / workDaysCount;
   }
 
-  /// Bir ish kunidagi soatlar (18:00 − 09:00 = 9.0).
+  /// Bir ish kunidagi haqiqiy ish soatlari.
+  ///
+  /// Tushlik tanaffusi ayiriladi: 09:00–18:00 va 60 daqiqa tushlik = 8 soat.
+  /// Bu soatlik stavkaga ham ta'sir qiladi.
   ///
   /// Tugash vaqti boshlanish vaqtidan oldin bo'lsa (tungi smena),
   /// yarim tunni kesib o'tgan deb hisoblanadi.
   static double shiftHours({
     required int workStartMinutes,
     required int workEndMinutes,
+    int lunchBreakMinutes = 0,
   }) {
     int diff = workEndMinutes - workStartMinutes;
     if (diff <= 0) diff += 24 * 60;
+    diff -= lunchBreakMinutes;
+    // Tanaffus smenadan uzun bo'lib qolsa, nolga tushib qolmasin.
+    if (diff <= 0) return 0;
     return diff / 60.0;
   }
 
@@ -122,10 +129,12 @@ abstract final class SalaryCalculator {
     required double dailyRate,
     required int workStartMinutes,
     required int workEndMinutes,
+    int lunchBreakMinutes = 0,
   }) {
     final double hours = shiftHours(
       workStartMinutes: workStartMinutes,
       workEndMinutes: workEndMinutes,
+      lunchBreakMinutes: lunchBreakMinutes,
     );
     if (hours <= 0) return 0;
     return dailyRate / hours;
@@ -150,15 +159,30 @@ abstract final class SalaryCalculator {
   }
 
   /// Amalda ishlangan soat.
+  ///
+  /// Ish joyida o'tkazilgan vaqtdan tushlik tanaffusi ayiriladi — lekin
+  /// faqat shu vaqt tanaffusdan uzun bo'lsa. Aks holda qisqa muddat
+  /// manfiyga tushib ketardi.
   static double workedHours({
     required DateTime checkIn,
     required DateTime checkOut,
+    int lunchBreakMinutes = 0,
   }) {
-    final int minutes = checkOut.difference(checkIn).inMinutes;
-    return minutes > 0 ? minutes / 60.0 : 0;
+    int minutes = checkOut.difference(checkIn).inMinutes;
+    if (minutes <= 0) return 0;
+    if (minutes > lunchBreakMinutes) minutes -= lunchBreakMinutes;
+    return minutes / 60.0;
   }
 
   /// Bir kunlik to'liq hisob-kitob.
+  ///
+  /// Kechikish va erta ketish HAR DOIM yoziladi — ular statistika uchun
+  /// kerak. Pulga ta'siri esa ikki sozlamaga bog'liq:
+  ///
+  ///  * [penaltyEnabled] `false` — jarima 0 (ish joyida pul ushlanmaydi).
+  ///  * [isFixedSalary] `true` — kunlik maosh yozilmaydi, chunki fixed
+  ///    kelishuvda pul kunlarga bo'linmaydi. Oylik summa
+  ///    [MonthlySummary] darajasida qo'shiladi.
   ///
   /// [checkOut] `null` bo'lsa (kun hali tugamagan) erta ketish jarimasi
   /// hisoblanmaydi — foydalanuvchi hali ishda.
@@ -168,11 +192,15 @@ abstract final class SalaryCalculator {
     required int workStartMinutes,
     required int workEndMinutes,
     required double dailyRate,
+    int lunchBreakMinutes = 0,
+    bool penaltyEnabled = true,
+    bool isFixedSalary = false,
   }) {
     final double perHour = hourlyRate(
       dailyRate: dailyRate,
       workStartMinutes: workStartMinutes,
       workEndMinutes: workEndMinutes,
+      lunchBreakMinutes: lunchBreakMinutes,
     );
     final double perMinute = perHour / 60.0;
 
@@ -187,19 +215,45 @@ abstract final class SalaryCalculator {
             workEndMinutes: workEndMinutes,
           );
 
-    final double penalty = (late + early) * perMinute;
-    final double earning = checkOut == null
-        ? 0
-        : (dailyRate - penalty).clamp(0.0, double.infinity);
+    final double penalty =
+        penaltyEnabled ? (late + early) * perMinute : 0;
+
+    final double earning;
+    if (isFixedSalary || checkOut == null) {
+      // Fixed: pul kunlarga bo'linmaydi. Kun ochiq: hali yopilmagan.
+      earning = 0;
+    } else {
+      earning = (dailyRate - penalty).clamp(0.0, double.infinity);
+    }
 
     return DailyCalculation(
       workedHours: checkOut == null
           ? 0
-          : workedHours(checkIn: checkIn, checkOut: checkOut),
+          : workedHours(
+              checkIn: checkIn,
+              checkOut: checkOut,
+              lunchBreakMinutes: lunchBreakMinutes,
+            ),
       lateMinutes: late,
       earlyLeaveMinutes: early,
       penaltyAmount: penalty,
       dailyEarning: earning,
     );
+  }
+
+  /// Oylik yakuniy summa.
+  ///
+  /// * **Fixed** — kelishilgan summa to'liq beriladi. Kelmagan kun uchun
+  ///   ushlanmaydi. Jarima yoqilgan bo'lsa, faqat u ayiriladi.
+  /// * **Kunlik hisob** — kunlik summalar yig'indisi (jarima allaqachon
+  ///   har kunning ichida ayirilgan).
+  static double monthlyEarning({
+    required bool isFixedSalary,
+    required double monthlySalary,
+    required double sumOfDailyEarnings,
+    required double totalPenalty,
+  }) {
+    if (!isFixedSalary) return sumOfDailyEarnings;
+    return (monthlySalary - totalPenalty).clamp(0.0, double.infinity);
   }
 }
