@@ -13,6 +13,7 @@ class TextInputStep extends StatelessWidget {
     required this.hint,
     this.onChanged,
     this.textCapitalization = TextCapitalization.words,
+    this.keyboardType,
   });
 
   final String title;
@@ -21,6 +22,7 @@ class TextInputStep extends StatelessWidget {
   final String hint;
   final void Function(String)? onChanged;
   final TextCapitalization textCapitalization;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class TextInputStep extends StatelessWidget {
         hint: hint,
         onChanged: onChanged,
         textCapitalization: textCapitalization,
+        keyboardType: keyboardType,
       ),
     );
   }

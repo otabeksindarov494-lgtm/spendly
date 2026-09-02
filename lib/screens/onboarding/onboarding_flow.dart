@@ -8,11 +8,12 @@ import '../../services/image_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/common/app_button.dart';
-import '../../widgets/common/app_text_field.dart';
-import 'steps/birth_date_step.dart';
+import 'steps/choice_step.dart';
+import 'steps/date_step.dart';
+import 'steps/lunch_break_step.dart';
 import 'steps/pay_day_step.dart';
+import 'steps/salary_range_step.dart';
 import 'steps/photo_step.dart';
-import 'steps/salary_step.dart';
 import 'steps/summary_step.dart';
 import 'steps/text_input_step.dart';
 import 'steps/welcome_step.dart';
@@ -31,11 +32,13 @@ class OnboardingFlow extends ConsumerStatefulWidget {
 }
 
 class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
-  static const int _stepCount = 10;
+  static const int _stepCount = 18;
 
   final PageController _pageController = PageController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _salaryController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _positionController = TextEditingController();
 
   int _index = 0;
   bool _isPhotoBusy = false;
@@ -45,18 +48,29 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   // --- Onboarding qoralamasi ----------------------------------------------
   String _fullName = '';
   DateTime? _birthDate;
+  String _phone = '';
   String? _photoBase64;
-  double _salary = 0;
+  String _company = '';
+  String _position = '';
+  DateTime? _employmentStart;
+  SalaryType _salaryType = SalaryType.calculated;
+  String _currency = 'so\'m';
+  double _salaryMin = 0;
+  double _salaryMax = 0;
   String _workStart = '09:00';
   String _workEnd = '18:00';
+  int _lunchBreak = 60;
   List<int> _workDays = <int>[1, 2, 3, 4, 5];
   int _payDay = 5;
+  bool _penaltyEnabled = true;
 
   @override
   void dispose() {
     _pageController.dispose();
     _nameController.dispose();
-    _salaryController.dispose();
+    _phoneController.dispose();
+    _companyController.dispose();
+    _positionController.dispose();
     super.dispose();
   }
 
@@ -86,17 +100,18 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         return _fullName.trim().isNotEmpty;
       case 2:
         return _birthDate != null;
-      case 4:
-        return _salary > 0;
-      case 7:
+      case 10:
+        return _salaryMin > 0 || _salaryMax > 0;
+      case 14:
         return _workDays.isNotEmpty;
       default:
         return true;
     }
   }
 
-  /// Faqat profil rasmi qadamini o'tkazib yuborish mumkin.
-  bool get _canSkip => _index == 3;
+  /// Majburiy bo'lmagan qadamlar: telefon, rasm, ish joyi, lavozim,
+  /// ishga kirgan sana.
+  bool get _canSkip => const <int>{3, 4, 5, 6, 7}.contains(_index);
 
   // --- Rasm ----------------------------------------------------------------
 
@@ -137,12 +152,23 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       final UserProfile profile = UserProfile(
         fullName: _fullName.trim(),
         birthDate: _birthDate,
+        phoneNumber: _phone.trim(),
         profilePhotoBase64: _photoBase64,
-        salaryAmount: _salary,
+        salaryType: _salaryType,
+        salaryMin: _salaryMin,
+        salaryMax: _salaryMax,
+        // Hisob-kitobda oraliqning o'rtachasi ishlatiladi.
+        salaryAmount: UserProfile.averageOf(_salaryMin, _salaryMax),
+        currency: _currency,
+        companyName: _company.trim(),
+        position: _position.trim(),
+        employmentStartDate: _employmentStart,
         workStartTime: _workStart,
         workEndTime: _workEnd,
+        lunchBreakMinutes: _lunchBreak,
         salaryPayDay: _payDay,
         workDays: _workDays,
+        penaltyEnabled: _penaltyEnabled,
         onboardingCompleted: true,
         createdAt: DateTime.now(),
       );
@@ -268,8 +294,12 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   }
 
   List<Widget> _buildSteps() {
+    final DateTime now = DateTime.now();
+
     return <Widget>[
+      // 1
       const WelcomeStep(),
+      // 2
       TextInputStep(
         title: 'Ismingiz nima?',
         subtitle: 'Ism va familiyangizni kiriting.',
@@ -277,10 +307,28 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         hint: 'Masalan: Azizbek Erkinov',
         onChanged: (String value) => setState(() => _fullName = value),
       ),
-      BirthDateStep(
+      // 3
+      DateStep(
+        title: 'Tug\'ilgan kuningiz qachon?',
+        subtitle: 'Bu ma\'lumot faqat profilingizda ko\'rinadi.',
         value: _birthDate,
+        firstDate: DateTime(now.year - 100),
+        lastDate: now,
+        initialWhenEmpty: DateTime(now.year - 25, now.month, now.day),
+        icon: BootstrapIcons.cake2,
         onChanged: (DateTime value) => setState(() => _birthDate = value),
       ),
+      // 4
+      TextInputStep(
+        title: 'Telefon raqamingiz',
+        subtitle: 'Ixtiyoriy — faqat profilingizda saqlanadi.',
+        controller: _phoneController,
+        hint: '+998 90 123 45 67',
+        textCapitalization: TextCapitalization.none,
+        keyboardType: TextInputType.phone,
+        onChanged: (String value) => setState(() => _phone = value),
+      ),
+      // 5
       PhotoStep(
         base64: _photoBase64,
         isBusy: _isPhotoBusy,
@@ -288,12 +336,69 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         onGallery: () => _pickPhoto(fromCamera: false),
         onRemove: () => setState(() => _photoBase64 = null),
       ),
-      SalaryStep(
-        controller: _salaryController,
-        currency: 'so\'m',
-        onChanged: (String value) =>
-            setState(() => _salary = ThousandsFormatter.parse(value)),
+      // 6
+      TextInputStep(
+        title: 'Qayerda ishlaysiz?',
+        subtitle: 'Kompaniya yoki tashkilot nomi.',
+        controller: _companyController,
+        hint: 'Masalan: Chaqqon',
+        onChanged: (String value) => setState(() => _company = value),
       ),
+      // 7
+      TextInputStep(
+        title: 'Lavozimingiz nima?',
+        subtitle: 'Ixtiyoriy.',
+        controller: _positionController,
+        hint: 'Masalan: Flutter dasturchi',
+        onChanged: (String value) => setState(() => _position = value),
+      ),
+      // 8
+      DateStep(
+        title: 'Qachon ishga kirgansiz?',
+        subtitle: 'Ixtiyoriy — ish stajini ko\'rsatish uchun.',
+        value: _employmentStart,
+        firstDate: DateTime(now.year - 50),
+        lastDate: now,
+        initialWhenEmpty: DateTime(now.year, now.month, 1),
+        icon: BootstrapIcons.building,
+        onChanged: (DateTime value) => setState(() => _employmentStart = value),
+      ),
+      // 9 — eng muhim savol: butun hisob-kitob shunga bog'liq
+      ChoiceStep<SalaryType>(
+        title: 'Maoshingiz qanday kelishilgan?',
+        subtitle: 'Bu tanlov oylik qanday hisoblanishini belgilaydi.',
+        options: <ChoiceOption<SalaryType>>[
+          for (final SalaryType type in SalaryType.values)
+            ChoiceOption<SalaryType>(
+              value: type,
+              label: type.label,
+              description: type.description,
+            ),
+        ],
+        selected: _salaryType,
+        onChanged: (SalaryType value) => setState(() => _salaryType = value),
+      ),
+      // 10
+      ChoiceStep<String>(
+        title: 'Maosh qaysi valyutada?',
+        options: const <ChoiceOption<String>>[
+          ChoiceOption<String>(value: 'so\'m', label: 'So\'m (UZS)'),
+          ChoiceOption<String>(value: 'USD', label: 'Dollar (USD)'),
+        ],
+        selected: _currency,
+        onChanged: (String value) => setState(() => _currency = value),
+      ),
+      // 11
+      SalaryRangeStep(
+        min: _salaryMin,
+        max: _salaryMax,
+        currency: _currency,
+        onChanged: (double min, double max) => setState(() {
+          _salaryMin = min;
+          _salaryMax = max;
+        }),
+      ),
+      // 12
       WorkTimeStep(
         title: 'Ish nechada boshlanadi?',
         subtitle: 'Kechikish shu vaqtdan hisoblanadi.',
@@ -301,6 +406,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         icon: BootstrapIcons.box_arrow_in_right,
         onChanged: (String value) => setState(() => _workStart = value),
       ),
+      // 13
       WorkTimeStep(
         title: 'Ish nechada tugaydi?',
         subtitle: 'Erta ketish shu vaqtga nisbatan hisoblanadi.',
@@ -308,6 +414,12 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         icon: BootstrapIcons.box_arrow_right,
         onChanged: (String value) => setState(() => _workEnd = value),
       ),
+      // 14
+      LunchBreakStep(
+        minutes: _lunchBreak,
+        onChanged: (int value) => setState(() => _lunchBreak = value),
+      ),
+      // 15
       WorkDaysStep(
         selected: _workDays,
         onToggle: (int weekday) {
@@ -323,19 +435,46 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
           });
         },
       ),
+      // 16
       PayDayStep(
         selected: _payDay,
         onChanged: (int day) => setState(() => _payDay = day),
       ),
+      // 17
+      ChoiceStep<bool>(
+        title: 'Kechikkanda pul ushlanadimi?',
+        subtitle: 'Ba\'zi ish joylarida kechikish uchun jarima yo\'q.',
+        options: const <ChoiceOption<bool>>[
+          ChoiceOption<bool>(
+            value: true,
+            label: 'Ha, ushlanadi',
+            description: 'Kechikkan va erta ketgan daqiqalar uchun soatlik '
+                'stavkadan pul ayiriladi.',
+          ),
+          ChoiceOption<bool>(
+            value: false,
+            label: 'Yo\'q, ushlanmaydi',
+            description: 'Kechikish faqat statistika uchun yoziladi, '
+                'maoshga ta\'sir qilmaydi.',
+          ),
+        ],
+        selected: _penaltyEnabled,
+        onChanged: (bool value) => setState(() => _penaltyEnabled = value),
+      ),
+      // 18
       SummaryStep(entries: _summaryEntries(), onEdit: _goTo),
     ];
   }
 
   List<SummaryEntry> _summaryEntries() {
+    final double average = UserProfile.averageOf(_salaryMin, _salaryMax);
+
+    String orDash(String value) => value.trim().isEmpty ? '—' : value.trim();
+
     return <SummaryEntry>[
       SummaryEntry(
         label: 'Ism-familiya',
-        value: _fullName.trim().isEmpty ? '—' : _fullName.trim(),
+        value: orDash(_fullName),
         stepIndex: 1,
         icon: BootstrapIcons.person,
       ),
@@ -346,34 +485,87 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         icon: BootstrapIcons.cake2,
       ),
       SummaryEntry(
+        label: 'Telefon',
+        value: orDash(_phone),
+        stepIndex: 3,
+        icon: BootstrapIcons.telephone,
+      ),
+      SummaryEntry(
         label: 'Profil rasmi',
         value: _photoBase64 == null ? 'Qo\'yilmagan' : 'Qo\'yilgan',
-        stepIndex: 3,
+        stepIndex: 4,
         icon: BootstrapIcons.camera,
       ),
       SummaryEntry(
-        label: 'Oylik maosh',
-        value: Formatters.money(_salary),
-        stepIndex: 4,
+        label: 'Ish joyi',
+        value: orDash(_company),
+        stepIndex: 5,
+        icon: BootstrapIcons.building,
+      ),
+      SummaryEntry(
+        label: 'Lavozim',
+        value: orDash(_position),
+        stepIndex: 6,
+        icon: BootstrapIcons.person_vcard,
+      ),
+      SummaryEntry(
+        label: 'Ishga kirgan sana',
+        value: _employmentStart == null
+            ? '—'
+            : Formatters.longDate(_employmentStart!),
+        stepIndex: 7,
+        icon: BootstrapIcons.calendar_check,
+      ),
+      SummaryEntry(
+        label: 'Maosh turi',
+        value: _salaryType.label,
+        stepIndex: 8,
+        icon: BootstrapIcons.wallet2,
+      ),
+      SummaryEntry(
+        label: 'Maosh oralig\'i',
+        value: _salaryMin <= 0 && _salaryMax <= 0
+            ? '—'
+            : '${Formatters.number(_salaryMin)} – '
+                '${Formatters.money(_salaryMax, currency: _currency)}',
+        stepIndex: 10,
         icon: BootstrapIcons.cash_coin,
+      ),
+      SummaryEntry(
+        label: 'Hisobda ishlatiladi',
+        value: Formatters.money(average, currency: _currency),
+        stepIndex: 10,
+        icon: BootstrapIcons.calculator,
       ),
       SummaryEntry(
         label: 'Ish vaqti',
         value: '$_workStart – $_workEnd',
-        stepIndex: 5,
+        stepIndex: 11,
         icon: BootstrapIcons.clock,
+      ),
+      SummaryEntry(
+        label: 'Tushlik tanaffusi',
+        value: _lunchBreak == 0 ? 'Yo\'q' : Formatters.minutes(_lunchBreak),
+        stepIndex: 13,
+        icon: BootstrapIcons.cup_hot,
       ),
       SummaryEntry(
         label: 'Ish kunlari',
         value: _workDays.isEmpty ? '—' : Formatters.workDays(_workDays),
-        stepIndex: 7,
+        stepIndex: 14,
         icon: BootstrapIcons.calendar3,
       ),
       SummaryEntry(
         label: 'Maosh kuni',
         value: 'Oyning $_payDay-kuni',
-        stepIndex: 8,
+        stepIndex: 15,
         icon: BootstrapIcons.calendar_check,
+      ),
+      SummaryEntry(
+        label: 'Kechikish jarimasi',
+        value: _penaltyEnabled ? 'Ushlanadi' : 'Ushlanmaydi',
+        stepIndex: 16,
+        icon: BootstrapIcons.alarm,
       ),
     ];
   }
