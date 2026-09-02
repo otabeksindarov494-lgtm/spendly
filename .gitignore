@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# flutterfire configure yaratadigan platforma fayllari.
+# lib/firebase_options.dart ATAYLAB kuzatiladi — usiz loyiha kompilyatsiya
+# bo'lmaydi. Quyidagilar esa `flutterfire configure` bilan qayta olinadi.
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
