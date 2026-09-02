@@ -16,6 +16,7 @@ import '../../widgets/common/app_card.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
+import 'manual_attendance_screen.dart';
 import 'profile_edit_sheets.dart';
 
 /// 4-tab: profil, sozlamalar va chiqish (PROJECT.md 5.4).
@@ -65,6 +66,18 @@ class _ProfileBody extends ConsumerWidget {
         const SizedBox(height: 28),
         const SectionTitle(title: 'Shaxsiy ma\'lumotlar'),
         _buildPersonalInfo(context, theme),
+        const SizedBox(height: 28),
+        const SectionTitle(title: 'Davomat'),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: _Row(
+            icon: BootstrapIcons.calendar_plus,
+            label: 'Qo\'lda kiritish / tuzatish',
+            value: 'O\'tgan kunlarni qo\'shish yoki vaqtni to\'g\'rilash',
+            isLast: true,
+            onTap: (WidgetRef ref) => ManualAttendanceScreen.open(context),
+          ),
+        ),
         const SizedBox(height: 28),
         const SectionTitle(title: 'Sozlamalar'),
         _buildSettings(context, ref, theme),

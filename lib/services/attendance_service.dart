@@ -130,6 +130,85 @@ class AttendanceService {
     );
   }
 
+  /// Davomat yozuvini qo'lda kiritish yoki tuzatish.
+  ///
+  /// Kerak bo'ladigan holatlar: ilova yangi o'rnatilgan va o'tgan kunlar
+  /// yozilmagan; check-in bosish esdan chiqqan; vaqt noto'g'ri qayd etilgan.
+  ///
+  /// Rasm maydonlariga tegilmaydi — agar kunda selfie bo'lsa, u saqlanib
+  /// qoladi ( `merge: true` ).
+  Future<void> saveManualEntry({
+    required String userId,
+    required UserProfile profile,
+    required DateTime date,
+    required int checkInMinutes,
+    int? checkOutMinutes,
+  }) async {
+    final String key = TimeUtils.dateKey(date);
+
+    final DateTime checkIn = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      checkInMinutes ~/ 60,
+      checkInMinutes % 60,
+    );
+
+    DateTime? checkOut;
+    if (checkOutMinutes != null) {
+      checkOut = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        checkOutMinutes ~/ 60,
+        checkOutMinutes % 60,
+      );
+      // Tungi smena: chiqish kirishdan keyin bo'lmasa, keyingi kunga o'tadi.
+      if (!checkOut.isAfter(checkIn)) {
+        checkOut = checkOut.add(const Duration(days: 1));
+      }
+    }
+
+    final DailyCalculation calculation = calculateFor(
+      profile: profile,
+      checkIn: checkIn,
+      checkOut: checkOut,
+    );
+
+    await _collection(userId).doc(key).set(
+      <String, dynamic>{
+        'date': key,
+        'checkInTime': checkIn,
+        'checkOutTime': checkOut,
+        'workedHours': calculation.workedHours,
+        'lateMinutes': calculation.lateMinutes,
+        'earlyLeaveMinutes': calculation.earlyLeaveMinutes,
+        'penaltyAmount': calculation.penaltyAmount,
+        'dailyEarning': calculation.dailyEarning,
+        'status': (checkOut == null
+                ? AttendanceStatus.inProgress
+                : AttendanceStatus.present)
+            .value,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  /// Bir kunlik yozuvni butunlay o'chiradi.
+  Future<void> deleteDay({required String userId, required DateTime date}) {
+    return _collection(userId).doc(TimeUtils.dateKey(date)).delete();
+  }
+
+  /// Bitta kunni bir marta o'qish (qo'lda tahrirlashda mavjud qiymatlarni
+  /// formaga to'ldirish uchun).
+  Future<Attendance?> fetchDay(String userId, DateTime date) async {
+    final DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await _collection(userId).doc(TimeUtils.dateKey(date)).get();
+    final Map<String, dynamic>? data = snapshot.data();
+    if (!snapshot.exists || data == null) return null;
+    return Attendance.fromMap(snapshot.id, data);
+  }
+
   /// Profil sozlamalari asosida bir kunlik hisob-kitob.
   static DailyCalculation calculateFor({
     required UserProfile profile,
