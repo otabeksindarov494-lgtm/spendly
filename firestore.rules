@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// PulTrack — PROJECT.md 3.3-bo'limidagi qoidalar.
+// Har bir foydalanuvchi faqat o'z hujjatlarini o'qiy va yoza oladi.
+//
+// Joylashtirish:
+//   firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // attendance, debts, transactions — barchasi shu qoidaga bo'ysunadi.
+      match /{document=**} {
+        allow read, write: if request.auth != null
+                           && request.auth.uid == userId;
+      }
+    }
+  }
+}
