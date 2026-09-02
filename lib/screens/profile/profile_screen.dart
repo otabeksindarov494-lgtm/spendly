@@ -10,12 +10,13 @@ import '../../providers/profile_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/image_service.dart';
 import '../../theme/app_theme.dart';
-import '../../utils/formatters.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/error_view.dart';
+import '../../widgets/common/info_row.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
+import 'all_data_screen.dart';
 import 'manual_attendance_screen.dart';
 import 'profile_edit_sheets.dart';
 
@@ -64,18 +65,24 @@ class _ProfileBody extends ConsumerWidget {
       children: <Widget>[
         _buildHeader(context, ref, theme),
         const SizedBox(height: 28),
-        const SectionTitle(title: 'Shaxsiy ma\'lumotlar'),
-        _buildPersonalInfo(context, theme),
-        const SizedBox(height: 28),
-        const SectionTitle(title: 'Davomat'),
         AppCard(
           padding: EdgeInsets.zero,
-          child: _Row(
-            icon: BootstrapIcons.calendar_plus,
-            label: 'Qo\'lda kiritish / tuzatish',
-            value: 'O\'tgan kunlarni qo\'shish yoki vaqtni to\'g\'rilash',
-            isLast: true,
-            onTap: (WidgetRef ref) => ManualAttendanceScreen.open(context),
+          child: Column(
+            children: <Widget>[
+              InfoRow(
+                icon: BootstrapIcons.person_vcard,
+                label: 'Barcha ma\'lumotlar',
+                value: 'Shaxsiy, ish joyi, maosh va jadval',
+                onTap: (WidgetRef ref) => AllDataScreen.open(context),
+              ),
+              InfoRow(
+                icon: BootstrapIcons.calendar_plus,
+                label: 'Davomat',
+                value: 'Qo\'lda kiritish yoki vaqtni tuzatish',
+                isLast: true,
+                onTap: (WidgetRef ref) => ManualAttendanceScreen.open(context),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 28),
@@ -161,73 +168,6 @@ class _ProfileBody extends ConsumerWidget {
     );
   }
 
-  Widget _buildPersonalInfo(BuildContext context, CustomTheme theme) {
-    return AppCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: <Widget>[
-          _Row(
-            icon: BootstrapIcons.person_vcard,
-            label: 'Ism-familiya',
-            value: profile.fullName.isEmpty ? '—' : profile.fullName,
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editFullName(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.building,
-            label: 'Ish joyi',
-            value: profile.companyName.isEmpty ? '—' : profile.companyName,
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editCompany(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.cake2,
-            label: 'Tug\'ilgan kun',
-            value: profile.birthDate == null
-                ? '—'
-                : Formatters.longDate(profile.birthDate!),
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editBirthDate(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.cash_coin,
-            label: 'Oylik maosh',
-            value: Formatters.money(
-              profile.salaryAmount,
-              currency: profile.currency,
-            ),
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editSalary(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.clock,
-            label: 'Ish vaqti',
-            value: '${profile.workStartTime} – ${profile.workEndTime}',
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editWorkTime(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.calendar3,
-            label: 'Ish kunlari',
-            value: profile.workDays.isEmpty
-                ? '—'
-                : Formatters.workDays(profile.workDays),
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editWorkDays(context, ref, profile),
-          ),
-          _Row(
-            icon: BootstrapIcons.calendar_check,
-            label: 'Maosh kuni',
-            value: 'Oyning ${profile.salaryPayDay}-kuni',
-            isLast: true,
-            onTap: (WidgetRef ref) =>
-                ProfileEditSheets.editPayDay(context, ref, profile),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSettings(
     BuildContext context,
     WidgetRef ref,
@@ -260,8 +200,9 @@ class _ProfileBody extends ConsumerWidget {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      right:
-                          option == ThemeModeNotifier.selectable.last ? 0 : 8,
+                      right: option == ThemeModeNotifier.selectable.last
+                          ? 0
+                          : 8,
                     ),
                     child: GestureDetector(
                       onTap: () =>
@@ -271,9 +212,7 @@ class _ProfileBody extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: mode == option
-                              ? theme.blue
-                              : theme.inputColor,
+                          color: mode == option ? theme.blue : theme.inputColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -375,79 +314,12 @@ class _ProfileBody extends ConsumerWidget {
     );
     if (confirmed ?? false) {
       await ref.read(authServiceProvider).signOut();
+      // Faqat qurilmadagi keshni tozalaymiz. Firestore'dagi profil,
+      // davomat, qarzlar va yozishmalar JOYIDA QOLADI — qayta kirganda
+      // hammasi o'z holicha tiklanadi.
+      await ref
+          .read(sharedPreferencesProvider)
+          .remove(ThemeModeNotifier.storageKey);
     }
-  }
-}
-
-/// Profil ro'yxatidagi bitta qator.
-class _Row extends ConsumerWidget {
-  const _Row({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.onTap,
-    this.isLast = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final void Function(WidgetRef ref) onTap;
-  final bool isLast;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final CustomTheme theme = context.theme;
-
-    return InkWell(
-      onTap: () => onTap(ref),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: <Widget>[
-                Icon(icon, size: 20, color: theme.textGray),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        label,
-                        style: TextStyle(fontSize: 11, color: theme.textGray),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        value,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: theme.mainDarkBlue,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  BootstrapIcons.chevron_right,
-                  size: 20,
-                  color: theme.favoriteGray,
-                ),
-              ],
-            ),
-          ),
-          if (!isLast)
-            Divider(
-              color: theme.borderGray,
-              height: 1,
-              indent: 48,
-              endIndent: 16,
-            ),
-        ],
-      ),
-    );
   }
 }

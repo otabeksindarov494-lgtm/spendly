@@ -192,44 +192,262 @@ abstract final class ProfileEditSheets {
 
   // --- Maosh ---------------------------------------------------------------
 
+  static Future<void> editPhone(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _editText(
+      context: context,
+      title: 'Telefon raqami',
+      initialValue: profile.phoneNumber,
+      hint: '+998 90 123 45 67',
+      onSave: (String value) =>
+          _update(context, ref, <String, dynamic>{'phoneNumber': value.trim()}),
+    );
+  }
+
+  static Future<void> editPosition(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _editText(
+      context: context,
+      title: 'Lavozim',
+      initialValue: profile.position,
+      hint: 'Masalan: Flutter dasturchi',
+      onSave: (String value) =>
+          _update(context, ref, <String, dynamic>{'position': value.trim()}),
+    );
+  }
+
+  // --- Bitta variantli tanlovlar -------------------------------------------
+
+  static Future<void> editSalaryType(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _pickOne<SalaryType>(
+      context: context,
+      title: 'Maosh turi',
+      current: profile.salaryType,
+      options: <(SalaryType, String, String)>[
+        for (final SalaryType type in SalaryType.values)
+          (type, type.label, type.description),
+      ],
+      onSelected: (SalaryType value) =>
+          _update(context, ref, <String, dynamic>{'salaryType': value.value}),
+    );
+  }
+
+  static Future<void> editCurrency(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _pickOne<String>(
+      context: context,
+      title: 'Valyuta',
+      current: profile.currency,
+      options: const <(String, String, String)>[
+        ('so\'m', 'So\'m (UZS)', ''),
+        ('USD', 'Dollar (USD)', ''),
+      ],
+      onSelected: (String value) =>
+          _update(context, ref, <String, dynamic>{'currency': value}),
+    );
+  }
+
+  static Future<void> editPenaltyPolicy(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _pickOne<bool>(
+      context: context,
+      title: 'Kechikish jarimasi',
+      current: profile.penaltyEnabled,
+      options: const <(bool, String, String)>[
+        (
+          true,
+          'Ushlanadi',
+          'Kechikkan va erta ketgan daqiqalar uchun pul ayiriladi.',
+        ),
+        (false, 'Ushlanmaydi', 'Kechikish faqat statistika uchun yoziladi.'),
+      ],
+      onSelected: (bool value) =>
+          _update(context, ref, <String, dynamic>{'penaltyEnabled': value}),
+    );
+  }
+
+  static Future<void> editLunchBreak(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    return _pickOne<int>(
+      context: context,
+      title: 'Tushlik tanaffusi',
+      current: profile.lunchBreakMinutes,
+      options: <(int, String, String)>[
+        for (final int minutes in const <int>[0, 30, 45, 60, 90, 120])
+          (minutes, minutes == 0 ? 'Yo\'q' : Formatters.minutes(minutes), ''),
+      ],
+      onSelected: (int value) =>
+          _update(context, ref, <String, dynamic>{'lunchBreakMinutes': value}),
+    );
+  }
+
+  /// Bir nechta tahrirlash uchun umumiy "bitta variantni tanlash" oynasi.
+  static Future<void> _pickOne<T>({
+    required BuildContext context,
+    required String title,
+    required T current,
+    required List<(T, String, String)> options,
+    required Future<void> Function(T value) onSelected,
+  }) {
+    return _showSheet(
+      context: context,
+      title: title,
+      builder: (BuildContext sheetContext, VoidCallback close) {
+        final CustomTheme theme = sheetContext.theme;
+        return Column(
+          children: <Widget>[
+            for (final (T value, String label, String description) option
+                in options)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: GestureDetector(
+                  onTap: () async {
+                    close();
+                    await onSelected(option.$1);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: option.$1 == current
+                          ? theme.blue.withValues(alpha: 0.06)
+                          : theme.background,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: option.$1 == current
+                            ? theme.blue
+                            : theme.borderGray,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          option.$2,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: theme.mainDarkBlue,
+                          ),
+                        ),
+                        if (option.$3.isNotEmpty) ...<Widget>[
+                          const SizedBox(height: 4),
+                          Text(
+                            option.$3,
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.4,
+                              color: theme.textGray,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
   static Future<void> editSalary(
     BuildContext context,
     WidgetRef ref,
     UserProfile profile,
   ) async {
-    final TextEditingController controller = TextEditingController(
-      text: Formatters.number(profile.salaryAmount),
+    final TextEditingController minController = TextEditingController(
+      text: profile.salaryMin > 0 ? Formatters.number(profile.salaryMin) : '',
+    );
+    final TextEditingController maxController = TextEditingController(
+      text: profile.salaryMax > 0 ? Formatters.number(profile.salaryMax) : '',
     );
 
     await _showSheet(
       context: context,
-      title: 'Oylik maosh',
-      builder: (BuildContext context, VoidCallback close) => Column(
-        children: <Widget>[
-          AppTextField(
-            controller: controller,
-            hint: '5 000 000',
-            keyboardType: TextInputType.number,
-            autofocus: true,
-            inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],
-          ),
-          const SizedBox(height: 20),
-          AppButton(
-            label: 'Saqlash',
-            onPressed: () async {
-              final double amount = ThousandsFormatter.parse(controller.text);
-              if (amount <= 0) return;
-              await _update(context, ref, <String, dynamic>{
-                'salaryAmount': amount,
-              });
-              close();
-            },
-          ),
-        ],
-      ),
+      title: 'Oylik maosh oralig\'i',
+      builder: (BuildContext sheetContext, VoidCallback close) {
+        final CustomTheme theme = sheetContext.theme;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: AppTextField(
+                    controller: minController,
+                    label: 'Eng kam',
+                    hint: '4 000 000',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: const <TextInputFormatter>[
+                      ThousandsFormatter(),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: AppTextField(
+                    controller: maxController,
+                    label: 'Eng ko\'p',
+                    hint: '5 000 000',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: const <TextInputFormatter>[
+                      ThousandsFormatter(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Hisob-kitobda shu oraliqning o\'rtachasi ishlatiladi.',
+              style: TextStyle(fontSize: 11, color: theme.textGray),
+            ),
+            const SizedBox(height: 20),
+            AppButton(
+              label: 'Saqlash',
+              onPressed: () async {
+                final double min = ThousandsFormatter.parse(minController.text);
+                final double max = ThousandsFormatter.parse(maxController.text);
+                if (min <= 0 && max <= 0) return;
+
+                final double lo = min <= max ? min : max;
+                final double hi = min <= max ? max : min;
+                close();
+                await _update(context, ref, <String, dynamic>{
+                  'salaryMin': lo,
+                  'salaryMax': hi,
+                  'salaryAmount': UserProfile.averageOf(lo, hi),
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
 
-    controller.dispose();
+    minController.dispose();
+    maxController.dispose();
   }
 
   // --- Tug'ilgan kun -------------------------------------------------------
@@ -252,6 +470,25 @@ abstract final class ProfileEditSheets {
     );
     if (picked == null || !context.mounted) return;
     await _update(context, ref, <String, dynamic>{'birthDate': picked});
+  }
+
+  static Future<void> editEmploymentDate(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) async {
+    final DateTime now = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: profile.employmentStartDate ?? DateTime(now.year, now.month),
+      firstDate: DateTime(now.year - 50),
+      lastDate: now,
+      helpText: 'Ishga kirgan sana',
+    );
+    if (picked == null || !context.mounted) return;
+    await _update(context, ref, <String, dynamic>{
+      'employmentStartDate': picked,
+    });
   }
 
   // --- Ish vaqti -----------------------------------------------------------
