@@ -114,11 +114,8 @@ class AllDataScreen extends ConsumerWidget {
                     ? '—'
                     : Formatters.longDate(profile.employmentStartDate!),
                 isLast: true,
-                onTap: (WidgetRef ref) => ProfileEditSheets.editEmploymentDate(
-                  context,
-                  ref,
-                  profile,
-                ),
+                onTap: (WidgetRef ref) =>
+                    ProfileEditSheets.editEmploymentDate(context, ref, profile),
               ),
             ],
           ),
@@ -145,7 +142,7 @@ class AllDataScreen extends ConsumerWidget {
                         currency: profile.currency,
                       )
                     : '${Formatters.number(profile.salaryMin)} – '
-                        '${Formatters.money(profile.salaryMax, currency: profile.currency)}',
+                          '${Formatters.money(profile.salaryMax, currency: profile.currency)}',
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editSalary(context, ref, profile),
               ),
@@ -233,10 +230,10 @@ class AllDataScreen extends ConsumerWidget {
 
     final String text = isFixed
         ? 'Maoshingiz **fixed**: kelishilgan summa har oy to\'liq beriladi. '
-            'Ishga bormagan kun uchun pul ushlanmaydi, dam olish kunida '
-            'ishlasangiz ham qo\'shilmaydi.'
+              'Ishga bormagan kun uchun pul ushlanmaydi, dam olish kunida '
+              'ishlasangiz ham qo\'shilmaydi.'
         : 'Maoshingiz **kunlik hisob**: oylik summa ish kunlariga bo\'linadi '
-            'va har bir kelgan kun uchun alohida yoziladi.';
+              'va har bir kelgan kun uchun alohida yoziladi.';
 
     final String penaltyText = profile.penaltyEnabled
         ? ' Kechikish va erta ketish uchun pul ushlanadi.'

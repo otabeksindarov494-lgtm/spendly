@@ -12,6 +12,7 @@ import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_text_field.dart';
 import '../../widgets/common/progress_dialog.dart';
+import '../../widgets/common/cupertino_pickers.dart';
 
 /// Profil maydonlarini tahrirlash oynalari (PROJECT.md 5.4).
 ///
@@ -458,15 +459,12 @@ abstract final class ProfileEditSheets {
     UserProfile profile,
   ) async {
     final DateTime now = DateTime.now();
-    final DateTime? picked = await showDatePicker(
+    final DateTime? picked = await SoftPickers.pickDate(
       context: context,
-      initialDate:
-          profile.birthDate ?? DateTime(now.year - 25, now.month, now.day),
-      firstDate: DateTime(now.year - 100),
-      lastDate: now,
-      helpText: 'Tug\'ilgan kuningiz',
-      cancelText: 'Bekor qilish',
-      confirmText: 'Tanlash',
+      title: 'Tug\'ilgan kuningiz',
+      initial: profile.birthDate ?? DateTime(now.year - 25, now.month, now.day),
+      first: DateTime(now.year - 100),
+      last: now,
     );
     if (picked == null || !context.mounted) return;
     await _update(context, ref, <String, dynamic>{'birthDate': picked});
@@ -478,12 +476,12 @@ abstract final class ProfileEditSheets {
     UserProfile profile,
   ) async {
     final DateTime now = DateTime.now();
-    final DateTime? picked = await showDatePicker(
+    final DateTime? picked = await SoftPickers.pickDate(
       context: context,
-      initialDate: profile.employmentStartDate ?? DateTime(now.year, now.month),
-      firstDate: DateTime(now.year - 50),
-      lastDate: now,
-      helpText: 'Ishga kirgan sana',
+      title: 'Ishga kirgan sana',
+      initial: profile.employmentStartDate ?? DateTime(now.year, now.month),
+      first: DateTime(now.year - 50),
+      last: now,
     );
     if (picked == null || !context.mounted) return;
     await _update(context, ref, <String, dynamic>{
@@ -526,20 +524,13 @@ abstract final class ProfileEditSheets {
     required String current,
     required int fallbackMinutes,
   }) async {
-    final int minutes = TimeUtils.minutesFromHmOr(current, fallbackMinutes);
-    final TimeOfDay? picked = await showTimePicker(
+    final int? minutes = await SoftPickers.pickTimeMinutes(
       context: context,
-      initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
-      helpText: title,
-      cancelText: 'Bekor qilish',
-      confirmText: 'Tanlash',
-      builder: (BuildContext context, Widget? child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
+      title: title,
+      initialMinutes: TimeUtils.minutesFromHmOr(current, fallbackMinutes),
     );
-    if (picked == null) return null;
-    return TimeUtils.hmFromMinutes(picked.hour * 60 + picked.minute);
+    if (minutes == null) return null;
+    return TimeUtils.hmFromMinutes(minutes);
   }
 
   // --- Ish kunlari ---------------------------------------------------------

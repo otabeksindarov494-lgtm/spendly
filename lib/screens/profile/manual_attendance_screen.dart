@@ -1,4 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +16,7 @@ import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/progress_dialog.dart';
+import '../../widgets/common/cupertino_pickers.dart';
 
 /// Davomat yozuvini qo'lda kiritish yoki tuzatish (Profil bo'limidan).
 ///
@@ -61,8 +63,9 @@ class _ManualAttendanceScreenState
     if (userId == null) return;
 
     setState(() => _isLoadingDay = true);
-    final Attendance? existing =
-        await ref.read(attendanceServiceProvider).fetchDay(userId, _date);
+    final Attendance? existing = await ref
+        .read(attendanceServiceProvider)
+        .fetchDay(userId, _date);
     if (!mounted) return;
 
     setState(() {
@@ -83,13 +86,13 @@ class _ManualAttendanceScreenState
 
   Future<void> _pickDate() async {
     final DateTime now = DateTime.now();
-    final DateTime? picked = await showDatePicker(
+    final DateTime? picked = await SoftPickers.pickDate(
       context: context,
-      initialDate: _date,
-      firstDate: DateTime(now.year - 2),
+      title: 'Qaysi kun uchun',
+      initial: _date,
+      first: DateTime(now.year - 2),
       // Kelajakdagi kunga davomat yozib bo'lmaydi.
-      lastDate: now,
-      helpText: 'Qaysi kun uchun',
+      last: now,
     );
     if (picked == null) return;
     setState(() => _date = picked);
@@ -100,18 +103,14 @@ class _ManualAttendanceScreenState
     final int current = isCheckIn
         ? _checkInMinutes
         : (_checkOutMinutes ?? 18 * 60);
-    final TimeOfDay? picked = await showTimePicker(
+    final int? picked = await SoftPickers.pickTimeMinutes(
       context: context,
-      initialTime: TimeOfDay(hour: current ~/ 60, minute: current % 60),
-      helpText: isCheckIn ? 'Kelgan vaqt' : 'Ketgan vaqt',
-      builder: (BuildContext context, Widget? child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
+      title: isCheckIn ? 'Kelgan vaqt' : 'Ketgan vaqt',
+      initialMinutes: current,
     );
     if (picked == null) return;
     setState(() {
-      final int minutes = picked.hour * 60 + picked.minute;
+      final int minutes = picked;
       if (isCheckIn) {
         _checkInMinutes = minutes;
       } else {
@@ -129,7 +128,9 @@ class _ManualAttendanceScreenState
       title: 'Davomat saqlanmoqda',
       task: (ProgressReporter report) async {
         report('Hisob-kitob qilinmoqda...', 0.35);
-        await ref.read(attendanceServiceProvider).saveManualEntry(
+        await ref
+            .read(attendanceServiceProvider)
+            .saveManualEntry(
               userId: userId,
               profile: profile,
               date: _date,
@@ -147,9 +148,7 @@ class _ManualAttendanceScreenState
     ref.invalidate(monthAttendanceProvider);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${Formatters.longDate(_date)} uchun saqlandi'),
-      ),
+      SnackBar(content: Text('${Formatters.longDate(_date)} uchun saqlandi')),
     );
     Navigator.of(context).pop();
   }
@@ -236,32 +235,51 @@ class _ManualAttendanceScreenState
                     value: _stillAtWork
                         ? 'Hali ishda'
                         : TimeUtils.hmFromMinutes(_checkOutMinutes ?? 18 * 60),
-                    onTap: _stillAtWork ? null : () => _pickTime(isCheckIn: false),
+                    onTap: _stillAtWork
+                        ? null
+                        : () => _pickTime(isCheckIn: false),
                   ),
                   const SizedBox(height: 10),
                   AppCard(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
-                      vertical: 4,
+                      vertical: 12,
                     ),
-                    child: SwitchListTile.adaptive(
-                      contentPadding: EdgeInsets.zero,
-                      value: _stillAtWork,
-                      activeThumbColor: theme.blue,
-                      title: Text(
-                        'Hali ishdaman',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: theme.mainDarkBlue,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Hali ishdaman',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.mainDarkBlue,
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                'Ketgan vaqt yozilmaydi, kun ochiq qoladi',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: theme.textGray,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      subtitle: Text(
-                        'Ketgan vaqt yozilmaydi, kun ochiq qoladi',
-                        style: TextStyle(fontSize: 11, color: theme.textGray),
-                      ),
-                      onChanged: (bool value) =>
-                          setState(() => _stillAtWork = value),
+                        const SizedBox(width: 12),
+                        // Ataylab Cupertino: Material switch qo'polroq
+                        // ko'rinadi, bu esa yengil va yumshoq.
+                        CupertinoSwitch(
+                          value: _stillAtWork,
+                          activeTrackColor: theme.blue,
+                          onChanged: (bool value) =>
+                              setState(() => _stillAtWork = value),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -305,7 +323,11 @@ class _ManualAttendanceScreenState
               'Check-in bosilmagan yoki vaqt noto\'g\'ri yozilgan kunlarni '
               'shu yerdan to\'g\'rilashingiz mumkin. Jarima va kunlik maosh '
               'avtomatik qayta hisoblanadi.',
-              style: TextStyle(fontSize: 12, height: 1.45, color: theme.textGray),
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.45,
+                color: theme.textGray,
+              ),
             ),
           ),
         ],
