@@ -1,30 +1,98 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spendly/app.dart';
+import 'package:spendly/providers/core_providers.dart';
+import 'package:spendly/providers/theme_provider.dart';
+import 'package:spendly/theme/app_theme.dart';
 
-import 'package:spendly/main.dart';
+/// Butun `lib/` daraxtini kompilyatsiya qiladigan smoke-testlar.
+///
+/// Firebase'ga ulanish talab qilinmaydi: [SpendlyApp] `firebaseError`
+/// berilganda sozlash ekranini ko'rsatadi.
+Future<Widget> _buildApp({String? firebaseError, ThemeMode? saved}) async {
+  SharedPreferences.setMockInitialValues(<String, Object>{
+    if (saved != null) ThemeModeNotifier.storageKey: ThemeModeNotifier.toName(saved),
+  });
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return ProviderScope(
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+    child: SpendlyApp(firebaseError: firebaseError),
+  );
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Firebase sozlanmagan bo\'lsa ko\'rsatma ekrani chiqadi',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      await _buildApp(firebaseError: 'UnsupportedError: test'),
+    );
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Firebase sozlanmagan'), findsOneWidget);
+    expect(find.text('flutterfire configure'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('saqlangan mavzu rejimi o\'qiladi', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      await _buildApp(firebaseError: 'test', saved: ThemeMode.dark),
+    );
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final MaterialApp app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.dark);
+  });
+
+  testWidgets('sukut bo\'yicha Yorug\' mavzu (tizim rangi olinmaydi)',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(await _buildApp(firebaseError: 'test'));
+    await tester.pumpAndSettle();
+
+    final MaterialApp app =
+        tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.light);
+    expect(app.themeMode, isNot(ThemeMode.system));
+  });
+
+  testWidgets('eski "system" qiymati ham Yorug\'ga tushadi', (_) async {
+    expect(ThemeModeNotifier.fromName('system'), ThemeMode.light);
+    expect(ThemeModeNotifier.fromName(null), ThemeMode.light);
+    expect(ThemeModeNotifier.fromName('dark'), ThemeMode.dark);
+  });
+
+  testWidgets('interfeys tili o\'zbekcha', (WidgetTester tester) async {
+    await tester.pumpWidget(await _buildApp(firebaseError: 'test'));
+    await tester.pumpAndSettle();
+
+    final MaterialApp app =
+        tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.locale, const Locale('uz'));
+    expect(app.supportedLocales, contains(const Locale('uz')));
+  });
+
+  testWidgets('CustomTheme kengaytmasi ikkala mavzuda ham mavjud',
+      (WidgetTester tester) async {
+    for (final ThemeData theme in <ThemeData>[
+      AppTheme.light,
+      AppTheme.dark,
+    ]) {
+      late CustomTheme resolved;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: theme,
+          home: Builder(
+            builder: (BuildContext context) {
+              resolved = context.theme;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      // Ranglar hardcode qilinmagan — hammasi kengaytmadan olinadi.
+      expect(resolved.blue, const Color(0xFF3083FF));
+      expect(resolved.gradient.colors.length, 2);
+    }
   });
 }
