@@ -27,7 +27,7 @@ Tekshirish:
 
 ```sh
 flutter analyze     # 0 muammo
-flutter test        # 71 test
+flutter test        # 89 test
 ```
 
 ---
@@ -131,10 +131,40 @@ yarim to'ldirilgan profil qolmaydi. Tugagach `publicProfiles` ham yoziladi.
 Oy tanlash, joriy hisoblangan oylik, progress bar, statistika kartalari,
 kunlik yozuvlar. Yozuvni bosganda check-in/out rasmlari ochiladi.
 
-### 4.5 Qarzlar
-- Ovoz orqali: `speech_to_text` → `VoiceParser` → **tasdiqlash formasi**
-  (PRD 10.8 bo'yicha majburiy).
-- Qo'lda kiritish, filtr, svayp bilan o'chirish, "to'landi" belgisi.
+### 4.5 Qarzlar va ovoz moduli
+Ilovaning asosiy afzalligi — qarzni **gapirib** yozib qo'yish.
+
+**Butunlay tekin va oflayn.** Nutqni qurilmaning o'z tizimi taniydi
+(`speech_to_text`), matnni [`voice_parser.dart`] mahalliy tahlil qiladi.
+Hech qanday API kalit, to'lov yoki server so'rovi yo'q — **ovoz
+qurilmadan chiqmaydi**.
+
+Parser nimalarni tushunadi:
+
+| Imkoniyat | Misol |
+|---|---|
+| Lotin va **kirill** alifbo | "Алишердан 30 минг олдим" |
+| Raqam so'zlari | "o'n besh ming", "ikki yuz ming" |
+| "yarim" | "yarim million" = 500 000, "bir yarim million" = 1 500 000 |
+| Qo'shilib yozilgan | "30ming", "5mln" |
+| Bo'lingan raqam | "2 500 000" |
+| Kelishiklar | -dan, -tan, -ga, -ka, -qa, -ni, -ning, -niki |
+| Fe'l shakllari | oldim, olganman, berdim, berganman, berdi, olishdi… |
+| Izoh | "50 ming **kitob uchun** berdim" → "Kitob uchun" |
+| Ishonch darajasi | 0–100%, ekranda ko'rsatiladi |
+
+Ekranda: mikrofon darajasiga **jonli reaksiya qiladigan to'lqin**
+(foydalanuvchi eshitilayotganini ko'radi), jonli matn, qaysi til
+ishlatilayotgani, misollar va aniqlik foizi.
+
+Yo'nalish fe'ldan aniqlansa ishonch yuqori; faqat kelishik
+qo'shimchasidan taxmin qilinsa ogohlantirish chiqadi. Tasdiqlash ekrani
+**har doim** ochiladi (PRD 10.8).
+
+> Pullik AI (Whisper, GPT, Gemini) ataylab ishlatilmadi: pul talab
+> qiladi, internet majburiy bo'ladi, javob 1–3 soniya kechikadi va ovoz
+> serverga ketadi. Kerak bo'lsa parserni almashtirish kifoya — qolgan
+> kod tegilmaydi.
 
 ### 4.6 Chat
 - Bottom navigation'da alohida tab.
@@ -147,14 +177,19 @@ kunlik yozuvlar. Yozuvni bosganda check-in/out rasmlari ochiladi.
 - Ro'yxat `reverse: true` — yangi xabar har doim pastda, avtomatik.
 
 ### 4.7 Profil
-- **Barcha ma'lumotlar** — alohida ekran, hamma maydon guruhlangan holda
-  va har biri tahrirlanadi. Pastida sozlamalar amalda nimani anglatishi
-  oddiy til bilan tushuntiriladi.
-- **Davomat** — qo'lda kiritish / tuzatish.
-- **Mavzu** (Yorug' / Tungi) va ilova versiyasi.
-- **Chiqish** — Firestore'dagi profil, davomat, qarzlar va yozishmalar
-  **o'chirilmaydi**. Faqat qurilmadagi kesh tozalanadi, qayta kirganda
-  hammasi o'z holicha tiklanadi.
+Ataylab sodda: dumaloq avatar (bosilsa rasm o'zgaradi), ism va lavozim,
+so'ng kartalar. Har bir bo'lim o'z ekranida — bitta ekranga hammasini
+tiqishtirish o'qishni qiyinlashtiradi.
+
+| Karta | Nima ochiladi |
+|---|---|
+| Barcha ma'lumotlar | Shaxsiy / Ish joyi / Maosh / Ish jadvali, har biri tahrirlanadi |
+| Davomat | Qo'lda kiritish yoki vaqtni tuzatish |
+| Sozlamalar | Mavzu, til, ilova versiyasi |
+| Chiqish | Faqat lokal kesh tozalanadi |
+
+**Chiqish** Firestore'dagi hech narsani o'chirmaydi — profil, davomat,
+qarzlar va yozishmalar joyida qoladi.
 
 ### 4.8 Progress ko'rsatkichlari
 `runWithProgress` — saqlash va o'zgartirish paytida foizli oyna.
@@ -166,6 +201,32 @@ tasdiq xabari (snackbar) chiqadi.
 Logo `assets/app-logo.jpeg` dan generatsiya qilinadi:
 `dart run flutter_launcher_icons`. Android adaptive ikonkada oq "S"
 alfa kanal bilan ajratilgan — doiraviy maskada kesilmaydi.
+
+---
+
+### 4.11 Bosh sahifadagi statistika
+Halqa (dumaloq) progress + chiziqli barlar, `CustomPainter` bilan —
+`fl_chart` kabi paket qo'shilmagan, bitta halqa uchun butun grafik
+kutubxonasi ortiqcha.
+
+- Halqa: oy bo'yicha o'tgan ish kunlari nisbati
+- **Jami ishlagan vaqt** — butun davr bo'yicha
+- Chiziqli barlar: ishlangan soat, davomat, kechikish
+
+Umumiy raqamlar Firestore'ning **aggregate** so'rovi orqali olinadi
+(`AttendanceService.fetchTotals`) — hujjatlar yuklanmaydi. Bu muhim:
+har bir davomat hujjatida ikkita selfie Base64 sifatida turadi (~300 KB),
+oddiy o'qish yuzlab megabayt trafik degani bo'lardi.
+
+### 4.12 Cupertino (yumshoq) ko'rinish
+Sana va vaqt tanlash Material dialogidan iOS g'ildiragiga o'tkazildi
+(`SoftPickers`) — pastdan chiqadigan varaq, silliq surish. Matn
+maydonlarida yumaloq kursor, Cupertino belgilash menyusi va mavzuga mos
+klaviatura ko'rinishi. Switch ham Cupertino.
+
+> **Eslatma:** matn klaviaturasining o'zini ilova almashtira olmaydi —
+> u tizim IME'si (Gboard va h.k.). Ilova boshqaradigan hamma narsa iOS
+> uslubiga keltirilgan.
 
 ---
 
