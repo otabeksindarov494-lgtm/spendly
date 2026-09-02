@@ -27,7 +27,7 @@ Tekshirish:
 
 ```sh
 flutter analyze     # 0 muammo
-flutter test        # 59 test
+flutter test        # 71 test
 ```
 
 ---
@@ -66,8 +66,12 @@ lib/
 
 ```
 users/{userId}                    SHAXSIY — faqat egasi ko'radi
-  ├─ fullName, salaryAmount, workStartTime, workEndTime,
-  │  workDays, salaryPayDay, profilePhotoBase64, themeMode, ...
+  ├─ fullName, birthDate, phoneNumber, profilePhotoBase64
+  ├─ companyName, position, employmentStartDate
+  ├─ salaryType (fixed | calculated)
+  ├─ salaryMin, salaryMax, salaryAmount (= oraliqning o'rtachasi), currency
+  ├─ workStartTime, workEndTime, lunchBreakMinutes
+  ├─ workDays, salaryPayDay, penaltyEnabled, themeMode, ...
   ├─ attendance/{YYYY-MM-DD}      checkInTime, lateMinutes, dailyEarning, ...
   ├─ debts/{debtId}               personName, amount, type, isPaid, ...
   └─ transactions/{id}            (kelajak uchun ajratilgan)
@@ -101,11 +105,18 @@ Qoidalar: [`firestore.rules`](firestore.rules) →
 - `AuthGate`: kirilmagan → Login, onboarding tugamagan → Onboarding,
   aks holda → asosiy ekran.
 
-### 4.2 Onboarding (10 qadam)
-Xush kelibsiz → ism → tug'ilgan kun → rasm → maosh → ish boshlanishi →
-ish tugashi → ish kunlari → maosh kuni → tasdiqlash.
-Ma'lumot **faqat oxirgi qadamda** yoziladi — yarim to'ldirilgan profil
-qolmaydi. Tugagach `publicProfiles` ham yoziladi.
+### 4.2 Onboarding (18 qadam)
+Har savol alohida ekranda:
+
+1. Xush kelibsiz · 2. Ism · 3. Tug'ilgan kun · 4. Telefon · 5. Rasm
+6. Ish joyi · 7. Lavozim · 8. Ishga kirgan sana · 9. **Maosh turi**
+10. Valyuta · 11. **Maosh oralig'i (slider)** · 12. Ish boshlanishi
+13. Ish tugashi · 14. **Tushlik tanaffusi** · 15. Ish kunlari
+16. Maosh kuni · 17. **Jarima siyosati** · 18. Tasdiqlash
+
+Ixtiyoriy qadamlar (telefon, rasm, ish joyi, lavozim, ishga kirgan sana)
+o'tkazib yuborilishi mumkin. Ma'lumot **faqat oxirgi qadamda** yoziladi —
+yarim to'ldirilgan profil qolmaydi. Tugagach `publicProfiles` ham yoziladi.
 
 ### 4.3 Davomat va maosh
 - Check-in / check-out selfie bilan; rasm Firestore'da Base64
@@ -136,8 +147,14 @@ kunlik yozuvlar. Yozuvni bosganda check-in/out rasmlari ochiladi.
 - Ro'yxat `reverse: true` — yangi xabar har doim pastda, avtomatik.
 
 ### 4.7 Profil
-Rasm, ism, ish joyi, tug'ilgan kun, maosh, ish vaqti, ish kunlari,
-maosh kuni — hammasi tahrirlanadi. Mavzu tanlash, ilova versiyasi, chiqish.
+- **Barcha ma'lumotlar** — alohida ekran, hamma maydon guruhlangan holda
+  va har biri tahrirlanadi. Pastida sozlamalar amalda nimani anglatishi
+  oddiy til bilan tushuntiriladi.
+- **Davomat** — qo'lda kiritish / tuzatish.
+- **Mavzu** (Yorug' / Tungi) va ilova versiyasi.
+- **Chiqish** — Firestore'dagi profil, davomat, qarzlar va yozishmalar
+  **o'chirilmaydi**. Faqat qurilmadagi kesh tozalanadi, qayta kirganda
+  hammasi o'z holicha tiklanadi.
 
 ### 4.8 Progress ko'rsatkichlari
 `runWithProgress` — saqlash va o'zgartirish paytida foizli oyna.
@@ -152,6 +169,37 @@ alfa kanal bilan ajratilgan — doiraviy maskada kesilmaydi.
 
 ---
 
+## 4.10 Maosh algoritmi (2 x 2)
+
+Maosh **turi** va **jarima siyosati** — ikki mustaqil sozlama. Ular birga
+to'rt xil holatni beradi:
+
+| Maosh turi | Jarima | Oylik qanday chiqadi |
+|---|---|---|
+| **Fixed** | yo'q | Kelishilgan summa har oy to'liq |
+| **Fixed** | bor | Kelishilgan summa − kechikish jarimasi |
+| **Kunlik hisob** | yo'q | Kelgan kunlar x kunlik stavka |
+| **Kunlik hisob** | bor | Kelgan kunlar x kunlik stavka − jarimalar |
+
+**Fixed** — ko'p ish joylarida shunday: ishga bormagan kun uchun pul
+ushlanmaydi, dam olish kunida ishlasa ham qo'shilmaydi. Bunda kunlik
+summa umuman yozilmaydi (`dailyEarning = 0`), oylik summa
+`MonthlySummary` darajasida qo'shiladi.
+
+Kechikish va erta ketish **har doim yoziladi** — jarima o'chirilgan
+bo'lsa ham. Ular statistikada ko'rinadi, faqat pulga ta'sir qilmaydi.
+
+**Tushlik tanaffusi** ish soatidan ayiriladi va soatlik stavkaga ta'sir
+qiladi: 09:00–18:00 + 60 daqiqa tanaffus = 8 soat, ya'ni bir xil kunlik
+summa kamroq soatga bo'linadi.
+
+**Maosh oralig'i** — foydalanuvchi min va max kiritadi (slider yoki qo'lda),
+hisob-kitobda `UserProfile.averageOf(min, max)` — o'rtachasi ishlatiladi.
+Oraliq keyin o'zgarsa ham, `salaryAmount` alohida saqlangani uchun eski
+oylar o'z qiymati bilan qoladi.
+
+---
+
 ## 5. PRD'dan ataylab chetlanishlar
 
 | Nima | Nega |
@@ -162,6 +210,10 @@ alfa kanal bilan ajratilgan — doiraviy maskada kesilmaydi.
 | Profil `users/{uid}` hujjatining o'zida | Hujjat ichida hujjat bo'lmaydi; PRD 3.3 qoidalari ham shunga mos |
 | Mavzuda "System" varianti yo'q | Foydalanuvchi so'rovi: sukut har doim Yorug' |
 | `fl_chart` qo'shilmadi | PRD'da "ixtiyoriy", Hisobot ekrani grafik talab qilmaydi |
+| **Fixed maosh** turi qo'shildi | PRD faqat kunlik hisobni ko'zda tutgan. Amalda ko'p ish joylarida maosh o'zgarmas — kelmagan kun uchun ushlanmaydi |
+| **Maosh oraliq** sifatida so'raladi | Foydalanuvchi so'rovi. Hisobda o'rtachasi ishlatiladi |
+| **Tushlik tanaffusi** qo'shildi | Usiz soatlik stavka noto'g'ri chiqardi (9 soat o'rniga aslida 8) |
+| **Jarima siyosati** sozlamasi | Ba'zi ish joylarida kechikish uchun pul ushlanmaydi |
 
 ---
 
