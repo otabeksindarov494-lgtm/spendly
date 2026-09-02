@@ -26,8 +26,9 @@ class ReportScreen extends ConsumerWidget {
     final DateTime month = ref.watch(selectedMonthProvider);
     final UserProfile? profile = ref.watch(profileProvider).value;
     final MonthlySummary? summary = ref.watch(monthlySummaryProvider);
-    final AsyncValue<List<Attendance>> recordsAsync =
-        ref.watch(monthAttendanceProvider);
+    final AsyncValue<List<Attendance>> recordsAsync = ref.watch(
+      monthAttendanceProvider,
+    );
     final String currency = profile?.currency ?? 'so\'m';
 
     return Scaffold(
@@ -89,15 +90,16 @@ class ReportScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: theme.gradient,
-        borderRadius: BorderRadius.circular(24),
+        color: theme.background,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: theme.borderGray),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text(
+          Text(
             'Joriy hisoblangan oylik',
-            style: TextStyle(fontSize: 12, color: CustomTheme.onAccentMuted),
+            style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
           const SizedBox(height: 6),
           FittedBox(
@@ -105,10 +107,10 @@ class ReportScreen extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               Formatters.money(summary.earnedAmount, currency: currency),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: CustomTheme.onAccent,
+                color: theme.mainDarkBlue,
               ),
             ),
           ),
@@ -118,7 +120,7 @@ class ReportScreen extends ConsumerWidget {
             '${Formatters.money(profile.salaryAmount, currency: currency)}'
             '  |  Jarima: '
             '-${Formatters.money(summary.penaltyAmount, currency: currency)}',
-            style: const TextStyle(fontSize: 11, color: CustomTheme.onAccentMuted),
+            style: TextStyle(fontSize: 11, color: theme.textGray),
           ),
           const SizedBox(height: 16),
           ClipRRect(
@@ -126,14 +128,14 @@ class ReportScreen extends ConsumerWidget {
             child: LinearProgressIndicator(
               value: summary.progress,
               minHeight: 6,
-              backgroundColor: CustomTheme.onAccentOverlay,
-              valueColor: const AlwaysStoppedAnimation<Color>(CustomTheme.onAccent),
+              backgroundColor: theme.borderGray,
+              valueColor: AlwaysStoppedAnimation<Color>(theme.blue),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             '${summary.elapsedWorkDays}/${summary.plannedWorkDays} ish kuni',
-            style: const TextStyle(fontSize: 11, color: CustomTheme.onAccentMuted),
+            style: TextStyle(fontSize: 11, color: theme.textGray),
           ),
         ],
       ),
@@ -199,8 +201,9 @@ class _MonthSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CustomTheme theme = context.theme;
-    final SelectedMonthNotifier notifier =
-        ref.read(selectedMonthProvider.notifier);
+    final SelectedMonthNotifier notifier = ref.read(
+      selectedMonthProvider.notifier,
+    );
     final bool canGoNext = notifier.canGoNext;
 
     return Container(

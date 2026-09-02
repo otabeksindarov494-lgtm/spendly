@@ -1,4 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,8 +11,12 @@ import '../../widgets/common/app_text_field.dart';
 
 /// Kirish va ro'yxatdan o'tish (PROJECT.md 1-bosqich).
 ///
-/// Bitta ekranda ikkala rejim — foydalanuvchi bitta shaxs bo'lgani uchun
-/// alohida sahifaga ajratish ortiqcha.
+/// Kompozitsiya uch zonaga bo'lingan: yuqorida brend va sarlavha,
+/// o'rtada forma, pastda harakatlar va huquqiy matn. Zonalar orasidagi
+/// bo'shliq `MainAxisAlignment.spaceBetween` bilan taqsimlanadi —
+/// `Spacer` bu yerda ishlamaydi, chunki scroll ichida balandlik cheksiz.
+/// `ConstrainedBox(minHeight: ...)` esa klaviatura ochilganda kontentni
+/// siqib emas, scroll qilib ko'rsatadi.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -24,6 +29,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  late final TapGestureRecognizer _termsRecognizer = TapGestureRecognizer()
+    ..onTap = () =>
+        _showLegalSheet(title: 'Foydalanish shartlari', body: _termsText);
+
+  late final TapGestureRecognizer _privacyRecognizer = TapGestureRecognizer()
+    ..onTap = () =>
+        _showLegalSheet(title: 'Maxfiylik siyosati', body: _privacyText);
+
   bool _isRegisterMode = false;
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -33,10 +46,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
     super.dispose();
   }
 
+  // --- Harakatlar ----------------------------------------------------------
+
   Future<void> _submit() async {
+    FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -71,130 +89,389 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _resetPassword() async {
+    final String email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(
+        () => _errorMessage =
+            'Parolni tiklash uchun avval email manzilingizni kiriting.',
+      );
+      return;
+    }
+
+    try {
+      await ref.read(authServiceProvider).sendPasswordReset(email);
+      if (!mounted) return;
+      setState(() => _errorMessage = null);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$email manziliga tiklash havolasi yuborildi.')),
+      );
+    } on AuthFailure catch (e) {
+      if (!mounted) return;
+      setState(() => _errorMessage = e.message);
+    }
+  }
+
+  void _toggleMode() {
+    setState(() {
+      _isRegisterMode = !_isRegisterMode;
+      _errorMessage = null;
+    });
+  }
+
+  // --- Qurish --------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
-    final CustomTheme theme = context.theme;
-
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(
-                    'Spendly',
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 44,
+                ),
+                child: Center(
+                  child: ConstrainedBox(
+                    // Planshet/katta ekranda forma cho'zilib ketmasin.
+                    constraints: const BoxConstraints(maxWidth: 440),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        // `spaceBetween` emas: baland ekranda u bo'shliqni
+                        // 150dp gacha cho'zib yuborardi. Bo'shliq qat'iy,
+                        // blok esa markazda — kontent o'sganda scroll bo'ladi.
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          _buildHeader(),
+                          const SizedBox(height: 44),
+                          _buildForm(),
+                          const SizedBox(height: 44),
+                          _buildFooter(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  /// 1-zona: brend belgisi, sarlavha va tushuntirish.
+  Widget _buildHeader() {
+    final CustomTheme theme = context.theme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          _isRegisterMode ? 'Keling, boshlaymiz' : 'Xush kelibsiz',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+            letterSpacing: -0.5,
+            color: theme.mainDarkBlue,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          _isRegisterMode
+              ? 'Bir daqiqada hisob yarating — ish vaqtingiz va '
+                    'moliyangiz shu yerda yig\'iladi.'
+              : 'Davomat, maosh va qarzlaringiz sizni kutmoqda.',
+          style: TextStyle(fontSize: 13, height: 1.5, color: theme.textGray),
+        ),
+      ],
+    );
+  }
+
+  /// 2-zona: kiritish maydonlari va xato xabari.
+  Widget _buildForm() {
+    final CustomTheme theme = context.theme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        AppTextField(
+          controller: _emailController,
+          label: 'Email manzil',
+          hint: 'ism@example.com',
+          prefixIcon: BootstrapIcons.envelope,
+          keyboardType: TextInputType.emailAddress,
+          validator: (String? value) {
+            final String text = (value ?? '').trim();
+            if (text.isEmpty) return 'Email kiriting';
+            if (!text.contains('@') || !text.contains('.')) {
+              return 'Email manzili noto\'g\'ri';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 18),
+        AppTextField(
+          controller: _passwordController,
+          label: 'Parol',
+          hint: 'Kamida 6 ta belgi',
+          prefixIcon: BootstrapIcons.lock,
+          obscureText: _obscurePassword,
+          suffix: IconButton(
+            icon: Icon(
+              _obscurePassword ? BootstrapIcons.eye_slash : BootstrapIcons.eye,
+              size: 18,
+              color: theme.textGray,
+            ),
+            onPressed: () =>
+                setState(() => _obscurePassword = !_obscurePassword),
+          ),
+          validator: (String? value) {
+            if ((value ?? '').isEmpty) return 'Parol kiriting';
+            if ((value ?? '').length < 6) {
+              return 'Parol kamida 6 ta belgi bo\'lsin';
+            }
+            return null;
+          },
+        ),
+        if (!_isRegisterMode)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: _isLoading ? null : _resetPassword,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Parolni unutdingizmi?',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: theme.blue,
+                ),
+              ),
+            ),
+          ),
+        if (_errorMessage != null) ...<Widget>[
+          const SizedBox(height: 14),
+          _buildErrorBanner(theme),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildErrorBanner(CustomTheme theme) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+      decoration: BoxDecoration(
+        color: theme.red.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.red.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(BootstrapIcons.exclamation_circle, size: 15, color: theme.red),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              _errorMessage!,
+              style: TextStyle(fontSize: 12, height: 1.4, color: theme.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 3-zona: asosiy tugma, rejim almashtirish va huquqiy matn.
+  Widget _buildFooter() {
+    final CustomTheme theme = context.theme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        AppButton(
+          label: _isRegisterMode ? 'Hisob yaratish' : 'Kirish',
+          isLoading: _isLoading,
+          onPressed: _submit,
+        ),
+        const SizedBox(height: 20),
+        Row(
+          children: <Widget>[
+            Expanded(child: Divider(color: theme.borderGray, height: 1)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                'yoki',
+                style: TextStyle(fontSize: 11, color: theme.textGray),
+              ),
+            ),
+            Expanded(child: Divider(color: theme.borderGray, height: 1)),
+          ],
+        ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: _isLoading ? null : _toggleMode,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text.rich(
+              TextSpan(
+                style: TextStyle(fontSize: 13, color: theme.textGray),
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: _isRegisterMode
+                        ? 'Hisobingiz bormi? '
+                        : 'Hisobingiz yo\'qmi? ',
+                  ),
+                  TextSpan(
+                    text: _isRegisterMode ? 'Kirish' : 'Ro\'yxatdan o\'tish',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: theme.blue,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: _buildLegalText(theme),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLegalText(CustomTheme theme) {
+    final TextStyle linkStyle = TextStyle(
+      fontWeight: FontWeight.w600,
+      color: theme.mainDarkBlue,
+    );
+
+    return Text.rich(
+      TextSpan(
+        style: TextStyle(fontSize: 11, height: 1.6, color: theme.textGray),
+        children: <InlineSpan>[
+          TextSpan(
+            text: _isRegisterMode
+                ? 'Hisob yaratish orqali siz '
+                : 'Davom etish orqali siz ',
+          ),
+          TextSpan(
+            text: 'Foydalanish shartlari',
+            style: linkStyle,
+            recognizer: _termsRecognizer,
+          ),
+          const TextSpan(text: ' va '),
+          TextSpan(
+            text: 'Maxfiylik siyosati',
+            style: linkStyle,
+            recognizer: _privacyRecognizer,
+          ),
+          const TextSpan(text: 'ga rozilik bildirasiz.'),
+        ],
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  // --- Huquqiy matnlar -----------------------------------------------------
+
+  /// Bu matnlar — o'rinbosar. Haqiqiy hujjatlar tayyor bo'lgach shu ikki
+  /// konstantani almashtirish kifoya (yoki ularni veb-sahifaga ulash).
+  static const String _termsText =
+      'Spendly — shaxsiy foydalanish uchun mo\'ljallangan ilova. Siz kiritgan '
+      'ma\'lumotlar (ish vaqti, maosh, qarzlar) faqat sizning hisobingizga '
+      'bog\'lanadi va boshqa foydalanuvchilarga ko\'rinmaydi.\n\n'
+      'Ilovadagi hisob-kitoblar siz ko\'rsatgan sozlamalar asosida taxminiy '
+      'tarzda amalga oshiriladi va rasmiy moliyaviy hujjat o\'rnini bosmaydi.\n\n'
+      'Hisobingiz xavfsizligi uchun parolingizni boshqalarga bermang.';
+
+  static const String _privacyText =
+      'Ma\'lumotlaringiz Google Firebase serverlarida saqlanadi va faqat '
+      'sizning hisobingiz orqali ochiladi. Xavfsizlik qoidalari boshqa '
+      'foydalanuvchining ma\'lumotlaringizni o\'qishiga yo\'l qo\'ymaydi.\n\n'
+      'Kelish-ketish rasmlari qurilmangizda siqiladi va hisobingizga '
+      'biriktirilgan holda saqlanadi. Ular hech kimga ko\'rsatilmaydi va '
+      'uchinchi tomonlarga uzatilmaydi.\n\n'
+      'Mikrofon faqat siz ovoz orqali qarz qo\'shganingizda ishlaydi; '
+      'nutq qurilmangizning o\'z tizimi orqali matnga o\'giriladi.\n\n'
+      'Hisobingizni o\'chirishni istasangiz, ma\'lumotlaringiz ham '
+      'butunlay o\'chiriladi.';
+
+  Future<void> _showLegalSheet({required String title, required String body}) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) {
+        final CustomTheme theme = sheetContext.theme;
+        return SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheetContext).size.height * 0.8,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: theme.borderGray,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 17,
                       fontWeight: FontWeight.w700,
                       color: theme.mainDarkBlue,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    _isRegisterMode
-                        ? 'Yangi hisob yarating'
-                        : 'Hisobingizga kiring',
-                    style: TextStyle(fontSize: 13, color: theme.textGray),
-                  ),
-                  const SizedBox(height: 32),
-                  AppTextField(
-                    controller: _emailController,
-                    label: 'Email manzil',
-                    hint: 'ism@example.com',
-                    prefixIcon: BootstrapIcons.envelope,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (String? value) {
-                      final String text = (value ?? '').trim();
-                      if (text.isEmpty) return 'Email kiriting';
-                      if (!text.contains('@') || !text.contains('.')) {
-                        return 'Email manzili noto\'g\'ri';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AppTextField(
-                    controller: _passwordController,
-                    label: 'Parol',
-                    hint: 'Kamida 6 ta belgi',
-                    prefixIcon: BootstrapIcons.lock,
-                    obscureText: _obscurePassword,
-                    suffix: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? BootstrapIcons.eye_slash
-                            : BootstrapIcons.eye,
-                        size: 20,
-                        color: theme.textGray,
-                      ),
-                      onPressed: () => setState(
-                        () => _obscurePassword = !_obscurePassword,
+                  const SizedBox(height: 14),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        body,
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.6,
+                          color: theme.textGray,
+                        ),
                       ),
                     ),
-                    validator: (String? value) {
-                      if ((value ?? '').isEmpty) return 'Parol kiriting';
-                      if ((value ?? '').length < 6) {
-                        return 'Parol kamida 6 ta belgi bo\'lsin';
-                      }
-                      return null;
-                    },
                   ),
-                  if (_errorMessage != null) ...<Widget>[
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: theme.red.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            BootstrapIcons.exclamation_circle,
-                            size: 18,
-                            color: theme.red,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _errorMessage!,
-                              style: TextStyle(fontSize: 12, color: theme.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 18),
                   AppButton(
-                    label: _isRegisterMode ? 'Ro\'yxatdan o\'tish' : 'Kirish',
-                    isLoading: _isLoading,
-                    onPressed: _submit,
-                  ),
-                  const SizedBox(height: 12),
-                  AppButton(
-                    label: _isRegisterMode
-                        ? 'Hisobim bor — kirish'
-                        : 'Hisobim yo\'q — ro\'yxatdan o\'tish',
-                    variant: AppButtonVariant.text,
-                    height: 44,
-                    onPressed: _isLoading
-                        ? null
-                        : () => setState(() {
-                              _isRegisterMode = !_isRegisterMode;
-                              _errorMessage = null;
-                            }),
+                    label: 'Tushunarli',
+                    variant: AppButtonVariant.secondary,
+                    onPressed: () => Navigator.of(sheetContext).pop(),
                   ),
                 ],
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

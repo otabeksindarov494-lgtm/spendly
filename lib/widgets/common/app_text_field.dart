@@ -67,7 +67,7 @@ class AppTextField extends StatelessWidget {
           maxLines: obscureText ? 1 : maxLines,
           autofocus: autofocus,
           textCapitalization: textCapitalization,
-          style: TextStyle(fontSize: 15, color: theme.mainDarkBlue),
+          style: TextStyle(fontSize: 14, color: theme.mainDarkBlue),
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: prefixIcon == null

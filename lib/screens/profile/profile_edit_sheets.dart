@@ -5,11 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/user_profile_model.dart';
 import '../../providers/core_providers.dart';
+import '../../services/image_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_text_field.dart';
+import '../../widgets/common/progress_dialog.dart';
 
 /// Profil maydonlarini tahrirlash oynalari (PROJECT.md 5.4).
 ///
@@ -17,13 +19,46 @@ import '../../widgets/common/app_text_field.dart';
 /// butun profilni qayta yozmaydi, shunda boshqa maydonlar tasodifan
 /// o'chib ketmaydi.
 abstract final class ProfileEditSheets {
+  /// Maydonlarni yozadi va jarayonni progress oynasi bilan ko'rsatadi.
+  ///
+  /// Foiz soxta emas: har bosqich haqiqiy ish birligiga mos keladi.
   static Future<void> _update(
+    BuildContext context,
     WidgetRef ref,
     Map<String, dynamic> fields,
   ) async {
     final String? userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
-    await ref.read(profileServiceProvider).updateFields(userId, fields);
+
+    // Ism yoki rasm o'zgarsa, chat ro'yxatidagi ochiq profil ham yangilanadi.
+    final bool touchesPublic =
+        fields.containsKey('fullName') ||
+        fields.containsKey('profilePhotoBase64');
+
+    await runWithProgress<void>(
+      context: context,
+      title: 'Saqlanmoqda',
+      task: (ProgressReporter report) async {
+        report('Ma\'lumot yuborilmoqda...', 0.4);
+        await ref.read(profileServiceProvider).updateFields(userId, fields);
+        if (!touchesPublic) return;
+
+        report('Chat profili yangilanmoqda...', 0.7);
+        final UserProfile? current = await ref
+            .read(profileServiceProvider)
+            .fetch(userId);
+        if (current == null) return;
+        await ref
+            .read(profileServiceProvider)
+            .syncPublicProfile(
+              userId,
+              fullName: current.fullName,
+              avatarBase64: await ImageService.avatarThumbnailBase64(
+                current.profilePhotoBase64,
+              ),
+            );
+      },
+    );
   }
 
   // --- Rasm ----------------------------------------------------------------
@@ -67,10 +102,12 @@ abstract final class ProfileEditSheets {
       ),
     );
 
-    if (action == null) return;
+    if (action == null || !context.mounted) return;
 
     if (action == 'remove') {
-      await _update(ref, <String, dynamic>{'profilePhotoBase64': null});
+      await _update(context, ref, <String, dynamic>{
+        'profilePhotoBase64': null,
+      });
       return;
     }
 
@@ -78,8 +115,10 @@ abstract final class ProfileEditSheets {
         ? await ref.read(imageServiceProvider).captureSelfieBase64()
         : await ref.read(imageServiceProvider).pickFromGalleryBase64();
 
-    if (encoded == null) return;
-    await _update(ref, <String, dynamic>{'profilePhotoBase64': encoded});
+    if (encoded == null || !context.mounted) return;
+    await _update(context, ref, <String, dynamic>{
+      'profilePhotoBase64': encoded,
+    });
   }
 
   // --- Matnli maydonlar ----------------------------------------------------
@@ -95,7 +134,7 @@ abstract final class ProfileEditSheets {
       initialValue: profile.fullName,
       hint: 'Masalan: Azizbek Erkinov',
       onSave: (String value) =>
-          _update(ref, <String, dynamic>{'fullName': value.trim()}),
+          _update(context, ref, <String, dynamic>{'fullName': value.trim()}),
     );
   }
 
@@ -110,7 +149,7 @@ abstract final class ProfileEditSheets {
       initialValue: profile.companyName,
       hint: 'Kompaniya nomi',
       onSave: (String value) =>
-          _update(ref, <String, dynamic>{'companyName': value.trim()}),
+          _update(context, ref, <String, dynamic>{'companyName': value.trim()}),
     );
   }
 
@@ -121,8 +160,9 @@ abstract final class ProfileEditSheets {
     required String hint,
     required Future<void> Function(String value) onSave,
   }) async {
-    final TextEditingController controller =
-        TextEditingController(text: initialValue);
+    final TextEditingController controller = TextEditingController(
+      text: initialValue,
+    );
 
     await _showSheet(
       context: context,
@@ -177,10 +217,11 @@ abstract final class ProfileEditSheets {
           AppButton(
             label: 'Saqlash',
             onPressed: () async {
-              final double amount =
-                  ThousandsFormatter.parse(controller.text);
+              final double amount = ThousandsFormatter.parse(controller.text);
               if (amount <= 0) return;
-              await _update(ref, <String, dynamic>{'salaryAmount': amount});
+              await _update(context, ref, <String, dynamic>{
+                'salaryAmount': amount,
+              });
               close();
             },
           ),
@@ -209,8 +250,8 @@ abstract final class ProfileEditSheets {
       cancelText: 'Bekor qilish',
       confirmText: 'Tanlash',
     );
-    if (picked == null) return;
-    await _update(ref, <String, dynamic>{'birthDate': picked});
+    if (picked == null || !context.mounted) return;
+    await _update(context, ref, <String, dynamic>{'birthDate': picked});
   }
 
   // --- Ish vaqti -----------------------------------------------------------
@@ -234,9 +275,9 @@ abstract final class ProfileEditSheets {
       current: profile.workEndTime,
       fallbackMinutes: 18 * 60,
     );
-    if (end == null) return;
+    if (end == null || !context.mounted) return;
 
-    await _update(ref, <String, dynamic>{
+    await _update(context, ref, <String, dynamic>{
       'workStartTime': start,
       'workEndTime': end,
     });
@@ -315,8 +356,9 @@ abstract final class ProfileEditSheets {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color:
-                              isSelected ? CustomTheme.onAccent : theme.mainDarkBlue,
+                          color: isSelected
+                              ? CustomTheme.onAccent
+                              : theme.mainDarkBlue,
                         ),
                       ),
                     ),
@@ -329,10 +371,9 @@ abstract final class ProfileEditSheets {
                 onPressed: selected.isEmpty
                     ? null
                     : () async {
-                        await _update(
-                          ref,
-                          <String, dynamic>{'workDays': selected},
-                        );
+                        await _update(context, ref, <String, dynamic>{
+                          'workDays': selected,
+                        });
                         close();
                       },
               ),
@@ -384,8 +425,9 @@ abstract final class ProfileEditSheets {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color:
-                              isSelected ? CustomTheme.onAccent : theme.mainDarkBlue,
+                          color: isSelected
+                              ? CustomTheme.onAccent
+                              : theme.mainDarkBlue,
                         ),
                       ),
                     ),
@@ -396,10 +438,9 @@ abstract final class ProfileEditSheets {
               AppButton(
                 label: 'Saqlash',
                 onPressed: () async {
-                  await _update(
-                    ref,
-                    <String, dynamic>{'salaryPayDay': selected},
-                  );
+                  await _update(context, ref, <String, dynamic>{
+                    'salaryPayDay': selected,
+                  });
                   close();
                 },
               ),
@@ -452,10 +493,7 @@ abstract final class ProfileEditSheets {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  builder(
-                    sheetContext,
-                    () => Navigator.of(sheetContext).pop(),
-                  ),
+                  builder(sheetContext, () => Navigator.of(sheetContext).pop()),
                 ],
               ),
             ),

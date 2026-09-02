@@ -16,6 +16,7 @@ import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
+import '../../widgets/common/progress_dialog.dart';
 import '../../widgets/common/stat_card.dart';
 
 /// 1-tab: bugungi check-in / check-out va joriy holat (PROJECT.md 5.1).
@@ -39,31 +40,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final String? userId = ref.read(currentUserIdProvider);
       if (userId == null) return;
 
-      final String? photo =
-          await ref.read(imageServiceProvider).captureSelfieBase64();
+      final String? photo = await ref
+          .read(imageServiceProvider)
+          .captureSelfieBase64();
       // Foydalanuvchi kamerani bekor qildi — hech narsa yozmaymiz.
       if (photo == null) return;
 
+      if (!mounted) return;
       final service = ref.read(attendanceServiceProvider);
-      if (today == null || !today.hasCheckedIn) {
-        await service.checkIn(
-          userId: userId,
-          profile: profile,
-          photoBase64: photo,
-        );
-      } else {
-        await service.checkOut(
-          userId: userId,
-          profile: profile,
-          existing: today,
-          photoBase64: photo,
-        );
-      }
-    } catch (e) {
+      final bool isCheckIn = today == null || !today.hasCheckedIn;
+
+      await runWithProgress<void>(
+        context: context,
+        title: isCheckIn ? 'Kelish qayd etilmoqda' : 'Ketish qayd etilmoqda',
+        task: (ProgressReporter report) async {
+          report('Vaqt hisoblanmoqda...', 0.4);
+          if (isCheckIn) {
+            await service.checkIn(
+              userId: userId,
+              profile: profile,
+              photoBase64: photo,
+            );
+          } else {
+            await service.checkOut(
+              userId: userId,
+              profile: profile,
+              existing: today,
+              photoBase64: photo,
+            );
+          }
+          report('Saqlanmoqda...', 0.85);
+        },
+      );
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Xatolik: $e')),
+        SnackBar(
+          content: Text(
+            isCheckIn ? 'Kelganingiz qayd etildi' : 'Ketganingiz qayd etildi',
+          ),
+        ),
       );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }
@@ -73,10 +95,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
     final AsyncValue<UserProfile?> profileAsync = ref.watch(profileProvider);
-    final AsyncValue<Attendance?> todayAsync =
-        ref.watch(todayAttendanceProvider);
-    final AsyncValue<List<Attendance>> weekAsync =
-        ref.watch(last7DaysProvider);
+    final AsyncValue<Attendance?> todayAsync = ref.watch(
+      todayAttendanceProvider,
+    );
+    final AsyncValue<List<Attendance>> weekAsync = ref.watch(last7DaysProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -149,8 +171,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildGreeting(CustomTheme theme, UserProfile? profile) {
     final String fullName = profile?.fullName.trim() ?? '';
-    final String firstName =
-        fullName.isEmpty ? '' : fullName.split(RegExp(r'\s+')).first;
+    final String firstName = fullName.isEmpty
+        ? ''
+        : fullName.split(RegExp(r'\s+')).first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,29 +200,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     UserProfile profile,
     Attendance? today,
   ) {
-    final bool isWorkDay =
-        profile.workDays.contains(DateTime.now().weekday);
+    final bool isWorkDay = profile.workDays.contains(DateTime.now().weekday);
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: theme.gradient,
-        borderRadius: BorderRadius.circular(24),
+        color: theme.background,
+        borderRadius: BorderRadius.circular(22),
+        // Juda nozik chegara — to'q gradient o'rniga tinch, toza yuza.
+        border: Border.all(color: theme.borderGray),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             children: <Widget>[
-              const Icon(
+              Icon(
                 BootstrapIcons.calendar_event,
                 size: 16,
-                color: CustomTheme.onAccentMuted,
+                color: context.theme.textGray,
               ),
               const SizedBox(width: 8),
               Text(
                 Formatters.longDate(DateTime.now()),
-                style: const TextStyle(fontSize: 12, color: CustomTheme.onAccentMuted),
+                style: TextStyle(fontSize: 12, color: context.theme.textGray),
               ),
               const Spacer(),
               if (!isWorkDay)
@@ -209,12 +233,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: CustomTheme.onAccentOverlay,
+                    color: theme.gray,
                     borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: theme.borderGray),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Dam olish kuni',
-                    style: TextStyle(fontSize: 11, color: CustomTheme.onAccent),
+                    style: TextStyle(fontSize: 10, color: theme.textGray),
                   ),
                 ),
             ],
@@ -234,7 +259,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildRestDayBody() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
@@ -242,13 +267,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: CustomTheme.onAccent,
+            color: context.theme.mainDarkBlue,
           ),
         ),
         SizedBox(height: 6),
         Text(
           'Bu kun uchun hisob-kitob va jarima yuritilmaydi.',
-          style: TextStyle(fontSize: 12, color: CustomTheme.onAccentMuted),
+          style: TextStyle(fontSize: 12, color: context.theme.textGray),
         ),
       ],
     );
@@ -260,7 +285,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: <Widget>[
         Text(
           'Ish boshlanishi: ${profile.workStartTime}',
-          style: const TextStyle(fontSize: 13, color: CustomTheme.onAccentMuted),
+          style: TextStyle(fontSize: 13, color: context.theme.textGray),
         ),
         const SizedBox(height: 16),
         AppButton(
@@ -326,22 +351,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: CustomTheme.onAccentOverlay,
+            color: context.theme.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: <Widget>[
-              const Icon(
+              Icon(
                 BootstrapIcons.check_circle_fill,
                 size: 16,
-                color: CustomTheme.onAccent,
+                color: context.theme.mainDarkBlue,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Bugungi ish kuni yopildi — '
                   '${Formatters.money(today.dailyEarning)}',
-                  style: const TextStyle(fontSize: 12, color: CustomTheme.onAccent),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.theme.mainDarkBlue,
+                  ),
                 ),
               ),
             ],
@@ -384,8 +412,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         StatCard(
           icon: BootstrapIcons.alarm,
           label: 'Shu oy kechikish',
-          value:
-              summary == null ? '—' : Formatters.minutes(summary.lateMinutes),
+          value: summary == null
+              ? '—'
+              : Formatters.minutes(summary.lateMinutes),
           accentColor: theme.yellow,
         ),
         StatCard(
@@ -416,15 +445,15 @@ class _HeroStat extends StatelessWidget {
         children: <Widget>[
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: CustomTheme.onAccentMuted),
+            style: TextStyle(fontSize: 11, color: context.theme.textGray),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: CustomTheme.onAccent,
+              color: context.theme.mainDarkBlue,
             ),
           ),
         ],

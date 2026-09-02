@@ -313,9 +313,9 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: c.inputColor,
-        hintStyle: TextStyle(color: c.textGray),
+        hintStyle: TextStyle(fontSize: 13, color: c.textGray),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: c.borderGray),
