@@ -150,4 +150,131 @@ void main() {
       expect(result.type, DebtType.iOwe);
     });
   });
+
+  enhancedParserTests();
+}
+
+/// Kuchaytirilgan parser: kirill, "yarim", qo'shilib yozilgan raqamlar,
+/// izoh va ishonch darajasi.
+void enhancedParserTests() {
+  group('kirill alifbo', () {
+    test('kirillcha gap ham tahlil qilinadi', () {
+      final ParsedDebt result = VoiceParser.parse('Алишердан 30 минг олдим');
+      expect(result.personName, 'Alisher');
+      expect(result.amount, 30000);
+      expect(result.type, DebtType.iOwe);
+    });
+
+    test('ў va қ harflari to\'g\'ri o\'giriladi', () {
+      expect(VoiceParser.tokenize('ўн'), <String>['o\'n']);
+      expect(VoiceParser.tokenize('қирқ'), <String>['qirq']);
+    });
+  });
+
+  group('"yarim" bilan summalar', () {
+    test('"yarim million" → 500 000', () {
+      expect(VoiceParser.parse('Alisherga yarim million berdim').amount, 500000);
+    });
+
+    test('"bir yarim million" → 1 500 000', () {
+      expect(
+        VoiceParser.parse('Alisherdan bir yarim million oldim').amount,
+        1500000,
+      );
+    });
+
+    test('"yarim ming" → 500', () {
+      expect(VoiceParser.parse('Alisherga yarim ming berdim').amount, 500);
+    });
+  });
+
+  group('qo\'shilib yozilgan raqamlar', () {
+    test('"30ming" ajratiladi', () {
+      expect(VoiceParser.parse('Alisherdan 30ming oldim').amount, 30000);
+    });
+
+    test('"5mln" ajratiladi', () {
+      expect(VoiceParser.parse('Alisherga 5mln berdim').amount, 5000000);
+    });
+  });
+
+  group('yangi fe\'l shakllari', () {
+    test('"olganman" → men qarzdorman', () {
+      expect(
+        VoiceParser.parse('Alisherdan 30 ming olganman').type,
+        DebtType.iOwe,
+      );
+    });
+
+    test('"berganman" → menga qarz', () {
+      expect(
+        VoiceParser.parse('Alisherga 30 ming berganman').type,
+        DebtType.owedToMe,
+      );
+    });
+
+    test('"olishdi" → menga qarz', () {
+      expect(
+        VoiceParser.parse('Alisher mendan 30 ming olishdi').type,
+        DebtType.owedToMe,
+      );
+    });
+  });
+
+  group('qo\'shimcha kelishiklar', () {
+    test('"-ni" qo\'shimchasi olib tashlanadi', () {
+      expect(
+        VoiceParser.parse('Alisherni 30 ming qarzi bor').personName,
+        'Alisher',
+      );
+    });
+
+    test('"-ning" qo\'shimchasi olib tashlanadi', () {
+      expect(
+        VoiceParser.parse('Alisherning 30 ming qarzi bor').personName,
+        'Alisher',
+      );
+    });
+  });
+
+  group('izoh ajratish', () {
+    test('"kitob uchun" izoh sifatida olinadi', () {
+      final ParsedDebt result =
+          VoiceParser.parse('Alisherga 50 ming kitob uchun berdim');
+      expect(result.description, 'Kitob uchun');
+      expect(result.amount, 50000);
+      expect(result.personName, 'Alisher');
+    });
+
+    test('"uchun" bo\'lmasa izoh null', () {
+      expect(
+        VoiceParser.parse('Alisherga 50 ming berdim').description,
+        isNull,
+      );
+    });
+  });
+
+  group('ishonch darajasi', () {
+    test('to\'liq va fe\'lli gap yuqori ishonch beradi', () {
+      final ParsedDebt result =
+          VoiceParser.parse('Alisherdan 30 ming so\'m oldim');
+      expect(result.confidence, greaterThanOrEqualTo(0.95));
+      expect(result.needsReview, isFalse);
+    });
+
+    test('fe\'lsiz gapda ishonch pasayadi', () {
+      final ParsedDebt result = VoiceParser.parse('Alisherdan 30 ming');
+      expect(result.confidence, lessThan(0.95));
+      expect(result.needsReview, isTrue);
+    });
+
+    test('bo\'sh matnda ishonch 0', () {
+      expect(VoiceParser.parse('').confidence, 0);
+    });
+
+    test('faqat summa bo\'lsa ishonch past', () {
+      final ParsedDebt result = VoiceParser.parse('30 ming');
+      expect(result.confidence, lessThan(0.6));
+    });
+  });
 }

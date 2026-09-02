@@ -31,29 +31,41 @@ class SpeechService {
     return _available;
   }
 
-  /// Mavjud tillardan eng mosini tanlaydi, topilmasa `null` (tizim tili).
-  Future<String?> resolveLocaleId() async {
-    if (!_available) return null;
+  /// Tanlangan til haqida ma'lumot — foydalanuvchiga ko'rsatish uchun.
+  Future<SpeechLocale> resolveLocale() async {
+    if (!_available) return const SpeechLocale.systemDefault();
+
     final List<LocaleName> locales = await _speech.locales();
     for (final String preferred in preferredLocales) {
       for (final LocaleName locale in locales) {
         if (locale.localeId.toLowerCase().startsWith(preferred)) {
-          return locale.localeId;
+          return SpeechLocale(
+            id: locale.localeId,
+            name: locale.name,
+            isUzbek: preferred == 'uz',
+          );
         }
       }
     }
-    return null;
+    return const SpeechLocale.systemDefault();
   }
 
-  /// Tinglashni boshlaydi. [onResult] qisman va yakuniy natijalarni oladi.
+  /// Tinglashni boshlaydi.
+  ///
+  /// [onResult] qisman va yakuniy natijalarni oladi.
+  /// [onSoundLevel] mikrofon darajasini beradi — ekrandagi to'lqin
+  /// animatsiyasi shu qiymatga qarab harakatlanadi, foydalanuvchi ilova
+  /// uni eshitayotganini ko'rib turadi.
   Future<void> listen({
     required void Function(String text, bool isFinal) onResult,
+    void Function(double level)? onSoundLevel,
     String? localeId,
   }) async {
     if (!_available) return;
     await _speech.listen(
       onResult: (SpeechRecognitionResult result) =>
           onResult(result.recognizedWords, result.finalResult),
+      onSoundLevelChange: onSoundLevel,
       listenOptions: SpeechListenOptions(
         localeId: localeId,
         partialResults: true,
@@ -82,4 +94,23 @@ class SpeechService {
         return 'Ovozni tanishda xatolik: ${error.errorMsg}';
     }
   }
+}
+
+/// Nutqni tanish uchun tanlangan til.
+class SpeechLocale {
+  const SpeechLocale({
+    required this.id,
+    required this.name,
+    required this.isUzbek,
+  });
+
+  /// Mos til topilmadi — qurilmaning tizim tili ishlatiladi.
+  const SpeechLocale.systemDefault()
+      : id = null,
+        name = 'Qurilma tili',
+        isUzbek = false;
+
+  final String? id;
+  final String name;
+  final bool isUzbek;
 }

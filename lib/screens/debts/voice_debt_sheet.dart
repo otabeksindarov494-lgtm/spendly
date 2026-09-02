@@ -6,15 +6,19 @@ import '../../models/debt_model.dart';
 import '../../providers/core_providers.dart';
 import '../../services/speech_service.dart';
 import '../../theme/app_theme.dart';
+import '../../utils/formatters.dart';
 import '../../utils/voice_parser.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/voice_waveform.dart';
 import 'debt_form.dart';
 
 /// Ovoz orqali qarz qo'shish (PROJECT.md 5.3).
 ///
 /// Oqim: tinglash → matnni tahlil qilish → **tasdiqlash formasi** → saqlash.
-/// Tasdiqlash bosqichi majburiy (PROJECT.md 10.8) — mahalliy parsing
-/// xato qilishi mumkin.
+/// Tasdiqlash bosqichi majburiy (PROJECT.md 10.8).
+///
+/// Butunlay tekin ishlaydi: nutqni qurilmaning o'z tizimi taniydi,
+/// tahlilni [VoiceParser] mahalliy bajaradi. Ovoz qurilmadan chiqmaydi.
 class VoiceDebtSheet extends ConsumerStatefulWidget {
   const VoiceDebtSheet({super.key});
 
@@ -39,9 +43,19 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
 
   _Phase _phase = _Phase.preparing;
   String _recognizedText = '';
+  double _soundLevel = 0;
+  SpeechLocale _locale = const SpeechLocale.systemDefault();
   ParsedDebt? _parsed;
   bool _isSaving = false;
   String? _errorMessage;
+
+  /// Foydalanuvchiga ko'rsatiladigan misollar — nima deyish mumkinligi
+  /// aniq bo'lsin.
+  static const List<String> _examples = <String>[
+    'Alisherdan 30 ming so\'m oldim',
+    'Boburga yarim million berdim',
+    'Nodirga 50 ming kitob uchun berdim',
+  ];
 
   @override
   void initState() {
@@ -57,6 +71,13 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
   }
 
   Future<void> _start() async {
+    setState(() {
+      _phase = _Phase.preparing;
+      _errorMessage = null;
+      _recognizedText = '';
+      _soundLevel = 0;
+    });
+
     final bool ready = await _speech.initialize(
       onError: (String message) {
         if (!mounted) return;
@@ -70,16 +91,19 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       return;
     }
 
-    final String? localeId = await _speech.resolveLocaleId();
+    final SpeechLocale locale = await _speech.resolveLocale();
     if (!mounted) return;
 
     setState(() {
+      _locale = locale;
       _phase = _Phase.listening;
-      _recognizedText = '';
     });
 
     await _speech.listen(
-      localeId: localeId,
+      localeId: locale.id,
+      onSoundLevel: (double level) {
+        if (mounted) setState(() => _soundLevel = level);
+      },
       onResult: (String text, bool isFinal) {
         if (!mounted) return;
         setState(() => _recognizedText = text);
@@ -98,6 +122,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
     setState(() {
       _parsed = VoiceParser.parse(text);
       _phase = _Phase.review;
+      _soundLevel = 0;
     });
   }
 
@@ -134,6 +159,8 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
     }
   }
 
+  // --- Qurish ----------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
@@ -148,29 +175,8 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      switch (_phase) {
-                        _Phase.review => 'Tekshiring va tasdiqlang',
-                        _Phase.unavailable => 'Ovoz mavjud emas',
-                        _ => 'Gapiring...',
-                      },
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: theme.mainDarkBlue,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(BootstrapIcons.x_lg, color: theme.textGray),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+              _buildHeader(theme),
+              const SizedBox(height: 14),
               switch (_phase) {
                 _Phase.preparing => _buildPreparing(theme),
                 _Phase.listening => _buildListening(theme),
@@ -191,52 +197,111 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
     );
   }
 
+  Widget _buildHeader(CustomTheme theme) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                switch (_phase) {
+                  _Phase.review => 'Tekshiring va tasdiqlang',
+                  _Phase.unavailable => 'Ovoz mavjud emas',
+                  _Phase.preparing => 'Tayyorlanmoqda...',
+                  _Phase.listening => 'Tinglayapman',
+                },
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: theme.mainDarkBlue,
+                ),
+              ),
+              if (_phase == _Phase.listening) ...<Widget>[
+                const SizedBox(height: 3),
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      BootstrapIcons.globe2,
+                      size: 11,
+                      color: _locale.isUzbek ? theme.green : theme.yellow,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      _locale.isUzbek
+                          ? 'O\'zbek tili'
+                          : '${_locale.name} — o\'zbek tili topilmadi',
+                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+        IconButton(
+          icon: Icon(BootstrapIcons.x_lg, size: 16, color: theme.textGray),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPreparing(CustomTheme theme) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40),
+      padding: const EdgeInsets.symmetric(vertical: 44),
       child: Center(child: CircularProgressIndicator(color: theme.blue)),
     );
   }
 
   Widget _buildListening(CustomTheme theme) {
+    final bool hasText = _recognizedText.isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Text(
-          'Masalan: "Alisherdan 30 ming so\'m oldim"',
-          style: TextStyle(fontSize: 12, color: theme.textGray),
-        ),
-        const SizedBox(height: 24),
-        Center(
-          child: Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              color: theme.blue.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(BootstrapIcons.mic_fill, size: 44, color: theme.blue),
-          ),
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
+        VoiceWaveform(level: _soundLevel),
+        const SizedBox(height: 20),
         Container(
           width: double.infinity,
-          constraints: const BoxConstraints(minHeight: 64),
+          constraints: const BoxConstraints(minHeight: 72),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.inputColor,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.borderGray),
           ),
           child: Text(
-            _recognizedText.isEmpty ? 'Tinglanmoqda...' : _recognizedText,
+            hasText ? _recognizedText : 'Gapiring...',
             style: TextStyle(
-              fontSize: 14,
-              color: _recognizedText.isEmpty
-                  ? theme.textGray
-                  : theme.mainDarkBlue,
+              fontSize: 15,
+              height: 1.4,
+              fontWeight: hasText ? FontWeight.w600 : FontWeight.w400,
+              color: hasText ? theme.mainDarkBlue : theme.textGray,
             ),
           ),
         ),
+        if (!hasText) ...<Widget>[
+          const SizedBox(height: 14),
+          Text(
+            'Masalan:',
+            style: TextStyle(fontSize: 11, color: theme.textGray),
+          ),
+          const SizedBox(height: 6),
+          for (final String example in _examples)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '· $example',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                  color: theme.favoriteGray,
+                ),
+              ),
+            ),
+        ],
         const SizedBox(height: 20),
         AppButton(
           label: 'Tugatdim',
@@ -254,9 +319,16 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         Text(
           'Qurilmangizda nutqni tanish ishlamadi. Mikrofon ruxsatini '
           'tekshiring yoki qarzni qo\'lda kiriting.',
-          style: TextStyle(fontSize: 13, color: theme.textGray, height: 1.45),
+          style: TextStyle(fontSize: 13, color: theme.textGray, height: 1.5),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 18),
+        AppButton(
+          label: 'Qayta urinish',
+          icon: BootstrapIcons.mic_fill,
+          variant: AppButtonVariant.secondary,
+          onPressed: _start,
+        ),
+        const SizedBox(height: 10),
         AppButton(
           label: 'Qo\'lda kiritish',
           icon: BootstrapIcons.pencil_square,
@@ -276,63 +348,142 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (parsed.rawText.isNotEmpty) ...<Widget>[
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: theme.inputColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: <Widget>[
-                Icon(BootstrapIcons.soundwave, size: 16, color: theme.textGray),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    parsed.rawText,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontStyle: FontStyle.italic,
-                      color: theme.textGray,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildTranscript(theme, parsed),
           const SizedBox(height: 12),
         ],
-        if (parsed.needsReview)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              children: <Widget>[
-                Icon(BootstrapIcons.info_circle, size: 16, color: theme.yellow),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Ba\'zi maydonlar aniqlanmadi — qo\'lda to\'ldiring.',
-                    style: TextStyle(fontSize: 11, color: theme.textGray),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        if (parsed.needsReview) _buildReviewWarning(theme, parsed),
         DebtForm(
           initialName: parsed.personName,
           initialAmount: parsed.amount,
           initialType: parsed.type,
+          initialDescription: parsed.description,
           submitLabel: 'Tasdiqlash va saqlash',
           isSaving: _isSaving,
           onSubmit: _save,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         AppButton(
           label: 'Qaytadan gapirish',
+          icon: BootstrapIcons.mic_fill,
           variant: AppButtonVariant.text,
           height: 44,
           onPressed: _isSaving ? null : _start,
         ),
       ],
+    );
+  }
+
+  /// Tanilgan matn va ishonch darajasi.
+  Widget _buildTranscript(CustomTheme theme, ParsedDebt parsed) {
+    final Color confidenceColor = parsed.confidence >= 0.9
+        ? theme.green
+        : (parsed.confidence >= 0.6 ? theme.yellow : theme.red);
+
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: theme.inputColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: theme.borderGray),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(
+                BootstrapIcons.soundwave,
+                size: 13,
+                color: theme.textGray,
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  'Eshitilgan matn',
+                  style: TextStyle(fontSize: 11, color: theme.textGray),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: confidenceColor.withValues(alpha: 0.13),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  'Aniqlik ${(parsed.confidence * 100).round()}%',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: confidenceColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            parsed.rawText,
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.4,
+              fontStyle: FontStyle.italic,
+              color: theme.mainDarkBlue,
+            ),
+          ),
+          if (parsed.isComplete) ...<Widget>[
+            const SizedBox(height: 10),
+            Divider(color: theme.borderGray, height: 1),
+            const SizedBox(height: 10),
+            Text(
+              '${parsed.personName} · '
+              '${Formatters.money(parsed.amount!)} · '
+              '${parsed.type == DebtType.iOwe ? 'Men qarzdorman' : 'Menga qarz'}',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: parsed.type == DebtType.iOwe
+                    ? theme.red
+                    : theme.green,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewWarning(CustomTheme theme, ParsedDebt parsed) {
+    final String message = parsed.isComplete
+        ? 'Yo\'nalish gapdagi qo\'shimchadan taxmin qilindi — to\'g\'riligini '
+            'tekshiring.'
+        : 'Ba\'zi maydonlar aniqlanmadi — qo\'lda to\'ldiring.';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(
+            BootstrapIcons.exclamation_triangle,
+            size: 13,
+            color: theme.yellow,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                fontSize: 11,
+                height: 1.45,
+                color: theme.textGray,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
