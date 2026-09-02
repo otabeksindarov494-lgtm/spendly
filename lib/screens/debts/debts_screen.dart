@@ -134,8 +134,9 @@ class DebtsScreen extends ConsumerWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-              color: (balance.net >= 0 ? theme.green : theme.red)
-                  .withValues(alpha: 0.1),
+              color: (balance.net >= 0 ? theme.green : theme.red).withValues(
+                alpha: 0.1,
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -175,8 +176,7 @@ class DebtsScreen extends ConsumerWidget {
                     color: filter == active ? theme.blue : theme.background,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color:
-                          filter == active ? theme.blue : theme.borderGray,
+                      color: filter == active ? theme.blue : theme.borderGray,
                     ),
                   ),
                   child: Text(
@@ -216,10 +216,7 @@ class _BalanceColumn extends StatelessWidget {
     final CustomTheme theme = context.theme;
     return Column(
       children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(fontSize: 11, color: theme.textGray),
-        ),
+        Text(label, style: TextStyle(fontSize: 11, color: theme.textGray)),
         const SizedBox(height: 6),
         FittedBox(
           fit: BoxFit.scaleDown,
@@ -267,8 +264,9 @@ class _AddButton extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border:
-                borderColor == null ? null : Border.all(color: borderColor!),
+            border: borderColor == null
+                ? null
+                : Border.all(color: borderColor!),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -301,8 +299,9 @@ class _DebtTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final CustomTheme theme = context.theme;
-    final Color accent =
-        debt.type == DebtType.owedToMe ? theme.green : theme.red;
+    final Color accent = debt.type == DebtType.owedToMe
+        ? theme.green
+        : theme.red;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -322,9 +321,7 @@ class _DebtTile extends ConsumerWidget {
         onDismissed: (DismissDirection _) {
           final String? userId = ref.read(currentUserIdProvider);
           if (userId == null) return;
-          ref
-              .read(debtServiceProvider)
-              .delete(userId: userId, debtId: debt.id);
+          ref.read(debtServiceProvider).delete(userId: userId, debtId: debt.id);
         },
         child: AppCard(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -408,7 +405,9 @@ class _DebtTile extends ConsumerWidget {
                     onTap: () {
                       final String? userId = ref.read(currentUserIdProvider);
                       if (userId == null) return;
-                      ref.read(debtServiceProvider).setPaid(
+                      ref
+                          .read(debtServiceProvider)
+                          .setPaid(
                             userId: userId,
                             debtId: debt.id,
                             isPaid: !debt.isPaid,
@@ -429,8 +428,7 @@ class _DebtTile extends ConsumerWidget {
                           'To\'landi',
                           style: TextStyle(
                             fontSize: 11,
-                            color:
-                                debt.isPaid ? theme.green : theme.textGray,
+                            color: debt.isPaid ? theme.green : theme.textGray,
                           ),
                         ),
                       ],
@@ -446,8 +444,9 @@ class _DebtTile extends ConsumerWidget {
   }
 
   String _subtitle() {
-    final String date =
-        debt.createdAt == null ? '' : Formatters.longDate(debt.createdAt!);
+    final String date = debt.createdAt == null
+        ? ''
+        : Formatters.longDate(debt.createdAt!);
     final String? note = debt.description;
     if (note == null || note.isEmpty) return date;
     return date.isEmpty ? note : '$date · $note';

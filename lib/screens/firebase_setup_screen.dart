@@ -59,9 +59,7 @@ class FirebaseSetupScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _CodeLine(
-                      text: 'dart pub global activate flutterfire_cli',
-                    ),
+                    _CodeLine(text: 'dart pub global activate flutterfire_cli'),
                     SizedBox(height: 8),
                     _CodeLine(text: _command),
                   ],
@@ -85,9 +83,7 @@ class FirebaseSetupScreen extends StatelessWidget {
                 icon: BootstrapIcons.copy,
                 variant: AppButtonVariant.secondary,
                 onPressed: () async {
-                  await Clipboard.setData(
-                    const ClipboardData(text: _command),
-                  );
+                  await Clipboard.setData(const ClipboardData(text: _command));
                 },
               ),
               const SizedBox(height: 28),

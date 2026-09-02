@@ -55,7 +55,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     _controller.clear();
 
     try {
-      await ref.read(chatServiceProvider).sendMessage(
+      await ref
+          .read(chatServiceProvider)
+          .sendMessage(
             currentUserId: userId,
             otherUserId: widget.peer.userId,
             text: text,
@@ -75,9 +77,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (!mounted) return;
       // Yuborilmagan matn yo'qolmasin.
       _controller.text = text;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Xabar yuborilmadi: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Xabar yuborilmadi: $e')));
     } finally {
       if (mounted) setState(() => _isSending = false);
     }
@@ -110,10 +112,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             if (isMine)
               ListTile(
                 leading: Icon(BootstrapIcons.trash, color: theme.red),
-                title: Text(
-                  'O\'chirish',
-                  style: TextStyle(color: theme.red),
-                ),
+                title: Text('O\'chirish', style: TextStyle(color: theme.red)),
                 onTap: () => Navigator.of(context).pop('delete'),
               ),
             const SizedBox(height: 8),
@@ -130,13 +129,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       case 'copy':
         await Clipboard.setData(ClipboardData(text: message.text));
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Matn nusxalandi')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Matn nusxalandi')));
       case 'delete':
         final String? userId = ref.read(currentUserIdProvider);
         if (userId == null) return;
-        await ref.read(chatServiceProvider).deleteMessage(
+        await ref
+            .read(chatServiceProvider)
+            .deleteMessage(
               chatId: ChatService.chatIdFor(userId, widget.peer.userId),
               messageId: message.id,
             );
@@ -155,8 +156,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
 
     final String chatId = ChatService.chatIdFor(userId, widget.peer.userId);
-    final AsyncValue<List<ChatMessage>> messagesAsync =
-        ref.watch(chatMessagesProvider(chatId));
+    final AsyncValue<List<ChatMessage>> messagesAsync = ref.watch(
+      chatMessagesProvider(chatId),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -226,8 +228,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       itemBuilder: (BuildContext context, int index) {
         final ChatMessage message = messages[index];
         // Teskari ro'yxatda "keyingi element" — vaqt bo'yicha oldingisi.
-        final ChatMessage? older =
-            index + 1 < messages.length ? messages[index + 1] : null;
+        final ChatMessage? older = index + 1 < messages.length
+            ? messages[index + 1]
+            : null;
 
         final bool showDaySeparator = _needsDaySeparator(message, older);
         final bool isMine = message.senderId == userId;
@@ -263,8 +266,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final String label = TimeUtils.isSameDay(at, now)
         ? 'Bugun'
         : TimeUtils.isSameDay(at, now.subtract(const Duration(days: 1)))
-            ? 'Kecha'
-            : Formatters.longDate(at);
+        ? 'Kecha'
+        : Formatters.longDate(at);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),

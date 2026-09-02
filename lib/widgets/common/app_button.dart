@@ -33,15 +33,17 @@ class AppButton extends StatelessWidget {
     final CustomTheme theme = context.theme;
     final bool disabled = onPressed == null || isLoading;
 
-    final (Color background, Color foreground, Color? border) = switch (
-      variant
-    ) {
+    final (
+      Color background,
+      Color foreground,
+      Color? border,
+    ) = switch (variant) {
       AppButtonVariant.primary => (theme.blue, CustomTheme.onAccent, null),
       AppButtonVariant.secondary => (
-          theme.background,
-          theme.mainDarkBlue,
-          theme.borderGray,
-        ),
+        theme.background,
+        theme.mainDarkBlue,
+        theme.borderGray,
+      ),
       AppButtonVariant.danger => (theme.red, CustomTheme.onAccent, null),
       AppButtonVariant.text => (Colors.transparent, theme.blue, null),
     };

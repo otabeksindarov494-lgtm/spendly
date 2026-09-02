@@ -33,7 +33,8 @@ class PhotoPreviewSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
     final DateTime? date = TimeUtils.dateFromKey(attendance.date);
-    final bool hasAnyPhoto = attendance.checkInPhotoBase64 != null ||
+    final bool hasAnyPhoto =
+        attendance.checkInPhotoBase64 != null ||
         attendance.checkOutPhotoBase64 != null;
 
     return SafeArea(
@@ -164,10 +165,7 @@ class _PhotoTile extends StatelessWidget {
             title: Text(label),
           ),
           body: Center(
-            child: InteractiveViewer(
-              maxScale: 4,
-              child: Image.memory(bytes),
-            ),
+            child: InteractiveViewer(maxScale: 4, child: Image.memory(bytes)),
           ),
         ),
       ),

@@ -51,10 +51,7 @@ class EmptyState extends StatelessWidget {
               style: TextStyle(fontSize: 12, color: theme.textGray),
             ),
           ],
-          if (action != null) ...<Widget>[
-            const SizedBox(height: 20),
-            action!,
-          ],
+          if (action != null) ...<Widget>[const SizedBox(height: 20), action!],
         ],
       ),
     );

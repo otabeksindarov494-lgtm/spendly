@@ -176,11 +176,14 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       await ref.read(profileServiceProvider).save(userId, profile);
 
       // Chat ro'yxatida ko'rinishi uchun ochiq profil ham yoziladi.
-      await ref.read(profileServiceProvider).syncPublicProfile(
+      await ref
+          .read(profileServiceProvider)
+          .syncPublicProfile(
             userId,
             fullName: _fullName,
-            avatarBase64:
-                await ImageService.avatarThumbnailBase64(_photoBase64),
+            avatarBase64: await ImageService.avatarThumbnailBase64(
+              _photoBase64,
+            ),
           );
       // Saqlangach `profileProvider` o'zi yangilanadi va AuthGate
       // foydalanuvchini asosiy ekranga o'tkazadi.
@@ -448,13 +451,15 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
           ChoiceOption<bool>(
             value: true,
             label: 'Ha, ushlanadi',
-            description: 'Kechikkan va erta ketgan daqiqalar uchun soatlik '
+            description:
+                'Kechikkan va erta ketgan daqiqalar uchun soatlik '
                 'stavkadan pul ayiriladi.',
           ),
           ChoiceOption<bool>(
             value: false,
             label: 'Yo\'q, ushlanmaydi',
-            description: 'Kechikish faqat statistika uchun yoziladi, '
+            description:
+                'Kechikish faqat statistika uchun yoziladi, '
                 'maoshga ta\'sir qilmaydi.',
           ),
         ],
@@ -527,7 +532,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         value: _salaryMin <= 0 && _salaryMax <= 0
             ? '—'
             : '${Formatters.number(_salaryMin)} – '
-                '${Formatters.money(_salaryMax, currency: _currency)}',
+                  '${Formatters.money(_salaryMax, currency: _currency)}',
         stepIndex: 10,
         icon: BootstrapIcons.cash_coin,
       ),

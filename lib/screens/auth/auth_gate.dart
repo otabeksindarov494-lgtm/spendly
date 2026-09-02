@@ -27,9 +27,7 @@ class AuthGate extends ConsumerWidget {
     return authState.when(
       loading: () => const _SplashScreen(),
       error: (Object error, StackTrace _) => Scaffold(
-        body: Center(
-          child: ErrorView(message: 'Kirishda xatolik: $error'),
-        ),
+        body: Center(child: ErrorView(message: 'Kirishda xatolik: $error')),
       ),
       data: (User? user) {
         if (user == null) return const LoginScreen();

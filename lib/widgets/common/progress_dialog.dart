@@ -30,8 +30,9 @@ Future<T?> runWithProgress<T>({
   required String title,
   required Future<T> Function(ProgressReporter report) task,
 }) async {
-  final ValueNotifier<TaskStep> step =
-      ValueNotifier<TaskStep>(const TaskStep('Boshlanmoqda...', 0.05));
+  final ValueNotifier<TaskStep> step = ValueNotifier<TaskStep>(
+    const TaskStep('Boshlanmoqda...', 0.05),
+  );
 
   final NavigatorState navigator = Navigator.of(context, rootNavigator: true);
   bool dialogOpen = true;
@@ -76,9 +77,7 @@ class _ProgressDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: theme.background,
       insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
         child: ValueListenableBuilder<TaskStep>(
@@ -105,11 +104,11 @@ class _ProgressDialog extends StatelessWidget {
                     tween: Tween<double>(begin: 0, end: current.value),
                     builder: (BuildContext context, double value, Widget? _) =>
                         LinearProgressIndicator(
-                      value: value,
-                      minHeight: 6,
-                      backgroundColor: theme.borderGray,
-                      valueColor: AlwaysStoppedAnimation<Color>(theme.blue),
-                    ),
+                          value: value,
+                          minHeight: 6,
+                          backgroundColor: theme.borderGray,
+                          valueColor: AlwaysStoppedAnimation<Color>(theme.blue),
+                        ),
                   ),
                 ),
                 const SizedBox(height: 12),

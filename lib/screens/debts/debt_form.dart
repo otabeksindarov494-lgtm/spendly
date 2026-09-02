@@ -37,7 +37,8 @@ class DebtForm extends StatefulWidget {
     required double amount,
     required DebtType type,
     String? description,
-  }) onSubmit;
+  })
+  onSubmit;
 
   @override
   State<DebtForm> createState() => _DebtFormState();
@@ -60,8 +61,9 @@ class _DebtFormState extends State<DebtForm> {
           ? ''
           : _formatInitialAmount(widget.initialAmount!),
     );
-    _descriptionController =
-        TextEditingController(text: widget.initialDescription ?? '');
+    _descriptionController = TextEditingController(
+      text: widget.initialDescription ?? '',
+    );
     // Ovozdan yo'nalish aniqlanmagan bo'lsa, xavfsiz standart tanlanadi
     // va foydalanuvchi uni ko'rib chiqadi.
     _type = widget.initialType ?? DebtType.iOwe;
@@ -123,8 +125,8 @@ class _DebtFormState extends State<DebtForm> {
             inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],
             validator: (String? value) =>
                 ThousandsFormatter.parse(value ?? '') <= 0
-                    ? 'Summani kiriting'
-                    : null,
+                ? 'Summani kiriting'
+                : null,
           ),
           const SizedBox(height: 16),
           Text(
@@ -199,9 +201,7 @@ class _TypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
-          color: isSelected
-              ? color.withValues(alpha: 0.12)
-              : theme.background,
+          color: isSelected ? color.withValues(alpha: 0.12) : theme.background,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? color : theme.borderGray,

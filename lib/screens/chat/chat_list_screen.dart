@@ -24,8 +24,9 @@ class ChatListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<PublicProfile>> usersAsync =
-        ref.watch(chatUsersProvider);
+    final AsyncValue<List<PublicProfile>> usersAsync = ref.watch(
+      chatUsersProvider,
+    );
     final List<ChatListEntry> entries = ref.watch(chatListProvider);
     final String? currentUserId = ref.watch(currentUserIdProvider);
 

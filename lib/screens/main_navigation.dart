@@ -33,12 +33,12 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
 
   static const List<(IconData, IconData, String)> _tabs =
       <(IconData, IconData, String)>[
-    (BootstrapIcons.house, BootstrapIcons.house_fill, 'Bosh sahifa'),
-    (BootstrapIcons.bar_chart, BootstrapIcons.bar_chart_fill, 'Hisobot'),
-    (BootstrapIcons.chat_dots, BootstrapIcons.chat_dots_fill, 'Chat'),
-    (BootstrapIcons.wallet2, BootstrapIcons.wallet_fill, 'Qarzlar'),
-    (BootstrapIcons.person, BootstrapIcons.person_fill, 'Profil'),
-  ];
+        (BootstrapIcons.house, BootstrapIcons.house_fill, 'Bosh sahifa'),
+        (BootstrapIcons.bar_chart, BootstrapIcons.bar_chart_fill, 'Hisobot'),
+        (BootstrapIcons.chat_dots, BootstrapIcons.chat_dots_fill, 'Chat'),
+        (BootstrapIcons.wallet2, BootstrapIcons.wallet_fill, 'Qarzlar'),
+        (BootstrapIcons.person, BootstrapIcons.person_fill, 'Profil'),
+      ];
 
   @override
   Widget build(BuildContext context) {
