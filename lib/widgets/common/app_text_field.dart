@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show cupertinoTextSelectionControls;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -68,6 +69,13 @@ class AppTextField extends StatelessWidget {
           autofocus: autofocus,
           textCapitalization: textCapitalization,
           style: TextStyle(fontSize: 14, color: theme.mainDarkBlue),
+          // iOS uslubidagi yumshoq his: yumaloq kursor, Cupertino
+          // belgilash menyusi va mavzuga mos klaviatura ko'rinishi.
+          cursorColor: theme.blue,
+          cursorRadius: const Radius.circular(2),
+          cursorWidth: 2,
+          selectionControls: cupertinoTextSelectionControls,
+          keyboardAppearance: Theme.of(context).brightness,
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: prefixIcon == null

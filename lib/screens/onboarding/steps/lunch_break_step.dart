@@ -26,7 +26,8 @@ class LunchBreakStep extends StatelessWidget {
 
     return OnboardingStep(
       title: 'Tushlik tanaffusi qancha?',
-      subtitle: 'Bu vaqt ish soatidan ayiriladi va soatlik stavkaga '
+      subtitle:
+          'Bu vaqt ish soatidan ayiriladi va soatlik stavkaga '
           'ta\'sir qiladi.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -35,10 +35,7 @@ class WorkDaysStep extends StatelessWidget {
             onTap: () => onToggle(weekday),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 14,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               decoration: BoxDecoration(
                 color: isSelected ? theme.blue : theme.background,
                 borderRadius: BorderRadius.circular(14),

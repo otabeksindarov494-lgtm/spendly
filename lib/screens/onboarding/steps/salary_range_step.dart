@@ -87,7 +87,8 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
 
     return OnboardingStep(
       title: 'Oylik maoshingiz qancha?',
-      subtitle: 'Kelishilgan oraliqni kiriting. Hisob-kitobda shu '
+      subtitle:
+          'Kelishilgan oraliqni kiriting. Hisob-kitobda shu '
           'oraliqning o\'rtachasi ishlatiladi.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,10 +105,8 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
                   inputFormatters: const <TextInputFormatter>[
                     ThousandsFormatter(),
                   ],
-                  onChanged: (String value) => _emit(
-                    ThousandsFormatter.parse(value),
-                    widget.max,
-                  ),
+                  onChanged: (String value) =>
+                      _emit(ThousandsFormatter.parse(value), widget.max),
                 ),
               ),
               const SizedBox(width: 12),
@@ -120,10 +119,8 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
                   inputFormatters: const <TextInputFormatter>[
                     ThousandsFormatter(),
                   ],
-                  onChanged: (String value) => _emit(
-                    widget.min,
-                    ThousandsFormatter.parse(value),
-                  ),
+                  onChanged: (String value) =>
+                      _emit(widget.min, ThousandsFormatter.parse(value)),
                 ),
               ),
             ],
@@ -146,10 +143,7 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
           ),
           Row(
             children: <Widget>[
-              Text(
-                '0',
-                style: TextStyle(fontSize: 11, color: theme.textGray),
-              ),
+              Text('0', style: TextStyle(fontSize: 11, color: theme.textGray)),
               const Spacer(),
               Text(
                 '${(ceiling / 1000000).round()} mln',

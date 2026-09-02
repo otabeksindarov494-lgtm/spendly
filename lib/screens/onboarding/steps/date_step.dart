@@ -5,6 +5,7 @@ import '../../../theme/app_theme.dart';
 import '../../../utils/formatters.dart';
 import '../../../widgets/common/app_card.dart';
 import 'onboarding_step.dart';
+import '../../../widgets/common/cupertino_pickers.dart';
 
 /// Sana tanlash qadami.
 ///
@@ -73,12 +74,12 @@ class DateStep extends StatelessWidget {
   }
 
   Future<void> _pick(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? picked = await SoftPickers.pickDate(
       context: context,
-      initialDate: value ?? initialWhenEmpty ?? lastDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: title,
+      title: title,
+      initial: value ?? initialWhenEmpty ?? lastDate,
+      first: firstDate,
+      last: lastDate,
     );
     if (picked != null) onChanged(picked);
   }

@@ -25,11 +25,7 @@ class SummaryEntry {
 
 /// 10-qadam: barcha kiritilgan ma'lumotlarni ko'rish va tasdiqlash.
 class SummaryStep extends StatelessWidget {
-  const SummaryStep({
-    super.key,
-    required this.entries,
-    required this.onEdit,
-  });
+  const SummaryStep({super.key, required this.entries, required this.onEdit});
 
   final List<SummaryEntry> entries;
   final ValueChanged<int> onEdit;

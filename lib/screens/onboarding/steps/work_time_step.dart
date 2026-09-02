@@ -5,6 +5,7 @@ import '../../../theme/app_theme.dart';
 import '../../../utils/time_utils.dart';
 import '../../../widgets/common/app_card.dart';
 import 'onboarding_step.dart';
+import '../../../widgets/common/cupertino_pickers.dart';
 
 /// 6- va 7-qadamlar: ish boshlanish / tugash vaqti.
 ///
@@ -61,21 +62,11 @@ class WorkTimeStep extends StatelessWidget {
   }
 
   Future<void> _pick(BuildContext context) async {
-    final int minutes = TimeUtils.minutesFromHmOr(value, 9 * 60);
-    final TimeOfDay? picked = await showTimePicker(
+    final int? minutes = await SoftPickers.pickTimeMinutes(
       context: context,
-      initialTime: TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60),
-      helpText: title,
-      cancelText: 'Bekor qilish',
-      confirmText: 'Tanlash',
-      builder: (BuildContext context, Widget? child) => MediaQuery(
-        // 24 soatlik format — o'zbekcha interfeys uchun tabiiyroq.
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-        child: child!,
-      ),
+      title: title,
+      initialMinutes: TimeUtils.minutesFromHmOr(value, 9 * 60),
     );
-    if (picked != null) {
-      onChanged(TimeUtils.hmFromMinutes(picked.hour * 60 + picked.minute));
-    }
+    if (minutes != null) onChanged(TimeUtils.hmFromMinutes(minutes));
   }
 }

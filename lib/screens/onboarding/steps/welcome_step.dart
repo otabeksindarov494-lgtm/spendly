@@ -10,22 +10,22 @@ class WelcomeStep extends StatelessWidget {
 
   static const List<(IconData, String, String)> _features =
       <(IconData, String, String)>[
-    (
-      BootstrapIcons.camera,
-      'Selfie bilan davomat',
-      'Ishga kelish va ketish vaqtini rasm bilan qayd eting',
-    ),
-    (
-      BootstrapIcons.calculator,
-      'Avtomatik maosh',
-      'Kechikish va erta ketish jarimalari o\'zi hisoblanadi',
-    ),
-    (
-      BootstrapIcons.mic,
-      'Ovoz orqali qarz',
-      'Gapirib ayting — qarz o\'zi yozib olinadi',
-    ),
-  ];
+        (
+          BootstrapIcons.camera,
+          'Selfie bilan davomat',
+          'Ishga kelish va ketish vaqtini rasm bilan qayd eting',
+        ),
+        (
+          BootstrapIcons.calculator,
+          'Avtomatik maosh',
+          'Kechikish va erta ketish jarimalari o\'zi hisoblanadi',
+        ),
+        (
+          BootstrapIcons.mic,
+          'Ovoz orqali qarz',
+          'Gapirib ayting — qarz o\'zi yozib olinadi',
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +52,7 @@ class WelcomeStep extends StatelessWidget {
           Text(
             'Ish vaqtingizni kuzating, maoshingizni avtomatik hisoblang '
             'va qarzlaringizni bir joyda saqlang.',
-            style: TextStyle(
-              fontSize: 14,
-              color: theme.textGray,
-              height: 1.5,
-            ),
+            style: TextStyle(fontSize: 14, color: theme.textGray, height: 1.5),
           ),
           const SizedBox(height: 32),
           for (final (IconData icon, String title, String body) feature

@@ -46,16 +46,14 @@ class PhotoStep extends StatelessWidget {
               ),
               clipBehavior: Clip.antiAlias,
               child: isBusy
-                  ? Center(
-                      child: CircularProgressIndicator(color: theme.blue),
-                    )
+                  ? Center(child: CircularProgressIndicator(color: theme.blue))
                   : bytes == null
-                      ? Icon(
-                          BootstrapIcons.person,
-                          size: 56,
-                          color: theme.favoriteGray,
-                        )
-                      : Image.memory(bytes, fit: BoxFit.cover),
+                  ? Icon(
+                      BootstrapIcons.person,
+                      size: 56,
+                      color: theme.favoriteGray,
+                    )
+                  : Image.memory(bytes, fit: BoxFit.cover),
             ),
           ),
           const SizedBox(height: 28),
