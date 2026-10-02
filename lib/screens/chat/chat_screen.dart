@@ -277,7 +277,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           decoration: BoxDecoration(
             color: theme.gray,
             borderRadius: BorderRadius.circular(AppRadius.lg),
-            border: Border.all(color: theme.borderGray),
+            border: Border.all(color: theme.borderGray, width: 0.6),
           ),
           child: Text(
             label,
@@ -296,7 +296,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
       decoration: BoxDecoration(
         color: theme.gray,
-        border: Border(top: BorderSide(color: theme.borderGray)),
+        border: Border(top: BorderSide(color: theme.borderGray, width: 0.6)),
       ),
       child: Row(
         children: <Widget>[
@@ -372,11 +372,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                    borderSide: BorderSide(color: theme.borderGray),
+                    borderSide: BorderSide(color: theme.borderGray, width: 0.6),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                    borderSide: BorderSide(color: theme.borderGray),
+                    borderSide: BorderSide(color: theme.borderGray, width: 0.6),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -499,7 +499,7 @@ class _MessageBubble extends StatelessWidget {
                 bottomLeft: Radius.circular(isMine ? 16 : 4),
                 bottomRight: Radius.circular(isMine ? 4 : 16),
               ),
-              border: isMine ? null : Border.all(color: theme.borderGray),
+              border: isMine ? null : Border.all(color: theme.borderGray, width: 0.6),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

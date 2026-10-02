@@ -270,7 +270,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           decoration: BoxDecoration(
             color: theme.inputColor,
             borderRadius: BorderRadius.circular(AppRadius.md),
-            border: Border.all(color: theme.borderGray),
+            border: Border.all(color: theme.borderGray, width: 0.6),
           ),
           child: Text(
             hasText ? _recognizedText : 'Gapiring...',
@@ -384,7 +384,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       decoration: BoxDecoration(
         color: theme.inputColor,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: theme.borderGray),
+        border: Border.all(color: theme.borderGray, width: 0.6),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
