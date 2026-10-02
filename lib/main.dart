@@ -7,6 +7,7 @@ import 'app.dart';
 import 'firebase_options.dart';
 import 'providers/core_providers.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
