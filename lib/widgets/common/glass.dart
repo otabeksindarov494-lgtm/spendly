@@ -60,8 +60,16 @@ class _Glow extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
+          // Bosqichma-bosqich so'nish — aniq chegara ("dog'") qolmaydi,
+          // yumshoq yorug'likdek ko'rinadi.
           gradient: RadialGradient(
-            colors: <Color>[color, color.withValues(alpha: 0)],
+            colors: <Color>[
+              color,
+              color.withValues(alpha: color.a * 0.55),
+              color.withValues(alpha: color.a * 0.18),
+              color.withValues(alpha: 0),
+            ],
+            stops: const <double>[0, 0.35, 0.7, 1],
           ),
         ),
       ),
