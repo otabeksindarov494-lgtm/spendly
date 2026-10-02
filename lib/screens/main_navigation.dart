@@ -36,7 +36,11 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
         (IconsaxPlusLinear.home_2, IconsaxPlusBold.home_2, 'Bosh sahifa'),
         (IconsaxPlusLinear.chart, IconsaxPlusBold.chart, 'Hisobot'),
         (IconsaxPlusLinear.message, IconsaxPlusBold.message, 'Chat'),
-        (IconsaxPlusLinear.empty_wallet, IconsaxPlusBold.empty_wallet, 'Qarzlar'),
+        (
+          IconsaxPlusLinear.empty_wallet,
+          IconsaxPlusBold.empty_wallet,
+          'Qarzlar',
+        ),
         (IconsaxPlusLinear.user, IconsaxPlusBold.user, 'Profil'),
       ];
 
@@ -47,9 +51,17 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
       bottomNavigationBar: Container(
+        // Shisha panel: yarim shaffof, tepasida yorug' chiziq.
         decoration: BoxDecoration(
-          color: theme.bottomNavBg,
-          border: Border(top: BorderSide(color: theme.borderGray)),
+          color: theme.glassFill,
+          border: Border(top: BorderSide(color: theme.glassBorder)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: theme.glassShadow,
+              blurRadius: 24,
+              offset: const Offset(0, -6),
+            ),
+          ],
         ),
         child: SafeArea(
           top: false,
@@ -106,9 +118,10 @@ class _NavItem extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+              // labelSmall (12) — eng kichik shkala darajasi; 10 px o'qishga
+              // qiyin edi.
+              style: context.text.labelSmall?.copyWith(
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 color: color,
               ),
             ),

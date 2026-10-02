@@ -50,10 +50,8 @@ class AppTextField extends StatelessWidget {
         if (label != null) ...<Widget>[
           Text(
             label!,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: theme.textGray,
+            style: context.text.labelMedium?.copyWith(
+              color: theme.mainDarkBlue.withValues(alpha: 0.72),
             ),
           ),
           const SizedBox(height: 8),
@@ -68,7 +66,7 @@ class AppTextField extends StatelessWidget {
           maxLines: obscureText ? 1 : maxLines,
           autofocus: autofocus,
           textCapitalization: textCapitalization,
-          style: TextStyle(fontSize: 14, color: theme.mainDarkBlue),
+          style: context.text.bodyLarge,
           // iOS uslubidagi yumshoq his: yumaloq kursor, Cupertino
           // belgilash menyusi va mavzuga mos klaviatura ko'rinishi.
           cursorColor: theme.blue,
@@ -82,7 +80,9 @@ class AppTextField extends StatelessWidget {
                 ? null
                 : Icon(prefixIcon, size: 20, color: theme.textGray),
             suffixIcon: suffix,
-            fillColor: theme.inputColor,
+            // Shisha input: yarim shaffof to'ldirish; chegara mavzudan
+            // (ko'rinadigan kulrang, fokusda brend rangi).
+            fillColor: theme.glassFill,
           ),
         ),
       ],

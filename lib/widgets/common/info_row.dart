@@ -45,20 +45,13 @@ class InfoRow extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        label,
-                        style: TextStyle(fontSize: 11, color: theme.textGray),
-                      ),
+                      Text(label, style: context.text.labelSmall),
                       const SizedBox(height: 2),
                       Text(
                         value,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: theme.mainDarkBlue,
-                        ),
+                        style: context.text.titleSmall,
                       ),
                     ],
                   ),

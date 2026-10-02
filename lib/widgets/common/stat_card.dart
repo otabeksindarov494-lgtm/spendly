@@ -37,7 +37,7 @@ class StatCard extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: accent.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
             child: Icon(icon, size: 18, color: accent),
           ),
@@ -46,10 +46,10 @@ class StatCard extends StatelessWidget {
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
+            // titleMedium (17) — ikki ustunli setkada summa sig'ishi uchun;
+            // raqam bo'lgani uchun qalinroq.
+            style: context.text.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: theme.mainDarkBlue,
             ),
           ),
           const SizedBox(height: 2),
@@ -57,7 +57,7 @@ class StatCard extends StatelessWidget {
             label,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 11, color: theme.textGray),
+            style: context.text.labelSmall,
           ),
         ],
       ),

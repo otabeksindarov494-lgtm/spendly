@@ -28,7 +28,7 @@ class EmptyState extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: theme.gray,
+              color: theme.glassFill,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, size: 32, color: theme.favoriteGray),
@@ -37,18 +37,14 @@ class EmptyState extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: theme.mainDarkBlue,
-            ),
+            style: context.text.titleSmall,
           ),
           if (message != null) ...<Widget>[
             const SizedBox(height: 6),
             Text(
               message!,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: theme.textGray),
+              style: context.text.bodySmall,
             ),
           ],
           if (action != null) ...<Widget>[const SizedBox(height: 20), action!],

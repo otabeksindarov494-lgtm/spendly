@@ -40,13 +40,16 @@ class AppButton extends StatelessWidget {
     ) = switch (variant) {
       AppButtonVariant.primary => (theme.blue, CustomTheme.onAccent, null),
       AppButtonVariant.secondary => (
-        theme.background,
+        theme.glassFill,
         theme.mainDarkBlue,
         theme.borderGray,
       ),
       AppButtonVariant.danger => (theme.red, CustomTheme.onAccent, null),
       AppButtonVariant.text => (Colors.transparent, theme.blue, null),
     };
+
+    final BorderRadius radius = BorderRadius.circular(AppRadius.md);
+    final bool isPrimary = variant == AppButtonVariant.primary;
 
     final Widget content = isLoading
         ? SizedBox(
@@ -69,11 +72,7 @@ class AppButton extends StatelessWidget {
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: foreground,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: context.text.labelLarge?.copyWith(color: foreground),
                 ),
               ),
             ],
@@ -81,20 +80,34 @@ class AppButton extends StatelessWidget {
 
     return Opacity(
       opacity: disabled && !isLoading ? 0.5 : 1,
-      child: SizedBox(
+      child: Container(
         width: expanded ? double.infinity : null,
         height: height,
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          // Asosiy tugma: nozik brend gradienti va yumshoq rangli soya.
+          gradient: isPrimary ? theme.gradient : null,
+          boxShadow: isPrimary && !disabled
+              ? <BoxShadow>[
+                  BoxShadow(
+                    color: theme.blue.withValues(alpha: 0.28),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ]
+              : null,
+        ),
         child: Material(
-          color: background,
-          borderRadius: BorderRadius.circular(16),
+          color: isPrimary ? Colors.transparent : background,
+          borderRadius: radius,
           child: InkWell(
             onTap: disabled ? null : onPressed,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: radius,
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: expanded ? 16 : 24),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: radius,
                 border: border == null ? null : Border.all(color: border),
               ),
               child: content,

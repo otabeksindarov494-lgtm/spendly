@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../widgets/common/glass.dart';
 
 /// Spendly dizayn tizimi (PROJECT.md 2-bo'lim).
 ///
@@ -379,9 +382,19 @@ abstract final class AppTheme {
       fontFamily: base.fontFamily,
       fontFamilyFallback: base.fontFamilyFallback,
       colorScheme: scheme,
-      // Gradient fonning o'rta rangi — `GlassBackground` qo'yilmagan
-      // ekranlarda ham umumiy tus saqlanadi.
-      scaffoldBackgroundColor: c.backgroundGradient.colors[1],
+      // Shaffof: sahifa fonini `GlassPageTransitionsBuilder` chizadi
+      // (gradient + dog'lar), shisha kartalar shu fon ustida ko'rinadi.
+      scaffoldBackgroundColor: Colors.transparent,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.iOS: GlassPageTransitionsBuilder(
+            CupertinoPageTransitionsBuilder(),
+          ),
+          TargetPlatform.android: GlassPageTransitionsBuilder(
+            ZoomPageTransitionsBuilder(),
+          ),
+        },
+      ),
       canvasColor: c.background,
       dividerColor: c.borderGray,
       textTheme: textTheme,

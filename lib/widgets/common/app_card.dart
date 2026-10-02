@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Ilova bo'ylab yagona ko'rinishdagi karta konteyneri.
+/// Ilova bo'ylab yagona ko'rinishdagi karta konteyneri — "shisha" karta.
+///
+/// Yarim shaffof to'ldirish + yorug' chegara + yumshoq soya. Haqiqiy blur
+/// ishlatilmaydi (ro'yxatlarda ko'p karta bo'ladi), gradient fon ustida
+/// baribir shisha bo'lib ko'rinadi. Haqiqiy blur kerak bo'lsa — `GlassPanel`.
 ///
 /// Ishlatilishi: Home, Hisobot, Qarzlar, Profil ekranlari.
 class AppCard extends StatelessWidget {
@@ -11,7 +15,7 @@ class AppCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.onTap,
-    this.borderRadius = 20,
+    this.borderRadius = AppRadius.lg,
     this.showBorder = true,
   });
 
@@ -26,19 +30,31 @@ class AppCard extends StatelessWidget {
     final CustomTheme theme = context.theme;
     final BorderRadius radius = BorderRadius.circular(borderRadius);
 
-    return Material(
-      color: theme.background,
-      borderRadius: radius,
-      child: InkWell(
-        onTap: onTap,
+    return DecoratedBox(
+      decoration: BoxDecoration(
         borderRadius: radius,
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            border: showBorder ? Border.all(color: theme.borderGray) : null,
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: theme.glassShadow,
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
-          child: child,
+        ],
+      ),
+      child: Material(
+        color: theme.glassFill,
+        borderRadius: radius,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: radius,
+          child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+              borderRadius: radius,
+              border: showBorder ? Border.all(color: theme.glassBorder) : null,
+            ),
+            child: child,
+          ),
         ),
       ),
     );
