@@ -90,6 +90,52 @@ class AppTextField extends StatelessWidget {
   }
 }
 
+/// O'zbekiston telefon raqamini yozish paytida guruhlaydi:
+/// "901234567" → "+998 90 123 45 67".
+///
+/// "+998" ni foydalanuvchi yozmasa ham o'zi qo'shiladi; to'liq raqam
+/// (998 bilan) qo'yilsa ham to'g'ri chiqadi. Oxirgi raqam o'chirilganda
+/// maydon butunlay tozalanadi — "+998" da tiqilib qolmaydi.
+class UzPhoneFormatter extends TextInputFormatter {
+  const UzPhoneFormatter();
+
+  /// Mahalliy raqam guruhlari: operator kodi (2) + 3 + 2 + 2.
+  static const List<int> _groups = <int>[2, 3, 2, 2];
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final String formatted = format(newValue.text);
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+
+  static String format(String input) {
+    String digits = input.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.startsWith('998')) digits = digits.substring(3);
+    if (digits.isEmpty) return '';
+    if (digits.length > 9) digits = digits.substring(0, 9);
+
+    final StringBuffer buffer = StringBuffer('+998');
+    int start = 0;
+    for (final int size in _groups) {
+      if (start >= digits.length) break;
+      final int end = start + size > digits.length
+          ? digits.length
+          : start + size;
+      buffer
+        ..write(' ')
+        ..write(digits.substring(start, end));
+      start = end;
+    }
+    return buffer.toString();
+  }
+}
+
 /// Faqat raqam kiritishga ruxsat beruvchi va guruhlab ko'rsatuvchi formatter.
 ///
 /// Foydalanuvchi "5000000" yozsa ekranda "5 000 000" ko'rinadi.

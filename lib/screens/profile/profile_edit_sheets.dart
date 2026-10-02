@@ -160,6 +160,9 @@ abstract final class ProfileEditSheets {
     required String initialValue,
     required String hint,
     required Future<void> Function(String value) onSave,
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    TextCapitalization textCapitalization = TextCapitalization.words,
   }) async {
     final TextEditingController controller = TextEditingController(
       text: initialValue,
@@ -174,7 +177,9 @@ abstract final class ProfileEditSheets {
             controller: controller,
             hint: hint,
             autofocus: true,
-            textCapitalization: TextCapitalization.words,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            textCapitalization: textCapitalization,
           ),
           const SizedBox(height: 20),
           AppButton(
@@ -203,6 +208,9 @@ abstract final class ProfileEditSheets {
       title: 'Telefon raqami',
       initialValue: profile.phoneNumber,
       hint: '+998 90 123 45 67',
+      keyboardType: TextInputType.phone,
+      inputFormatters: const <TextInputFormatter>[UzPhoneFormatter()],
+      textCapitalization: TextCapitalization.none,
       onSave: (String value) =>
           _update(context, ref, <String, dynamic>{'phoneNumber': value.trim()}),
     );

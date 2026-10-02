@@ -428,25 +428,27 @@ abstract final class AppTheme {
           horizontal: 16,
           vertical: 16,
         ),
+        // Ingichka chegaralar: oddiy holatda 0.6, fokus/xatoda 1.0 —
+        // shisha uslubiga mos nafis ko'rinish.
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.borderGray),
+          borderSide: BorderSide(color: c.borderGray, width: 0.6),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.borderGray),
+          borderSide: BorderSide(color: c.borderGray, width: 0.6),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.blue, width: 1.5),
+          borderSide: BorderSide(color: c.blue, width: 1.0),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.red),
+          borderSide: BorderSide(color: c.red, width: 0.6),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.red, width: 1.5),
+          borderSide: BorderSide(color: c.red, width: 1.0),
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(

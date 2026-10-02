@@ -1,5 +1,6 @@
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/user_profile_model.dart';
@@ -8,6 +9,7 @@ import '../../services/image_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_text_field.dart';
 import 'steps/choice_step.dart';
 import 'steps/date_step.dart';
 import 'steps/lunch_break_step.dart';
@@ -329,6 +331,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         hint: '+998 90 123 45 67',
         textCapitalization: TextCapitalization.none,
         keyboardType: TextInputType.phone,
+        inputFormatters: const <TextInputFormatter>[UzPhoneFormatter()],
         onChanged: (String value) => setState(() => _phone = value),
       ),
       // 5

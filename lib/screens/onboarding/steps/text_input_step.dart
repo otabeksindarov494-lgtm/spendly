@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../widgets/common/app_text_field.dart';
 import 'onboarding_step.dart';
@@ -14,6 +15,7 @@ class TextInputStep extends StatelessWidget {
     this.onChanged,
     this.textCapitalization = TextCapitalization.words,
     this.keyboardType,
+    this.inputFormatters,
   });
 
   final String title;
@@ -23,6 +25,7 @@ class TextInputStep extends StatelessWidget {
   final void Function(String)? onChanged;
   final TextCapitalization textCapitalization;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +38,7 @@ class TextInputStep extends StatelessWidget {
         onChanged: onChanged,
         textCapitalization: textCapitalization,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
       ),
     );
   }
