@@ -230,18 +230,6 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  // "O'tkazib yuborish" asosiy tugmaning USTIDA — asosiy
-                  // tugma 18 ta qadamning hammasida ekranning eng pastida,
-                  // aynan bir joyda turadi.
-                  if (_canSkip) ...<Widget>[
-                    AppButton(
-                      label: 'O\'tkazib yuborish',
-                      variant: AppButtonVariant.text,
-                      height: 44,
-                      onPressed: _next,
-                    ),
-                    const SizedBox(height: 4),
-                  ],
                   AppButton(
                     label: isLastStep
                         ? 'Tasdiqlash va boshlash'
@@ -251,6 +239,17 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                         ? (isLastStep ? _finish : _next)
                         : null,
                   ),
+                  // "O'tkazib yuborish" asosiy tugmaning OSTIDA (foydalanuvchi
+                  // so'rovi) — faqat ixtiyoriy qadamlarda chiqadi.
+                  if (_canSkip) ...<Widget>[
+                    const SizedBox(height: 4),
+                    AppButton(
+                      label: 'O\'tkazib yuborish',
+                      variant: AppButtonVariant.text,
+                      height: 44,
+                      onPressed: _next,
+                    ),
+                  ],
                 ],
               ),
             ),
