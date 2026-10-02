@@ -132,7 +132,7 @@ class _DebtFormState extends State<DebtForm> {
           Text(
             'Turi',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: theme.textGray,
             ),
@@ -202,7 +202,7 @@ class _TypeOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: isSelected ? color.withValues(alpha: 0.12) : theme.background,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: isSelected ? color : theme.borderGray,
             width: isSelected ? 1.5 : 1,
@@ -224,7 +224,7 @@ class _TypeOption extends StatelessWidget {
                 label,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: isSelected ? color : theme.mainDarkBlue,
                 ),

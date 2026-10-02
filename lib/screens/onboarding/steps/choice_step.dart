@@ -45,7 +45,7 @@ class ChoiceStep<T> extends StatelessWidget {
                     color: option.value == selected
                         ? theme.blue.withValues(alpha: 0.06)
                         : theme.background,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(
                       color: option.value == selected
                           ? theme.blue
@@ -83,7 +83,7 @@ class ChoiceStep<T> extends StatelessWidget {
                               Text(
                                 option.description!,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   height: 1.45,
                                   color: theme.textGray,
                                 ),

@@ -77,7 +77,7 @@ class _ProgressDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: theme.background,
       insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
         child: ValueListenableBuilder<TaskStep>(
@@ -117,13 +117,13 @@ class _ProgressDialog extends StatelessWidget {
                     Expanded(
                       child: Text(
                         current.label,
-                        style: TextStyle(fontSize: 12, color: theme.textGray),
+                        style: TextStyle(fontSize: 13, color: theme.textGray),
                       ),
                     ),
                     Text(
                       '${(current.value * 100).round()}%',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: theme.blue,
                       ),

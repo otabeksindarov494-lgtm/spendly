@@ -39,13 +39,13 @@ class StatBar extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: TextStyle(fontSize: 12, color: theme.textGray),
+                  style: TextStyle(fontSize: 13, color: theme.textGray),
                 ),
               ),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: theme.mainDarkBlue,
                 ),

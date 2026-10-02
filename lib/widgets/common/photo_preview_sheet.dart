@@ -120,7 +120,7 @@ class _PhotoTile extends StatelessWidget {
         AspectRatio(
           aspectRatio: 3 / 4,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             child: bytes == null
                 ? Container(
                     color: theme.gray,
@@ -140,14 +140,14 @@ class _PhotoTile extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: FontWeight.w600,
             color: theme.mainDarkBlue,
           ),
         ),
         Text(
           time == null ? '—' : Formatters.time(time!),
-          style: TextStyle(fontSize: 11, color: theme.textGray),
+          style: TextStyle(fontSize: 12, color: theme.textGray),
         ),
       ],
     );

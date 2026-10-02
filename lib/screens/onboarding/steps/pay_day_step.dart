@@ -37,7 +37,7 @@ class PayDayStep extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: isSelected ? theme.blue : theme.background,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,
                 ),
@@ -45,7 +45,7 @@ class PayDayStep extends StatelessWidget {
               child: Text(
                 '$day',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: isSelected ? CustomTheme.onAccent : theme.mainDarkBlue,
                 ),

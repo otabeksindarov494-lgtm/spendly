@@ -47,7 +47,7 @@ class LunchBreakStep extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: preset == minutes ? theme.blue : theme.background,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
                         color: preset == minutes
                             ? theme.blue
@@ -57,7 +57,7 @@ class LunchBreakStep extends StatelessWidget {
                     child: Text(
                       preset == 0 ? 'Yo\'q' : Formatters.minutes(preset),
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: preset == minutes
                             ? CustomTheme.onAccent

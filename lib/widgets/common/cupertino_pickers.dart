@@ -97,7 +97,7 @@ abstract final class SoftPickers {
                       onPressed: () => Navigator.of(sheetContext).pop(),
                       child: Text(
                         'Bekor qilish',
-                        style: TextStyle(fontSize: 14, color: theme.textGray),
+                        style: TextStyle(fontSize: 15, color: theme.textGray),
                       ),
                     ),
                     Expanded(
@@ -107,7 +107,7 @@ abstract final class SoftPickers {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: theme.mainDarkBlue,
                         ),
@@ -122,7 +122,7 @@ abstract final class SoftPickers {
                       child: Text(
                         'Tayyor',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: theme.blue,
                         ),
@@ -138,7 +138,7 @@ abstract final class SoftPickers {
                     brightness: Theme.of(sheetContext).brightness,
                     textTheme: CupertinoTextThemeData(
                       dateTimePickerTextStyle: TextStyle(
-                        fontSize: 19,
+                        fontSize: 20,
                         color: theme.mainDarkBlue,
                       ),
                     ),

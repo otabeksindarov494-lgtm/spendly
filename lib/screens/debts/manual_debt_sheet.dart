@@ -123,7 +123,7 @@ class _ManualDebtSheetState extends ConsumerState<ManualDebtSheet> {
                 const SizedBox(height: 12),
                 Text(
                   _errorMessage!,
-                  style: TextStyle(fontSize: 12, color: theme.red),
+                  style: TextStyle(fontSize: 13, color: theme.red),
                 ),
               ],
             ],

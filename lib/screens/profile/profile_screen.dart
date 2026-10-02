@@ -63,7 +63,7 @@ class ProfileScreen extends ConsumerWidget {
               : profile.fullName.trim(),
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 19,
+            fontSize: 20,
             fontWeight: FontWeight.w700,
             color: theme.mainDarkBlue,
           ),
@@ -73,7 +73,7 @@ class ProfileScreen extends ConsumerWidget {
           Text(
             _subtitle(profile),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: theme.textGray),
+            style: TextStyle(fontSize: 13, color: theme.textGray),
           ),
         ],
         const SizedBox(height: 30),

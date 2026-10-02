@@ -38,7 +38,7 @@ class WorkDaysStep extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               decoration: BoxDecoration(
                 color: isSelected ? theme.blue : theme.background,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,
                 ),
@@ -46,7 +46,7 @@ class WorkDaysStep extends StatelessWidget {
               child: Text(
                 Formatters.weekdaysShort[index],
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: isSelected ? CustomTheme.onAccent : theme.mainDarkBlue,
                 ),

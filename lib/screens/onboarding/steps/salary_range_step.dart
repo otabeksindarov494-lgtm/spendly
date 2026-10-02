@@ -143,11 +143,11 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
           ),
           Row(
             children: <Widget>[
-              Text('0', style: TextStyle(fontSize: 11, color: theme.textGray)),
+              Text('0', style: TextStyle(fontSize: 12, color: theme.textGray)),
               const Spacer(),
               Text(
                 '${(ceiling / 1000000).round()} mln',
-                style: TextStyle(fontSize: 11, color: theme.textGray),
+                style: TextStyle(fontSize: 12, color: theme.textGray),
               ),
             ],
           ),
@@ -157,14 +157,14 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: theme.blue.withValues(alpha: 0.07),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   'Hisob-kitobda ishlatiladi',
-                  style: TextStyle(fontSize: 11, color: theme.textGray),
+                  style: TextStyle(fontSize: 12, color: theme.textGray),
                 ),
                 const SizedBox(height: 4),
                 Text(

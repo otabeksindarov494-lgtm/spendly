@@ -137,7 +137,7 @@ class DebtsScreen extends ConsumerWidget {
               color: (balance.net >= 0 ? theme.green : theme.red).withValues(
                 alpha: 0.1,
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
             child: Text(
               'Sof holat: '
@@ -174,7 +174,7 @@ class DebtsScreen extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     color: filter == active ? theme.blue : theme.background,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(
                       color: filter == active ? theme.blue : theme.borderGray,
                     ),
@@ -182,7 +182,7 @@ class DebtsScreen extends ConsumerWidget {
                   child: Text(
                     filter.label,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: filter == active
                           ? CustomTheme.onAccent
@@ -216,7 +216,7 @@ class _BalanceColumn extends StatelessWidget {
     final CustomTheme theme = context.theme;
     return Column(
       children: <Widget>[
-        Text(label, style: TextStyle(fontSize: 11, color: theme.textGray)),
+        Text(label, style: TextStyle(fontSize: 12, color: theme.textGray)),
         const SizedBox(height: 6),
         FittedBox(
           fit: BoxFit.scaleDown,
@@ -255,15 +255,15 @@ class _AddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: background,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Container(
           height: 56,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             border: borderColor == null
                 ? null
                 : Border.all(color: borderColor!),
@@ -276,7 +276,7 @@ class _AddButton extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: foreground,
                 ),
@@ -313,7 +313,7 @@ class _DebtTile extends ConsumerWidget {
           padding: const EdgeInsets.only(right: 20),
           decoration: BoxDecoration(
             color: theme.red,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
           child: const Icon(IconsaxPlusLinear.trash, color: CustomTheme.onAccent),
         ),
@@ -359,7 +359,7 @@ class _DebtTile extends ConsumerWidget {
                             debt.personName,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: theme.mainDarkBlue,
                               decoration: debt.isPaid
@@ -383,7 +383,7 @@ class _DebtTile extends ConsumerWidget {
                       _subtitle(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                      style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                   ],
                 ),
@@ -395,7 +395,7 @@ class _DebtTile extends ConsumerWidget {
                   Text(
                     Formatters.money(debt.amount, currency: currency),
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: debt.isPaid ? theme.textGray : accent,
                     ),
@@ -427,7 +427,7 @@ class _DebtTile extends ConsumerWidget {
                         Text(
                           'To\'landi',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: debt.isPaid ? theme.green : theme.textGray,
                           ),
                         ),

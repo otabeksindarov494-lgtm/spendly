@@ -276,12 +276,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           decoration: BoxDecoration(
             color: theme.gray,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             border: Border.all(color: theme.borderGray),
           ),
           child: Text(
             label,
-            style: TextStyle(fontSize: 11, color: theme.textGray),
+            style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
         ),
       ),
@@ -316,7 +316,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 Text(
                   replyingToMe ? 'Siz' : widget.peer.fullName,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: theme.blue,
                   ),
@@ -326,7 +326,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   reply.text,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, color: theme.textGray),
+                  style: TextStyle(fontSize: 13, color: theme.textGray),
                 ),
               ],
             ),
@@ -360,7 +360,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 maxLines: 5,
                 maxLength: 2000,
                 textCapitalization: TextCapitalization.sentences,
-                style: TextStyle(fontSize: 14, color: theme.mainDarkBlue),
+                style: TextStyle(fontSize: 15, color: theme.mainDarkBlue),
                 decoration: InputDecoration(
                   hintText: 'Xabar yozing...',
                   counterText: '',
@@ -371,15 +371,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     vertical: 12,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     borderSide: BorderSide(color: theme.borderGray),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     borderSide: BorderSide(color: theme.borderGray),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     borderSide: BorderSide(color: theme.blue, width: 1.4),
                   ),
                 ),
@@ -508,7 +508,7 @@ class _MessageBubble extends StatelessWidget {
                 Text(
                   message.text,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 15,
                     height: 1.35,
                     color: textColor,
                   ),
@@ -521,7 +521,7 @@ class _MessageBubble extends StatelessWidget {
                         ? ''
                         : Formatters.time(message.createdAt!),
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: isMine
                           ? CustomTheme.onAccentMuted
                           : theme.textGray,
@@ -547,7 +547,7 @@ class _MessageBubble extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(9, 6, 9, 6),
       decoration: BoxDecoration(
         color: quoteBg,
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border(left: BorderSide(color: accent, width: 2.5)),
       ),
       child: Column(
@@ -558,7 +558,7 @@ class _MessageBubble extends StatelessWidget {
                 ? (isMine ? 'Siz' : peerName)
                 : (isMine ? peerName : 'Siz'),
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               color: accent,
             ),
@@ -569,7 +569,7 @@ class _MessageBubble extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               height: 1.3,
               color: isMine ? CustomTheme.onAccentMuted : theme.textGray,
             ),

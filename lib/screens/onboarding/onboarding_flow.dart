@@ -222,7 +222,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 child: Text(
                   _errorMessage!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: theme.red),
+                  style: TextStyle(fontSize: 13, color: theme.red),
                 ),
               ),
             Padding(
@@ -288,7 +288,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
           Text(
             '${_index + 1}/$_stepCount',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w600,
               color: theme.textGray,
             ),

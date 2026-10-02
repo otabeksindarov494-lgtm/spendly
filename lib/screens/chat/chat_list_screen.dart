@@ -119,7 +119,7 @@ class _UserTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 13,
                       color: summary?.lastMessage == null
                           ? theme.favoriteGray
                           : theme.textGray,
@@ -132,7 +132,7 @@ class _UserTile extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 _timeLabel(summary!.lastMessageAt!),
-                style: TextStyle(fontSize: 11, color: theme.textGray),
+                style: TextStyle(fontSize: 12, color: theme.textGray),
               ),
             ],
           ],

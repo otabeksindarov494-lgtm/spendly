@@ -53,7 +53,7 @@ class FirebaseSetupScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: theme.inputColor,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                   border: Border.all(color: theme.borderGray),
                 ),
                 child: Column(
@@ -72,7 +72,7 @@ class FirebaseSetupScreen extends StatelessWidget {
                 'Firebase konsolida Authentication (Email/Parol) va Cloud '
                 'Firestore yoqilgan bo\'lishi kerak.',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   color: theme.textGray,
                   height: 1.5,
                 ),
@@ -98,13 +98,13 @@ class FirebaseSetupScreen extends StatelessWidget {
                 collapsedBackgroundColor: Colors.transparent,
                 title: Text(
                   'Texnik tafsilot',
-                  style: TextStyle(fontSize: 12, color: theme.textGray),
+                  style: TextStyle(fontSize: 13, color: theme.textGray),
                 ),
                 children: <Widget>[
                   Text(
                     error,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: theme.textGray,
                       height: 1.45,
                     ),
@@ -129,7 +129,7 @@ class _CodeLine extends StatelessWidget {
     return Text(
       text,
       style: AppTheme.monoStyle().copyWith(
-        fontSize: 12,
+        fontSize: 13,
         color: context.theme.mainDarkBlue,
       ),
     );

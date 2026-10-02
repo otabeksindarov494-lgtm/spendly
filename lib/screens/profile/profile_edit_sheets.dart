@@ -340,7 +340,7 @@ abstract final class ProfileEditSheets {
                       color: option.$1 == current
                           ? theme.blue.withValues(alpha: 0.06)
                           : theme.background,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
                         color: option.$1 == current
                             ? theme.blue
@@ -353,7 +353,7 @@ abstract final class ProfileEditSheets {
                         Text(
                           option.$2,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: theme.mainDarkBlue,
                           ),
@@ -363,7 +363,7 @@ abstract final class ProfileEditSheets {
                           Text(
                             option.$3,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               height: 1.4,
                               color: theme.textGray,
                             ),
@@ -430,7 +430,7 @@ abstract final class ProfileEditSheets {
             const SizedBox(height: 10),
             Text(
               'Hisob-kitobda shu oraliqning o\'rtachasi ishlatiladi.',
-              style: TextStyle(fontSize: 11, color: theme.textGray),
+              style: TextStyle(fontSize: 12, color: theme.textGray),
             ),
             const SizedBox(height: 20),
             AppButton(
@@ -582,7 +582,7 @@ abstract final class ProfileEditSheets {
                       ),
                       decoration: BoxDecoration(
                         color: isSelected ? theme.blue : theme.background,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                         border: Border.all(
                           color: isSelected ? theme.blue : theme.borderGray,
                         ),
@@ -651,7 +651,7 @@ abstract final class ProfileEditSheets {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: isSelected ? theme.blue : theme.background,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
                         border: Border.all(
                           color: isSelected ? theme.blue : theme.borderGray,
                         ),

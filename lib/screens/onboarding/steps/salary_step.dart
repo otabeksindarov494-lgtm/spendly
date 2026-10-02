@@ -41,7 +41,7 @@ class SalaryStep extends StatelessWidget {
                 child: Text(
                   currency,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: theme.textGray,
                   ),

@@ -191,13 +191,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: <Widget>[
         Text(
           'Assalomu alaykum',
-          style: TextStyle(fontSize: 12, color: theme.textGray),
+          style: TextStyle(fontSize: 13, color: theme.textGray),
         ),
         const SizedBox(height: 2),
         Text(
           firstName.isEmpty ? 'Spendly' : firstName,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.w700,
             color: theme.mainDarkBlue,
           ),
@@ -217,7 +217,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: theme.background,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         // Juda nozik chegara — to'q gradient o'rniga tinch, toza yuza.
         border: Border.all(color: theme.borderGray),
       ),
@@ -234,7 +234,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(width: 8),
               Text(
                 Formatters.longDate(DateTime.now()),
-                style: TextStyle(fontSize: 12, color: context.theme.textGray),
+                style: TextStyle(fontSize: 13, color: context.theme.textGray),
               ),
               const Spacer(),
               if (!isWorkDay)
@@ -245,12 +245,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: theme.gray,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(color: theme.borderGray),
                   ),
                   child: Text(
                     'Dam olish kuni',
-                    style: TextStyle(fontSize: 10, color: theme.textGray),
+                    style: TextStyle(fontSize: 12, color: theme.textGray),
                   ),
                 ),
             ],
@@ -276,7 +276,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text(
           'Bugun dam olish kuni',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.w700,
             color: context.theme.mainDarkBlue,
           ),
@@ -284,7 +284,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         SizedBox(height: 6),
         Text(
           'Bu kun uchun hisob-kitob va jarima yuritilmaydi.',
-          style: TextStyle(fontSize: 12, color: context.theme.textGray),
+          style: TextStyle(fontSize: 13, color: context.theme.textGray),
         ),
       ],
     );
@@ -363,7 +363,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: context.theme.green.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           child: Row(
             children: <Widget>[
@@ -383,7 +383,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             '${Formatters.hours(today.workedHours)} ishladingiz'
                       : 'Bugungi ish kuni yopildi — '
                             '${Formatters.money(today.dailyEarning, currency: profile.currency)}',
-                  style: TextStyle(fontSize: 12, color: context.theme.green),
+                  style: TextStyle(fontSize: 13, color: context.theme.green),
                 ),
               ),
             ],
@@ -437,7 +437,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: <Widget>[
                     Text(
                       'Jami ishlagan vaqt',
-                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                      style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -454,12 +454,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const SizedBox(height: 2),
                     Text(
                       '${totals.recordedDays} kun davomida',
-                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                      style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                     const SizedBox(height: 14),
                     Text(
                       'Shu oyda',
-                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                      style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                     const SizedBox(height: 3),
                     Text(
@@ -570,7 +570,7 @@ class _HeroStat extends StatelessWidget {
         children: <Widget>[
           Text(
             label,
-            style: TextStyle(fontSize: 11, color: context.theme.textGray),
+            style: TextStyle(fontSize: 12, color: context.theme.textGray),
           ),
           const SizedBox(height: 4),
           Text(

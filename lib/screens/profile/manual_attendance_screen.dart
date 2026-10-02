@@ -254,7 +254,7 @@ class _ManualAttendanceScreenState
                               Text(
                                 'Hali ishdaman',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                   color: theme.mainDarkBlue,
                                 ),
@@ -263,7 +263,7 @@ class _ManualAttendanceScreenState
                               Text(
                                 'Ketgan vaqt yozilmaydi, kun ochiq qoladi',
                                 style: TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   color: theme.textGray,
                                 ),
                               ),
@@ -311,7 +311,7 @@ class _ManualAttendanceScreenState
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
         color: theme.blue.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +324,7 @@ class _ManualAttendanceScreenState
               'shu yerdan to\'g\'rilashingiz mumkin. Jarima va kunlik maosh '
               'avtomatik qayta hisoblanadi.',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 height: 1.45,
                 color: theme.textGray,
               ),
@@ -481,7 +481,7 @@ class _ManualAttendanceScreenState
           Expanded(
             child: Text(
               label,
-              style: TextStyle(fontSize: 12, color: theme.textGray),
+              style: TextStyle(fontSize: 13, color: theme.textGray),
             ),
           ),
           Text(

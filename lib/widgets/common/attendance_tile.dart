@@ -73,7 +73,7 @@ class AttendanceTile extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     _timeRange(),
-                    style: TextStyle(fontSize: 11, color: theme.textGray),
+                    style: TextStyle(fontSize: 12, color: theme.textGray),
                   ),
                 ],
               ),
@@ -98,12 +98,12 @@ class AttendanceTile extends StatelessWidget {
                       attendance.dailyEarning,
                       currency: currency,
                     ),
-                    style: TextStyle(fontSize: 11, color: theme.green),
+                    style: TextStyle(fontSize: 12, color: theme.green),
                   )
                 else if (attendance.isLate)
                   Text(
                     '+${Formatters.minutes(attendance.lateMinutes)} kech',
-                    style: TextStyle(fontSize: 11, color: theme.yellow),
+                    style: TextStyle(fontSize: 12, color: theme.yellow),
                   ),
               ],
             ),

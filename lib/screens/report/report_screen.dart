@@ -93,7 +93,7 @@ class ReportScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: theme.background,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: theme.borderGray),
       ),
       child: Column(
@@ -101,7 +101,7 @@ class ReportScreen extends ConsumerWidget {
         children: <Widget>[
           Text(
             'Joriy hisoblangan oylik',
-            style: TextStyle(fontSize: 12, color: theme.textGray),
+            style: TextStyle(fontSize: 13, color: theme.textGray),
           ),
           const SizedBox(height: 6),
           FittedBox(
@@ -110,7 +110,7 @@ class ReportScreen extends ConsumerWidget {
             child: Text(
               Formatters.money(summary.earnedAmount, currency: currency),
               style: TextStyle(
-                fontSize: 26,
+                fontSize: 32,
                 fontWeight: FontWeight.w700,
                 color: theme.mainDarkBlue,
               ),
@@ -122,7 +122,7 @@ class ReportScreen extends ConsumerWidget {
             '${Formatters.money(profile.salaryAmount, currency: currency)}'
             '  |  Jarima: '
             '-${Formatters.money(summary.penaltyAmount, currency: currency)}',
-            style: TextStyle(fontSize: 11, color: theme.textGray),
+            style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
           const SizedBox(height: 16),
           ClipRRect(
@@ -137,7 +137,7 @@ class ReportScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             '${summary.elapsedWorkDays}/${summary.plannedWorkDays} ish kuni',
-            style: TextStyle(fontSize: 11, color: theme.textGray),
+            style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
         ],
       ),
@@ -212,7 +212,7 @@ class _MonthSelector extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: theme.background,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: theme.borderGray),
       ),
       child: Row(

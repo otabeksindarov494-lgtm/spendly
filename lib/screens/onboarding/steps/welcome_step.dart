@@ -42,7 +42,7 @@ class WelcomeStep extends StatelessWidget {
           Text(
             'Spendly\'ga xush kelibsiz',
             style: TextStyle(
-              fontSize: 21,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               color: theme.mainDarkBlue,
               height: 1.25,
@@ -52,7 +52,7 @@ class WelcomeStep extends StatelessWidget {
           Text(
             'Ish vaqtingizni kuzating, maoshingizni avtomatik hisoblang '
             'va qarzlaringizni bir joyda saqlang.',
-            style: TextStyle(fontSize: 14, color: theme.textGray, height: 1.5),
+            style: TextStyle(fontSize: 15, color: theme.textGray, height: 1.5),
           ),
           const SizedBox(height: 32),
           for (final (IconData icon, String title, String body) feature
@@ -66,7 +66,7 @@ class WelcomeStep extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: theme.blue.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     child: Icon(feature.$1, size: 20, color: theme.blue),
                   ),
@@ -78,7 +78,7 @@ class WelcomeStep extends StatelessWidget {
                         Text(
                           feature.$2,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: theme.mainDarkBlue,
                           ),
@@ -87,7 +87,7 @@ class WelcomeStep extends StatelessWidget {
                         Text(
                           feature.$3,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: theme.textGray,
                             height: 1.4,
                           ),

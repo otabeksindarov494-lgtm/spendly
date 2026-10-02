@@ -54,7 +54,7 @@ class SummaryStep extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: theme.blue.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       child: Icon(entry.icon, size: 18, color: theme.blue),
                     ),
@@ -66,7 +66,7 @@ class SummaryStep extends StatelessWidget {
                           Text(
                             entry.label,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 12,
                               color: theme.textGray,
                             ),
                           ),
@@ -74,7 +74,7 @@ class SummaryStep extends StatelessWidget {
                           Text(
                             entry.value,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: theme.mainDarkBlue,
                             ),

@@ -243,7 +243,7 @@ class AllDataScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.blue.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,7 +254,7 @@ class AllDataScreen extends ConsumerWidget {
             child: Text(
               text.replaceAll('**', '') + penaltyText,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 height: 1.5,
                 color: theme.textGray,
               ),

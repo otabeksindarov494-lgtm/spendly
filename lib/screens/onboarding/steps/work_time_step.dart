@@ -48,7 +48,7 @@ class WorkTimeStep extends StatelessWidget {
               child: Text(
                 value,
                 style: TextStyle(
-                  fontSize: 21,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   color: theme.mainDarkBlue,
                 ),

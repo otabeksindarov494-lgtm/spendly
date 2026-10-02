@@ -55,7 +55,7 @@ class SettingsScreen extends ConsumerWidget {
                       Text(
                         'Mavzu',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: theme.mainDarkBlue,
                         ),
@@ -66,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
                   Text(
                     'Qurilma tizimining rangi olinmaydi — tanlovingiz '
                     'saqlanadi.',
-                    style: TextStyle(fontSize: 11, color: theme.textGray),
+                    style: TextStyle(fontSize: 12, color: theme.textGray),
                   ),
                   const SizedBox(height: 14),
                   Row(
@@ -94,7 +94,7 @@ class SettingsScreen extends ConsumerWidget {
                                   color: mode == option
                                       ? theme.blue
                                       : theme.inputColor,
-                                  borderRadius: BorderRadius.circular(13),
+                                  borderRadius: BorderRadius.circular(AppRadius.sm),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -148,7 +148,7 @@ class SettingsScreen extends ConsumerWidget {
                         Text(
                           'Ish vaqti eslatmalari',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: theme.mainDarkBlue,
                           ),
@@ -157,7 +157,7 @@ class SettingsScreen extends ConsumerWidget {
                         Text(
                           'Ish boshlanishidan 10 daqiqa oldin, boshlanganda '
                           'va tugaganda eslatadi. Dam olish kunlari jim.',
-                          style: TextStyle(fontSize: 11, color: theme.textGray),
+                          style: TextStyle(fontSize: 12, color: theme.textGray),
                         ),
                       ],
                     ),
@@ -184,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
                     child: Text(
                       'Interfeys tili',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: theme.mainDarkBlue,
                       ),
@@ -212,7 +212,7 @@ class SettingsScreen extends ConsumerWidget {
                     child: Text(
                       'Versiya',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: theme.mainDarkBlue,
                       ),

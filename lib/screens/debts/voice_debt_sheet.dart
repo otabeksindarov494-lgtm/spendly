@@ -187,7 +187,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                 const SizedBox(height: 12),
                 Text(
                   _errorMessage!,
-                  style: TextStyle(fontSize: 12, color: theme.red),
+                  style: TextStyle(fontSize: 13, color: theme.red),
                 ),
               ],
             ],
@@ -212,7 +212,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                   _Phase.listening => 'Tinglayapman',
                 },
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: theme.mainDarkBlue,
                 ),
@@ -231,7 +231,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                       _locale.isUzbek
                           ? 'O\'zbek tili'
                           : '${_locale.name} — o\'zbek tili topilmadi',
-                      style: TextStyle(fontSize: 11, color: theme.textGray),
+                      style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                   ],
                 ),
@@ -269,7 +269,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: theme.inputColor,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             border: Border.all(color: theme.borderGray),
           ),
           child: Text(
@@ -286,7 +286,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           const SizedBox(height: 14),
           Text(
             'Masalan:',
-            style: TextStyle(fontSize: 11, color: theme.textGray),
+            style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
           const SizedBox(height: 6),
           for (final String example in _examples)
@@ -295,7 +295,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
               child: Text(
                 '· $example',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 13,
                   fontStyle: FontStyle.italic,
                   color: theme.favoriteGray,
                 ),
@@ -383,7 +383,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       padding: const EdgeInsets.all(13),
       decoration: BoxDecoration(
         color: theme.inputColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: theme.borderGray),
       ),
       child: Column(
@@ -400,7 +400,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
               Expanded(
                 child: Text(
                   'Eshitilgan matn',
-                  style: TextStyle(fontSize: 11, color: theme.textGray),
+                  style: TextStyle(fontSize: 12, color: theme.textGray),
                 ),
               ),
               Container(
@@ -410,12 +410,12 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                 ),
                 decoration: BoxDecoration(
                   color: confidenceColor.withValues(alpha: 0.13),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: Text(
                   'Aniqlik ${(parsed.confidence * 100).round()}%',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: confidenceColor,
                   ),
@@ -427,7 +427,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           Text(
             parsed.rawText,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               height: 1.4,
               fontStyle: FontStyle.italic,
               color: theme.mainDarkBlue,
@@ -476,7 +476,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
             child: Text(
               message,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 12,
                 height: 1.45,
                 color: theme.textGray,
               ),
