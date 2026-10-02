@@ -15,6 +15,7 @@ import '../../widgets/common/app_button.dart';
 import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
+import '../../widgets/common/glass.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
 import '../../services/attendance_service.dart';
@@ -189,18 +190,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'Assalomu alaykum',
-          style: TextStyle(fontSize: 13, color: theme.textGray),
-        ),
+        Text('Assalomu alaykum', style: context.text.bodySmall),
         const SizedBox(height: 2),
         Text(
           firstName.isEmpty ? 'Spendly' : firstName,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: theme.mainDarkBlue,
-          ),
+          style: context.text.headlineSmall,
         ),
       ],
     );
@@ -213,14 +207,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ) {
     final bool isWorkDay = profile.workDays.contains(DateTime.now().weekday);
 
-    return Container(
+    // Sahifaning asosiy elementi — haqiqiy blur'li shisha panel.
+    return GlassPanel(
+      borderRadius: const BorderRadius.all(Radius.circular(AppRadius.xl)),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.background,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        // Juda nozik chegara — to'q gradient o'rniga tinch, toza yuza.
-        border: Border.all(color: theme.borderGray),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -234,7 +224,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(width: 8),
               Text(
                 Formatters.longDate(DateTime.now()),
-                style: TextStyle(fontSize: 13, color: context.theme.textGray),
+                style: context.text.labelMedium?.copyWith(
+                  color: context.theme.textGray,
+                ),
               ),
               const Spacer(),
               if (!isWorkDay)
@@ -244,14 +236,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.gray,
+                    color: theme.glassFill,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
-                    border: Border.all(color: theme.borderGray),
+                    border: Border.all(color: theme.borderGray, width: 0.6),
                   ),
-                  child: Text(
-                    'Dam olish kuni',
-                    style: TextStyle(fontSize: 12, color: theme.textGray),
-                  ),
+                  child: Text('Dam olish kuni', style: context.text.labelSmall),
                 ),
             ],
           ),
@@ -273,18 +262,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'Bugun dam olish kuni',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: context.theme.mainDarkBlue,
-          ),
-        ),
-        SizedBox(height: 6),
+        Text('Bugun dam olish kuni', style: context.text.titleLarge),
+        const SizedBox(height: 6),
         Text(
           'Bu kun uchun hisob-kitob va jarima yuritilmaydi.',
-          style: TextStyle(fontSize: 13, color: context.theme.textGray),
+          style: context.text.bodySmall,
         ),
       ],
     );
@@ -296,7 +278,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       children: <Widget>[
         Text(
           'Ish boshlanishi: ${profile.workStartTime}',
-          style: TextStyle(fontSize: 13, color: context.theme.textGray),
+          style: context.text.bodySmall,
         ),
         const SizedBox(height: 16),
         AppButton(
@@ -383,7 +365,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             '${Formatters.hours(today.workedHours)} ishladingiz'
                       : 'Bugungi ish kuni yopildi — '
                             '${Formatters.money(today.dailyEarning, currency: profile.currency)}',
-                  style: TextStyle(fontSize: 13, color: context.theme.green),
+                  style: context.text.labelMedium?.copyWith(
+                    color: context.theme.green,
+                  ),
                 ),
               ),
             ],
@@ -435,37 +419,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      'Jami ishlagan vaqt',
-                      style: TextStyle(fontSize: 12, color: theme.textGray),
-                    ),
+                    Text('Jami ishlagan vaqt', style: context.text.labelSmall),
                     const SizedBox(height: 4),
                     Text(
                       totalsAsync.isLoading && totalsAsync.value == null
                           ? '...'
                           : '${totals.workedHours.round()} soat',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        height: 1.1,
-                        color: theme.mainDarkBlue,
-                      ),
+                      style: context.text.headlineSmall,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       '${totals.recordedDays} kun davomida',
-                      style: TextStyle(fontSize: 12, color: theme.textGray),
+                      style: context.text.labelSmall,
                     ),
                     const SizedBox(height: 14),
-                    Text(
-                      'Shu oyda',
-                      style: TextStyle(fontSize: 12, color: theme.textGray),
-                    ),
+                    Text('Shu oyda', style: context.text.labelSmall),
                     const SizedBox(height: 3),
                     Text(
                       Formatters.hours(summary.workedHours),
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: context.text.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.blue,
                       ),
@@ -518,7 +490,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.35,
+      // 1.25: shkaladagi shrift bilan ikki qatorli yorliq sig'ishi uchun.
+      childAspectRatio: 1.25,
       children: <Widget>[
         StatCard(
           icon: IconsaxPlusLinear.timer_1,
@@ -568,17 +541,12 @@ class _HeroStat extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            label,
-            style: TextStyle(fontSize: 12, color: context.theme.textGray),
-          ),
+          Text(label, style: context.text.labelSmall),
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 16,
+            style: context.text.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: context.theme.mainDarkBlue,
             ),
           ),
         ],

@@ -67,7 +67,9 @@ class ProgressRing extends StatelessWidget {
                     centerCaption,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: size * 0.085,
+                      // Kamida 12 px — shkalaning eng kichik darajasi.
+                      fontSize: size * 0.1 < 12 ? 12 : size * 0.1,
+                      height: 1.25,
                       color: theme.textGray,
                     ),
                   ),
