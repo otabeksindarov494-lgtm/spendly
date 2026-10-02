@@ -6,6 +6,7 @@ import '../../models/attendance_model.dart';
 import '../../models/user_profile_model.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/core_providers.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
@@ -16,6 +17,7 @@ import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/glass.dart';
+import '../notifications/notifications_screen.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
 import '../../services/attendance_service.dart';
@@ -183,15 +185,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ? ''
         : fullName.split(RegExp(r'\s+')).first;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: <Widget>[
-        Text('Assalomu alaykum', style: context.text.bodySmall),
-        const SizedBox(height: 2),
-        Text(
-          // Ism yonida qo'l silkitish stikeri (iOS'da rangli emoji).
-          firstName.isEmpty ? 'Spendly' : '$firstName 👋',
-          style: context.text.headlineSmall,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Assalomu alaykum', style: context.text.bodySmall),
+              const SizedBox(height: 2),
+              Text(
+                // Ism yonida qo'l silkitish stikeri (iOS'da rangli emoji).
+                firstName.isEmpty ? 'Spendly' : '$firstName 👋',
+                style: context.text.headlineSmall,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        _NotificationBell(
+          unread: ref.watch(unreadNotificationsProvider),
+          onTap: () => NotificationsScreen.open(context),
         ),
       ],
     );
@@ -547,6 +560,79 @@ class _HeroStat extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Salomlashuv yonidagi qo'ng'iroqcha: shisha doira, o'qilmaganlar soni
+/// qizil nishonda.
+class _NotificationBell extends StatelessWidget {
+  const _NotificationBell({required this.unread, required this.onTap});
+
+  final int unread;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final CustomTheme theme = context.theme;
+
+    return Semantics(
+      button: true,
+      label: unread == 0
+          ? 'Bildirishnomalar'
+          : 'Bildirishnomalar, $unread ta yangi',
+      child: GestureDetector(
+        onTap: onTap,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              GlassSurface(
+                borderRadius: const BorderRadius.all(Radius.circular(24)),
+                blur: 16,
+                child: SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Icon(
+                    IconsaxPlusLinear.notification,
+                    size: 22,
+                    color: theme.mainDarkBlue,
+                  ),
+                ),
+              ),
+              if (unread > 0)
+                Positioned(
+                  top: -2,
+                  right: -2,
+                  child: Container(
+                    constraints: const BoxConstraints(minWidth: 20),
+                    height: 20,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: theme.blue,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: CustomTheme.onAccent,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      unread > 9 ? '9+' : '$unread',
+                      style: context.text.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: CustomTheme.onAccent,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -137,6 +137,15 @@ ikonka. Material Icons ishlatilmaydi.
 
 ### Salomlashuv (Bosh sahifa)
 - "Assalomu alaykum" ostida ism va yonida 👋 stikeri: "Azizbek 👋".
+- O'ng tomonda **qo'ng'iroqcha**: 48 px shisha doira (blur), Iconsax
+  `notification`; o'qilmaganlar soni brend qizilidagi nishonda (9 dan
+  ko'p — "9+"). Bosilganda "Bildirishnomalar" ekrani.
+
+### Bildirishnomalar ekrani
+- Shisha kartalar: tur ikonkasi (oldin — sariq `timer_1`, boshlanish —
+  qizil `login`, tugash — yashil `logout`), sarlavha, matn, vaqt
+  ("09:00", "Kecha, 09:00", "Dush, 1-sen, 09:00"). Yangilari tepada.
+- AppBar'da "Tozalash"; bo'sh holat — "Hozircha bildirishnoma yo'q".
 
 ### Pastki menyu
 - Shisha panel, yuqorida yorug' chiziq; ikki chetdan **12 px** padding.

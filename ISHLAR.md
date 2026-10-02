@@ -29,7 +29,7 @@ Tekshirish:
 
 ```sh
 flutter analyze     # 0 muammo
-flutter test        # 105 test
+flutter test        # 115 test
 ```
 
 ---
@@ -255,6 +255,13 @@ qilinadi. Sozlamalar → "Bildirishnomalar" switch. Server/push yo'q —
 `flutter_local_notifications`. Davomat oqimiga tegilmagan:
 `reminderSyncProvider` `AuthGate`da kuzatiladi.
 
+**Bildirishnomalar tarixi:** Bosh sahifadagi qo'ng'iroqcha → ro'yxat.
+Lokal eslatmalarda iOS "ko'rildi" ma'lumotini bermaydi, shuning uchun
+rejalashtirilgan eslatma vaqti o'tgach "kelgan" hisoblanadi
+(`NotificationHistory`, sof Dart + testlar). Telefonda saqlanadi
+(`SharedPreferences`), 30 kun; chiqilganda tozalanadi. Bildirishnoma
+tizim sozlamalaridan o'chirilgan bo'lsa ham ro'yxatda ko'rinadi.
+
 ---
 
 ## 4.10 Maosh algoritmi (2 x 2)
@@ -319,6 +326,8 @@ oylar o'z qiymati bilan qoladi.
 | `test/widget_test.dart` | Ilova karkasi, sukut mavzu, `uz` lokal, `CustomTheme` (brend rangi) |
 | `test/utils/reminder_planner_test.dart` | Eslatmalar: 3 ta vaqt, dam olish kunlari, check-in/out, o'tgan vaqt, tungi smena, ID'lar |
 | `test/widgets/phone_formatter_test.dart` | Telefon formati: guruhlash, +998, qisman yozish, o'chirish |
+| `test/widgets/app_toast_test.dart` | Toast tepada chiqadi, o'zi yo'qoladi, yangisi eskisini almashtiradi |
+| `test/utils/notification_history_test.dart` | Kelgan/kelmagan, qayta rejalashtirish, 30 kun, o'qilmaganlar soni, JSON |
 
 ---
 
