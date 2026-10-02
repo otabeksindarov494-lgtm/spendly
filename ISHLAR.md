@@ -6,6 +6,8 @@ turganini bir joyda saqlaydi. Yangi ish qo'shilganda shu faylga yoziladi.
 - Talablar hujjati: [`project.md`](project.md)
 - Ishlash qoidalari: [`flutter-cloaude.md`](flutter-cloaude.md)
 - O'rnatish qadamlari: [`README.md`](README.md)
+- **Dizayn tizimi (qulflangan):** [`DESIGN.md`](DESIGN.md) — foydalanuvchi
+  aytmaguncha dizayn o'zgartirilmaydi
 
 ---
 
@@ -27,7 +29,7 @@ Tekshirish:
 
 ```sh
 flutter analyze     # 0 muammo
-flutter test        # 89 test
+flutter test        # 105 test
 ```
 
 ---
@@ -228,6 +230,31 @@ klaviatura ko'rinishi. Switch ham Cupertino.
 > u tizim IME'si (Gboard va h.k.). Ilova boshqaradigan hamma narsa iOS
 > uslubiga keltirilgan.
 
+### 4.13 Dizayn: Liquid Glass (2026-10-03)
+To'liq tavsif va qiymatlar — [`DESIGN.md`](DESIGN.md) (**qulflangan**).
+Qisqacha:
+
+- **Shaffof oyna** kartalar (`GlassSurface`: yorug'lik gradienti, yaltiroq
+  qirra, haqiqiy blur) och yashil/och ko'k doiralar ustida.
+- Fon sahifa o'tish mavzusi orqali (`GlassPageTransitionsBuilder`) —
+  ekran fayllari fon chizmaydi, `Scaffold` shaffof.
+- **Brend qizili** `#EE1C25` (logoga mos); `blue` tokeni nomi tarixiy.
+- Yagona **shrift shkalasi** (12–32 px, `context.text.*`), 4 ta **radius**
+  (`AppRadius`). 157 ta qo'lda yozilgan o'lcham shkalaga keltirildi.
+- **Iconsax** ikonkalari, **Plus Jakarta Sans** shrifti.
+- Input: ingichka (0.6) to'liq chegara, och kulrang so'rovli hint,
+  telefon formati `+998 90 123 45 67`.
+- Onboarding: asosiy tugma eng pastda, "O'tkazib yuborish" uning ostida.
+
+### 4.14 Ish vaqti eslatmalari (lokal bildirishnoma)
+Ish kunlari: boshlanishdan 10 daqiqa oldin, boshlanganda va tugaganda.
+Keyingi 14 kun rejalashtiriladi (`ReminderPlanner`, sof Dart + testlar).
+Check-in qilingan kuni boshlanish eslatmalari, check-out qilinganda
+tugash eslatmasi chiqmaydi; dam olish kunlari jim; chiqilganda bekor
+qilinadi. Sozlamalar → "Bildirishnomalar" switch. Server/push yo'q —
+`flutter_local_notifications`. Davomat oqimiga tegilmagan:
+`reminderSyncProvider` `AuthGate`da kuzatiladi.
+
 ---
 
 ## 4.10 Maosh algoritmi (2 x 2)
@@ -267,6 +294,10 @@ oylar o'z qiymati bilan qoladi.
 |---|---|
 | `"oldim"` → `i_owe` (PRD'da `owed_to_me`) | PRD'ning o'zi savol belgisi qo'ygan. Alisherdan pul **olgan** bo'lsam, qarzdor — men. `voice_parser.dart:_detectType` da bir qatorda qaytariladi |
 | Gilroy → **Plus Jakarta Sans** | Gilroy tijoriy, Google Fonts'da yo'q. `AppTheme.fontStyle()` da almashtiriladi |
+| Ko'k aksent → **brend qizili** `#EE1C25` | Foydalanuvchi qarori: logo bilan bir brend. `blue` tokeni nomi saqlangan |
+| Tekis dizayn → **Liquid Glass** | Foydalanuvchi qarori, [`DESIGN.md`](DESIGN.md) |
+| Ikonkalar → **Iconsax** | Foydalanuvchi qarori (Figma Community'dagi professional to'plam) |
+| Ish vaqti **bildirishnomalari** qo'shildi | Foydalanuvchi so'rovi (PRD'da "kelajakda") |
 | `workDays`: 1 = Dushanba … 7 = Yakshanba | PRD "ES6 weekday" degan, lekin `[1..5]` = Dush–Juma Dart'ning `DateTime.weekday` bilan aynan mos |
 | Profil `users/{uid}` hujjatining o'zida | Hujjat ichida hujjat bo'lmaydi; PRD 3.3 qoidalari ham shunga mos |
 | Mavzuda "System" varianti yo'q | Foydalanuvchi so'rovi: sukut har doim Yorug' |
@@ -285,7 +316,9 @@ oylar o'z qiymati bilan qoladi.
 | `test/utils/salary_calculator_test.dart` | Stavkalar, kechikish, erta ketish, jarima chegaralari, tungi smena, nolga bo'lish himoyasi |
 | `test/utils/voice_parser_test.dart` | Summa (`30 ming`, `bir million ikki yuz ming`), yo'nalish, ism qo'shimchalari (`-dan`, `-ga`, `-ka`), apostrof variantlari |
 | `test/services/chat_service_test.dart` | `chatIdFor` barqarorligi, ishtirokchilar tartibi, avatar bosh harflari |
-| `test/widget_test.dart` | Ilova karkasi, sukut mavzu, `uz` lokal, `CustomTheme` |
+| `test/widget_test.dart` | Ilova karkasi, sukut mavzu, `uz` lokal, `CustomTheme` (brend rangi) |
+| `test/utils/reminder_planner_test.dart` | Eslatmalar: 3 ta vaqt, dam olish kunlari, check-in/out, o'tgan vaqt, tungi smena, ID'lar |
+| `test/widgets/phone_formatter_test.dart` | Telefon formati: guruhlash, +998, qisman yozish, o'chirish |
 
 ---
 
@@ -294,5 +327,9 @@ oylar o'z qiymati bilan qoladi.
 - Ro'yxatdan o'tish → onboarding → check-in oqimi **real qurilmada
   uchidan-uchiga** sinalmagan.
 - Kamera, mikrofon va o'zbek tilida nutqni tanish — qo'lda sinash kerak.
-- iOS build: `pod install` o'tgan, lekin to'liq iOS build qilinmagan
-  (Android APK build tasdiqlangan).
+- iOS simulator build va ishga tushirish tasdiqlangan (iPhone 16e).
+  Android: bildirishnoma uchun manifest/desugaring o'zgarishlari build
+  bilan **tekshirilmagan** (foydalanuvchi qarori: faqat iOS).
+- Bildirishnomalar real vaqtda kelishi — qo'lda sinash kerak.
+- Ichki ekranlar (Bosh sahifa, Hisobot, Qarzlar, Chat, Profil) yangi
+  dizaynda skrinshot bilan ko'rilmagan — faqat analyze/test.

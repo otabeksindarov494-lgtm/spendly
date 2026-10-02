@@ -2,7 +2,8 @@
 
 Shaxsiy moliya va ish vaqti nazorati ilovasi (Flutter + Firebase).
 To'liq talablar: [`project.md`](project.md). Ishlash qoidalari:
-[`flutter-cloaude.md`](flutter-cloaude.md).
+[`flutter-cloaude.md`](flutter-cloaude.md). Dizayn tizimi (qulflangan):
+[`DESIGN.md`](DESIGN.md).
 
 ## Nima qiladi
 
@@ -10,7 +11,7 @@ To'liq talablar: [`project.md`](project.md). Ishlash qoidalari:
 - **Maosh** — kechikish va erta ketish jarimalarini avtomatik hisoblash
 - **Hisobot** — oylik statistika va kunlik yozuvlar
 - **Qarzlar** — ovoz orqali ("Alisherdan 30 ming oldim") yoki qo'lda kiritish
-- **Profil** — sozlamalar, Light/Dark/System mavzu
+- **Profil** — sozlamalar, Yorug'/Tungi mavzu, ish vaqti eslatmalari
 
 ## Ishga tushirish
 
