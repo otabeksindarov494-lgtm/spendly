@@ -9,6 +9,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/app_text_field.dart';
+import '../../widgets/common/glass.dart';
 
 /// Kirish va ro'yxatdan o'tish (PROJECT.md 1-bosqich).
 ///
@@ -148,9 +149,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           _buildHeader(),
-                          const SizedBox(height: 44),
-                          _buildForm(),
-                          const SizedBox(height: 44),
+                          const SizedBox(height: 32),
+                          // Forma va asosiy tugma — haqiqiy blur'li shisha
+                          // panelda; orqadagi rangli nurlar xiralashib
+                          // ko'rinadi.
+                          GlassPanel(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(AppRadius.xl),
+                            ),
+                            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                _buildForm(),
+                                const SizedBox(height: 24),
+                                AppButton(
+                                  label: _isRegisterMode
+                                      ? 'Hisob yaratish'
+                                      : 'Kirish',
+                                  isLoading: _isLoading,
+                                  onPressed: _submit,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 28),
                           _buildFooter(),
                         ],
                       ),
@@ -286,19 +309,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// 3-zona: asosiy tugma, rejim almashtirish va huquqiy matn.
+  /// 3-zona: rejim almashtirish va huquqiy matn.
   Widget _buildFooter() {
     final CustomTheme theme = context.theme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        AppButton(
-          label: _isRegisterMode ? 'Hisob yaratish' : 'Kirish',
-          isLoading: _isLoading,
-          onPressed: _submit,
-        ),
-        const SizedBox(height: 20),
         Row(
           children: <Widget>[
             Expanded(child: Divider(color: theme.borderGray, height: 1)),

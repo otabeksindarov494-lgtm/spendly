@@ -22,15 +22,22 @@ class GlassBackground extends StatelessWidget {
       decoration: BoxDecoration(gradient: theme.backgroundGradient),
       child: Stack(
         children: <Widget>[
+          // Uchta katta nur: shisha kartalar ortida rang tovlanishi
+          // ko'rinishi uchun ataylab ekran ichiga kirib turadi.
           Positioned(
-            top: -140,
-            right: -120,
-            child: _Glow(color: theme.glowPrimary, size: 380),
+            top: -90,
+            right: -110,
+            child: _Glow(color: theme.glowPrimary, size: 420),
           ),
           Positioned(
-            bottom: -160,
-            left: -140,
-            child: _Glow(color: theme.glowSecondary, size: 420),
+            top: 260,
+            left: -170,
+            child: _Glow(color: theme.glowSecondary, size: 380),
+          ),
+          Positioned(
+            bottom: -120,
+            right: -90,
+            child: _Glow(color: theme.glowPrimary, size: 340),
           ),
           Positioned.fill(child: child),
         ],

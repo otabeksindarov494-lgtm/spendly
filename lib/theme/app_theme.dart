@@ -175,13 +175,13 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     backgroundGradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[Color(0xFFFFF4F4), Color(0xFFFFFBFB), Color(0xFFF5F3FF)],
+      colors: <Color>[Color(0xFFFFE1E4), Color(0xFFFFF0F1), Color(0xFFE9E3FF)],
     ),
-    glowPrimary: Color(0x33E5232F),
-    glowSecondary: Color(0x2B8B7CF6),
-    glassFill: Color(0xB8FFFFFF),
-    glassBorder: Color(0xE6FFFFFF),
-    glassShadow: Color(0x148A1C24),
+    glowPrimary: Color(0x99F0303C),
+    glowSecondary: Color(0x8C8B7CF6),
+    glassFill: Color(0x73FFFFFF),
+    glassBorder: Color(0xB3FFFFFF),
+    glassShadow: Color(0x1F8A1C24),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -209,12 +209,12 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     backgroundGradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[Color(0xFF1C1214), Color(0xFF121214), Color(0xFF15131D)],
+      colors: <Color>[Color(0xFF241316), Color(0xFF141216), Color(0xFF1A1530)],
     ),
-    glowPrimary: Color(0x40E5232F),
-    glowSecondary: Color(0x338B7CF6),
-    glassFill: Color(0x17FFFFFF),
-    glassBorder: Color(0x24FFFFFF),
+    glowPrimary: Color(0x80E5232F),
+    glowSecondary: Color(0x738B7CF6),
+    glassFill: Color(0x1AFFFFFF),
+    glassBorder: Color(0x33FFFFFF),
     glassShadow: Color(0x66000000),
   );
 
