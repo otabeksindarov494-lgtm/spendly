@@ -187,13 +187,13 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       end: Alignment.bottomRight,
       colors: <Color>[Color(0xFFF4F5F9), Color(0xFFFBFBFD), Color(0xFFEFF1F6)],
     ),
-    glassFill: Color(0xD1FFFFFF),
+    glassFill: Color(0x66FFFFFF),
     glassBorder: Color(0xFFFFFFFF),
     glassShadow: Color(0x1A1B2140),
-    glassFillLow: Color(0x80FFFFFF),
-    glassEdgeShade: Color(0x261B2140),
+    glassFillLow: Color(0x26FFFFFF),
+    glassEdgeShade: Color(0x331B2140),
     backdropLight: Color(0xFFFFFFFF),
-    backdropShade: Color(0xFFD5DAE3),
+    backdropShade: Color(0xFFC3CAD6),
   );
 
   static const CustomTheme dark = CustomTheme(

@@ -7,8 +7,9 @@ import 'glass.dart';
 /// shisha yuza ([GlassSurface]): yorug'lik gradienti, yaltiroq qirra,
 /// yumshoq soya.
 ///
-/// Haqiqiy blur ishlatilmaydi (ro'yxatlarda ko'p karta bo'ladi); kerak
-/// bo'lsa — `GlassPanel`.
+/// Haqiqiy blur bilan — "shaffof oyna" ko'rinishi uchun (foydalanuvchi
+/// talabi). Ro'yxatlarda ko'p karta bo'lsa ham iOS (Impeller) ko'taradi;
+/// sekinlik sezilsa birinchi navbatda shu yerda blur kamaytiriladi.
 ///
 /// Ishlatilishi: Home, Hisobot, Qarzlar, Profil ekranlari.
 class AppCard extends StatelessWidget {
@@ -31,9 +32,11 @@ class AppCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final BorderRadius radius = BorderRadius.circular(borderRadius);
 
+    // Shaffof oyna: orqadagi narsa xiralashib ko'rinadi (haqiqiy blur).
     return GlassSurface(
       borderRadius: radius,
       showBorder: showBorder,
+      blur: 16,
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
