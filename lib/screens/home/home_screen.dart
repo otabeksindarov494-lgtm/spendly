@@ -20,6 +20,7 @@ import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
 import '../../services/attendance_service.dart';
 import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/progress_dialog.dart';
 import '../../widgets/common/progress_ring.dart';
 import '../../widgets/common/stat_bar.dart';
@@ -82,18 +83,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (!mounted) return;
       // Yig'ma raqamlar aggregate so'rov orqali olinadi — o'zi yangilanmaydi.
       ref.invalidate(attendanceTotalsProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isCheckIn ? 'Kelganingiz qayd etildi' : 'Ketganingiz qayd etildi',
-          ),
-        ),
+      AppToast.show(
+        context,
+        isCheckIn ? 'Kelganingiz qayd etildi' : 'Ketganingiz qayd etildi',
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Xatolik: $e')));
+      AppToast.show(context, 'Xatolik: $e', isError: true);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }
@@ -193,7 +189,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text('Assalomu alaykum', style: context.text.bodySmall),
         const SizedBox(height: 2),
         Text(
-          firstName.isEmpty ? 'Spendly' : firstName,
+          // Ism yonida qo'l silkitish stikeri (iOS'da rangli emoji).
+          firstName.isEmpty ? 'Spendly' : '$firstName 👋',
           style: context.text.headlineSmall,
         ),
       ],
