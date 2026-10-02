@@ -25,6 +25,12 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     required this.gradient,
     required this.shimmerBase,
     required this.shimmerHighlight,
+    required this.backgroundGradient,
+    required this.glowPrimary,
+    required this.glowSecondary,
+    required this.glassFill,
+    required this.glassBorder,
+    required this.glassShadow,
   });
 
   /// Kartalar, sahifa foni.
@@ -63,7 +69,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   /// Xato, qarz (siz qarzsiz), manfiy.
   final Color red;
 
-  /// Asosiy aksent, tugmalar.
+  /// Asosiy brend aksenti: tugmalar, faol tab, havolalar.
+  ///
+  /// Nomi tarixiy — dastlab ko'k edi, endi logoga mos qizil. Nom
+  /// o'zgartirilmadi, chunki 70+ joyda ishlatiladi.
   final Color blue;
 
   /// Muvaffaqiyat, ijobiy, "sizdan qarz".
@@ -77,6 +86,24 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
 
   /// Shimmer yorug' chizig'i.
   final Color shimmerHighlight;
+
+  // --- Glassmorphism ---------------------------------------------------------
+
+  /// Sahifa foni — shisha kartalar ostidagi yumshoq gradient.
+  final LinearGradient backgroundGradient;
+
+  /// Fondagi xira rangli dog'lar (shisha effekti shular ustida ko'rinadi).
+  final Color glowPrimary;
+  final Color glowSecondary;
+
+  /// Shisha karta to'ldirishi — yarim shaffof.
+  final Color glassFill;
+
+  /// Shisha karta chetidagi yorug' chiziq.
+  final Color glassBorder;
+
+  /// Shisha karta soyasi.
+  final Color glassShadow;
 
   // --- Light ---------------------------------------------------------------
   static const Color _lightBackground = Color(0xFFFFFFFF);
@@ -115,8 +142,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
 
   // --- Har ikkala mavzuda bir xil ------------------------------------------
   static const Color _red = Color(0xFFF55556);
-  static const Color _blue = Color(0xFF3083FF);
   static const Color _green = Color(0xFF46E180);
+
+  /// Brend qizili — logodagi qizildan biroz yumshoqroq, ko'zni charchatmaydi.
+  static const Color _brand = Color(0xFFE5232F);
 
   static const CustomTheme light = CustomTheme(
     background: _lightBackground,
@@ -131,15 +160,25 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     textMainDarkBlue: _white,
     yellow: _lightYellow,
     red: _red,
-    blue: _blue,
+    blue: _brand,
     green: _green,
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[_blue, _navy],
+      colors: <Color>[_brand, Color(0xFFB0121C)],
     ),
     shimmerBase: _lightBorderGray,
     shimmerHighlight: _lightGray,
+    backgroundGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: <Color>[Color(0xFFFFF4F4), Color(0xFFFFFBFB), Color(0xFFF5F3FF)],
+    ),
+    glowPrimary: Color(0x33E5232F),
+    glowSecondary: Color(0x2B8B7CF6),
+    glassFill: Color(0xB8FFFFFF),
+    glassBorder: Color(0xE6FFFFFF),
+    glassShadow: Color(0x148A1C24),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -155,15 +194,25 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     textMainDarkBlue: _navy,
     yellow: _darkYellow,
     red: _red,
-    blue: _blue,
+    blue: _brand,
     green: _green,
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[_blue, _darkInputColor],
+      colors: <Color>[_brand, Color(0xFF7A0E15)],
     ),
     shimmerBase: _darkInputColor,
     shimmerHighlight: _darkBorderGray,
+    backgroundGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: <Color>[Color(0xFF1C1214), Color(0xFF121214), Color(0xFF15131D)],
+    ),
+    glowPrimary: Color(0x40E5232F),
+    glowSecondary: Color(0x338B7CF6),
+    glassFill: Color(0x17FFFFFF),
+    glassBorder: Color(0x24FFFFFF),
+    glassShadow: Color(0x66000000),
   );
 
   @override
@@ -185,6 +234,12 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     LinearGradient? gradient,
     Color? shimmerBase,
     Color? shimmerHighlight,
+    LinearGradient? backgroundGradient,
+    Color? glowPrimary,
+    Color? glowSecondary,
+    Color? glassFill,
+    Color? glassBorder,
+    Color? glassShadow,
   }) {
     return CustomTheme(
       background: background ?? this.background,
@@ -204,6 +259,12 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       gradient: gradient ?? this.gradient,
       shimmerBase: shimmerBase ?? this.shimmerBase,
       shimmerHighlight: shimmerHighlight ?? this.shimmerHighlight,
+      backgroundGradient: backgroundGradient ?? this.backgroundGradient,
+      glowPrimary: glowPrimary ?? this.glowPrimary,
+      glowSecondary: glowSecondary ?? this.glowSecondary,
+      glassFill: glassFill ?? this.glassFill,
+      glassBorder: glassBorder ?? this.glassBorder,
+      glassShadow: glassShadow ?? this.glassShadow,
     );
   }
 
@@ -220,18 +281,49 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       bottomNavBg: Color.lerp(bottomNavBg, other.bottomNavBg, t)!,
       bottomNavBlue: Color.lerp(bottomNavBlue, other.bottomNavBlue, t)!,
       mainDarkBlue: Color.lerp(mainDarkBlue, other.mainDarkBlue, t)!,
-      textMainDarkBlue:
-          Color.lerp(textMainDarkBlue, other.textMainDarkBlue, t)!,
+      textMainDarkBlue: Color.lerp(
+        textMainDarkBlue,
+        other.textMainDarkBlue,
+        t,
+      )!,
       yellow: Color.lerp(yellow, other.yellow, t)!,
       red: Color.lerp(red, other.red, t)!,
       blue: Color.lerp(blue, other.blue, t)!,
       green: Color.lerp(green, other.green, t)!,
       gradient: LinearGradient.lerp(gradient, other.gradient, t)!,
       shimmerBase: Color.lerp(shimmerBase, other.shimmerBase, t)!,
-      shimmerHighlight:
-          Color.lerp(shimmerHighlight, other.shimmerHighlight, t)!,
+      shimmerHighlight: Color.lerp(
+        shimmerHighlight,
+        other.shimmerHighlight,
+        t,
+      )!,
+      backgroundGradient: LinearGradient.lerp(
+        backgroundGradient,
+        other.backgroundGradient,
+        t,
+      )!,
+      glowPrimary: Color.lerp(glowPrimary, other.glowPrimary, t)!,
+      glowSecondary: Color.lerp(glowSecondary, other.glowSecondary, t)!,
+      glassFill: Color.lerp(glassFill, other.glassFill, t)!,
+      glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
+      glassShadow: Color.lerp(glassShadow, other.glassShadow, t)!,
     );
   }
+}
+
+/// Burchak radiuslari — butun ilovada faqat shu to'rttasi ishlatiladi.
+abstract final class AppRadius {
+  /// Kichik elementlar: chip, badge, ikonka foni.
+  static const double sm = 12;
+
+  /// Tugma, input, ro'yxat qatori.
+  static const double md = 16;
+
+  /// Karta.
+  static const double lg = 22;
+
+  /// Bottom sheet, katta "hero" karta.
+  static const double xl = 28;
 }
 
 /// `AppTheme.light` / `AppTheme.dark` — `MaterialApp`ga beriladigan mavzular.
@@ -270,11 +362,14 @@ abstract final class AppTheme {
     );
 
     final TextStyle base = fontStyle();
-    final TextTheme textTheme = fontTextTheme(
-      ThemeData(brightness: brightness).textTheme.apply(
-            bodyColor: c.mainDarkBlue,
-            displayColor: c.mainDarkBlue,
-          ),
+    final TextTheme textTheme = _typeScale(
+      fontTextTheme(
+        ThemeData(brightness: brightness).textTheme.apply(
+          bodyColor: c.mainDarkBlue,
+          displayColor: c.mainDarkBlue,
+        ),
+      ),
+      c,
     );
 
     return ThemeData(
@@ -284,56 +379,60 @@ abstract final class AppTheme {
       fontFamily: base.fontFamily,
       fontFamilyFallback: base.fontFamilyFallback,
       colorScheme: scheme,
-      scaffoldBackgroundColor: c.inputColor,
+      // Gradient fonning o'rta rangi — `GlassBackground` qo'yilmagan
+      // ekranlarda ham umumiy tus saqlanadi.
+      scaffoldBackgroundColor: c.backgroundGradient.colors[1],
       canvasColor: c.background,
       dividerColor: c.borderGray,
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[c],
       appBarTheme: AppBarTheme(
-        backgroundColor: c.inputColor,
+        // Shaffof — ostidagi sahifa foni ko'rinadi.
+        backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         foregroundColor: c.mainDarkBlue,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: textTheme.titleLarge?.copyWith(
-          fontSize: 17,
-          fontWeight: FontWeight.w700,
-          color: c.mainDarkBlue,
-        ),
+        titleTextStyle: textTheme.titleMedium,
       ),
       cardTheme: CardThemeData(
-        color: c.background,
+        color: c.glassFill,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: BorderSide(color: c.glassBorder),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: c.inputColor,
-        hintStyle: TextStyle(fontSize: 13, color: c.textGray),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        hintStyle: textTheme.bodyMedium?.copyWith(color: c.textGray),
+        errorStyle: textTheme.labelSmall?.copyWith(color: c.red),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide(color: c.borderGray),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide(color: c.borderGray),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide(color: c.blue, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide(color: c.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide(color: c.red, width: 1.5),
         ),
       ),
@@ -348,22 +447,28 @@ abstract final class AppTheme {
         backgroundColor: c.background,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.xl),
+          ),
         ),
       ),
       dialogTheme: DialogThemeData(
         backgroundColor: c.background,
         surfaceTintColor: Colors.transparent,
+        titleTextStyle: textTheme.titleMedium,
+        contentTextStyle: textTheme.bodyMedium,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: c.mainDarkBlue,
-        contentTextStyle: TextStyle(color: c.textMainDarkBlue),
+        contentTextStyle: textTheme.labelLarge?.copyWith(
+          color: c.textMainDarkBlue,
+        ),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
@@ -372,6 +477,84 @@ abstract final class AppTheme {
       ),
     );
   }
+
+  /// Yagona shrift shkalasi. Ekranlar o'lchamni qo'lda yozmasdan
+  /// `context.text.titleMedium` kabi shu darajalardan foydalanadi.
+  ///
+  /// | Daraja          | O'lcham | Vazifasi                               |
+  /// |-----------------|---------|----------------------------------------|
+  /// | displaySmall    | 32 w700 | Asosiy raqam (oylik, taymer)            |
+  /// | headlineSmall   | 24 w700 | Ekran sarlavhasi                        |
+  /// | titleLarge      | 20 w700 | Karta ichidagi katta qiymat             |
+  /// | titleMedium     | 17 w600 | AppBar, bo'lim sarlavhasi               |
+  /// | titleSmall      | 15 w600 | Ro'yxat qatori sarlavhasi               |
+  /// | bodyLarge       | 16 w500 | Kiritilgan matn                         |
+  /// | bodyMedium      | 15 w400 | Oddiy matn, hint                        |
+  /// | bodySmall       | 13 w400 | Ikkinchi darajali matn (kulrang)        |
+  /// | labelLarge      | 15 w600 | Tugma yozuvi                            |
+  /// | labelMedium     | 13 w600 | Input yorlig'i, chip                    |
+  /// | labelSmall      | 12 w500 | Eng kichik matn — undan kichigi yo'q    |
+  static TextTheme _typeScale(TextTheme t, CustomTheme c) {
+    TextStyle? s(
+      TextStyle? style,
+      double size,
+      FontWeight weight, {
+      double height = 1.3,
+      double letterSpacing = 0,
+      Color? color,
+    }) => style?.copyWith(
+      fontSize: size,
+      fontWeight: weight,
+      height: height,
+      letterSpacing: letterSpacing,
+      color: color ?? c.mainDarkBlue,
+      // Raqamlar bir xil kenglikda — summa va taymer "sakramaydi".
+      fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
+    );
+
+    return t.copyWith(
+      displaySmall: s(
+        t.displaySmall,
+        32,
+        FontWeight.w700,
+        height: 1.15,
+        letterSpacing: -0.8,
+      ),
+      headlineSmall: s(
+        t.headlineSmall,
+        24,
+        FontWeight.w700,
+        height: 1.2,
+        letterSpacing: -0.5,
+      ),
+      titleLarge: s(
+        t.titleLarge,
+        20,
+        FontWeight.w700,
+        height: 1.25,
+        letterSpacing: -0.3,
+      ),
+      titleMedium: s(t.titleMedium, 17, FontWeight.w600, letterSpacing: -0.2),
+      titleSmall: s(t.titleSmall, 15, FontWeight.w600),
+      bodyLarge: s(t.bodyLarge, 16, FontWeight.w500, height: 1.4),
+      bodyMedium: s(t.bodyMedium, 15, FontWeight.w400, height: 1.45),
+      bodySmall: s(
+        t.bodySmall,
+        13,
+        FontWeight.w400,
+        height: 1.4,
+        color: c.textGray,
+      ),
+      labelLarge: s(t.labelLarge, 15, FontWeight.w600, letterSpacing: 0.1),
+      labelMedium: s(t.labelMedium, 13, FontWeight.w600),
+      labelSmall: s(t.labelSmall, 12, FontWeight.w500, color: c.textGray),
+    );
+  }
+}
+
+/// `context.text.titleMedium` — shrift shkalasiga qisqa murojaat.
+extension AppTextX on BuildContext {
+  TextTheme get text => Theme.of(this).textTheme;
 }
 
 /// `context.theme.blue` ko'rinishida ranglarga murojaat qilish uchun.

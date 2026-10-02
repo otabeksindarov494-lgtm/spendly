@@ -91,7 +91,8 @@ void main() {
         ),
       );
       // Ranglar hardcode qilinmagan — hammasi kengaytmadan olinadi.
-      expect(resolved.blue, const Color(0xFF3083FF));
+      // `blue` — tarixiy nom; qiymati logoga mos brend qizili.
+      expect(resolved.blue, const Color(0xFFE5232F));
       expect(resolved.gradient.colors.length, 2);
     }
   });
