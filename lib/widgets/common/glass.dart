@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 
 /// Har bir sahifa ostidagi fon: neytral gradient, rangsiz "kumush"
-/// shakllar va ikki burchakdagi dumaloq yalpiz/osmon doiralari.
+/// shakllar va ikki burchakdagi dumaloq och yashil/och ko'k doiralar.
 ///
 /// Shaffof shisha yuzalar orqali ular xiralashib ko'rinib, "oyna"
 /// effektini beradi. Blur emas, radial gradient — tez.
@@ -33,8 +33,8 @@ class GlassBackground extends StatelessWidget {
             right: -150,
             child: _Shape(color: theme.backdropShade, size: 340),
           ),
-          // Ikki burchakdagi dumaloq rangli doiralar: yalpiz yuqori-o'ngda,
-          // osmon ko'ki pastki-chapda. Shaffof shisha orqali xiralashib ko'rinadi.
+          // Ikki burchakdagi dumaloq rangli doiralar: och yashil yuqori-o'ngda,
+          // och ko'k pastki-chapda. Shaffof shisha orqali xiralashib ko'rinadi.
           Positioned(
             top: -70,
             right: -70,

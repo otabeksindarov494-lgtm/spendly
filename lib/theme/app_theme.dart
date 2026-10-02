@@ -120,8 +120,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   final Color backdropLight;
   final Color backdropShade;
 
-  /// Ikki burchakdagi dumaloq rangli doiralar: yalpiz (yuqori-o'ng) va
-  /// osmon ko'ki (pastki-chap). Shaffof shisha orqali xiralashib ko'rinadi.
+  /// Ikki burchakdagi dumaloq rangli doiralar: och yashil (yuqori-o'ng) va
+  /// och ko'k (pastki-chap). Shaffof shisha orqali xiralashib ko'rinadi.
   final Color orbTopRight;
   final Color orbBottomLeft;
 
@@ -200,9 +200,9 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassFillLow: Color(0x26FFFFFF),
     glassEdgeShade: Color(0x331B2140),
     backdropLight: Color(0xFFFFFFFF),
-    backdropShade: Color(0xFFC3CAD6),
-    orbTopRight: Color(0x595EEAD4),
-    orbBottomLeft: Color(0x597DD3FC),
+    backdropShade: Color(0xFFCFF4EE),
+    orbTopRight: Color(0xCCA7F3D0),
+    orbBottomLeft: Color(0xCCBAE6FD),
   );
 
   static const CustomTheme dark = CustomTheme(
