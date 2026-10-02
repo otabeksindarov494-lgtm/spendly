@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Har bir sahifa ostidagi yumshoq gradient fon.
+/// Har bir sahifa ostidagi toza neytral gradient fon.
 ///
-/// Shisha kartalar shu fon ustida "muzli shisha" bo'lib ko'rinadi. Dog'lar
-/// `ImageFilter.blur` emas, radial gradient bilan chizilgan — telefonni
-/// og'irlashtirmaydi.
+/// Rangli nurlar ataylab yo'q (foydalanuvchi so'rovi) — shisha ko'rinishi
+/// yarim shaffof oq qatlam, yorug' chegara, yumshoq soya va blur'dan keladi.
 class GlassBackground extends StatelessWidget {
   const GlassBackground({super.key, required this.child});
 
@@ -16,61 +15,16 @@ class GlassBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CustomTheme theme = context.theme;
-
     return DecoratedBox(
-      decoration: BoxDecoration(gradient: theme.backgroundGradient),
-      child: Stack(
-        children: <Widget>[
-          // Lavanda nur: shisha kartalar ortida rang tovlanishi ko'rinishi
-          // uchun ataylab ekran ichiga kirib turadi. (Qizil nurlar
-          // foydalanuvchi so'rovi bilan olib tashlangan.)
-          Positioned(
-            top: 260,
-            left: -170,
-            child: _Glow(color: theme.glowSecondary, size: 380),
-          ),
-          Positioned.fill(child: child),
-        ],
-      ),
-    );
-  }
-}
-
-class _Glow extends StatelessWidget {
-  const _Glow({required this.color, required this.size});
-
-  final Color color;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          // Bosqichma-bosqich so'nish — aniq chegara ("dog'") qolmaydi,
-          // yumshoq yorug'likdek ko'rinadi.
-          gradient: RadialGradient(
-            colors: <Color>[
-              color,
-              color.withValues(alpha: color.a * 0.55),
-              color.withValues(alpha: color.a * 0.18),
-              color.withValues(alpha: 0),
-            ],
-            stops: const <double>[0, 0.35, 0.7, 1],
-          ),
-        ),
-      ),
+      decoration: BoxDecoration(gradient: context.theme.backgroundGradient),
+      child: child,
     );
   }
 }
 
 /// Haqiqiy blur'li shisha panel — faqat bir nechta asosiy joyda
-/// (pastki menyu, bosh kartalar, bottom sheet). Ro'yxatlardagi har bir
-/// kartada ishlatilmaydi: `BackdropFilter` qimmat amal.
+/// (bosh kartalar, forma paneli). Ro'yxatlardagi har bir kartada
+/// ishlatilmaydi: `BackdropFilter` qimmat amal.
 class GlassPanel extends StatelessWidget {
   const GlassPanel({
     super.key,
@@ -91,17 +45,29 @@ class GlassPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
 
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.glassFill,
-            borderRadius: borderRadius,
-            border: showBorder ? Border.all(color: theme.glassBorder) : null,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: theme.glassShadow,
+            blurRadius: 30,
+            offset: const Offset(0, 12),
           ),
-          child: Padding(padding: padding, child: child),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.glassFill,
+              borderRadius: borderRadius,
+              border: showBorder ? Border.all(color: theme.glassBorder) : null,
+            ),
+            child: Padding(padding: padding, child: child),
+          ),
         ),
       ),
     );

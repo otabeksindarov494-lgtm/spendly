@@ -29,8 +29,6 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     required this.shimmerBase,
     required this.shimmerHighlight,
     required this.backgroundGradient,
-    required this.glowPrimary,
-    required this.glowSecondary,
     required this.glassFill,
     required this.glassBorder,
     required this.glassShadow,
@@ -94,10 +92,6 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
 
   /// Sahifa foni — shisha kartalar ostidagi yumshoq gradient.
   final LinearGradient backgroundGradient;
-
-  /// Fondagi xira rangli dog'lar (shisha effekti shular ustida ko'rinadi).
-  final Color glowPrimary;
-  final Color glowSecondary;
 
   /// Shisha karta to'ldirishi — yarim shaffof.
   final Color glassFill;
@@ -175,13 +169,11 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     backgroundGradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[Color(0xFFFFE1E4), Color(0xFFFFF0F1), Color(0xFFE9E3FF)],
+      colors: <Color>[Color(0xFFF4F5F9), Color(0xFFFBFBFD), Color(0xFFEFF1F6)],
     ),
-    glowPrimary: Color(0x73FF7A85),
-    glowSecondary: Color(0x8C8B7CF6),
-    glassFill: Color(0x73FFFFFF),
-    glassBorder: Color(0xB3FFFFFF),
-    glassShadow: Color(0x1F8A1C24),
+    glassFill: Color(0xA6FFFFFF),
+    glassBorder: Color(0xF2FFFFFF),
+    glassShadow: Color(0x141B2140),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -209,10 +201,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     backgroundGradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[Color(0xFF241316), Color(0xFF141216), Color(0xFF1A1530)],
+      colors: <Color>[Color(0xFF16171B), Color(0xFF111215), Color(0xFF181A20)],
     ),
-    glowPrimary: Color(0x59FF3B42),
-    glowSecondary: Color(0x738B7CF6),
     glassFill: Color(0x1AFFFFFF),
     glassBorder: Color(0x33FFFFFF),
     glassShadow: Color(0x66000000),
@@ -238,8 +228,6 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     Color? shimmerBase,
     Color? shimmerHighlight,
     LinearGradient? backgroundGradient,
-    Color? glowPrimary,
-    Color? glowSecondary,
     Color? glassFill,
     Color? glassBorder,
     Color? glassShadow,
@@ -263,8 +251,6 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       shimmerBase: shimmerBase ?? this.shimmerBase,
       shimmerHighlight: shimmerHighlight ?? this.shimmerHighlight,
       backgroundGradient: backgroundGradient ?? this.backgroundGradient,
-      glowPrimary: glowPrimary ?? this.glowPrimary,
-      glowSecondary: glowSecondary ?? this.glowSecondary,
       glassFill: glassFill ?? this.glassFill,
       glassBorder: glassBorder ?? this.glassBorder,
       glassShadow: glassShadow ?? this.glassShadow,
@@ -305,8 +291,6 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
         other.backgroundGradient,
         t,
       )!,
-      glowPrimary: Color.lerp(glowPrimary, other.glowPrimary, t)!,
-      glowSecondary: Color.lerp(glowSecondary, other.glowSecondary, t)!,
       glassFill: Color.lerp(glassFill, other.glassFill, t)!,
       glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
       glassShadow: Color.lerp(glassShadow, other.glassShadow, t)!,
