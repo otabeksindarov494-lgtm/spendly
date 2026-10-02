@@ -80,9 +80,8 @@ class _Shape extends StatelessWidget {
   }
 }
 
-/// Dumaloq rangli doira: markazdan chetning ~60% igacha deyarli to'liq
-/// rangda, faqat eng chekkasida yumshoq so'nadi — shaklsiz dog' emas,
-/// aniq doira bo'lib ko'rinadi.
+/// Dumaloq rangli doira: markazdan chetning ~45% igacha to'liq rangda,
+/// so'ng mayin eriydi — dumaloq shakl saqlanadi, chekka yumshoq.
 class _Orb extends StatelessWidget {
   const _Orb({required this.color, required this.size});
 
@@ -100,11 +99,11 @@ class _Orb extends StatelessWidget {
           gradient: RadialGradient(
             colors: <Color>[
               color,
-              color.withValues(alpha: color.a * 0.85),
-              color.withValues(alpha: color.a * 0.3),
+              color.withValues(alpha: color.a * 0.7),
+              color.withValues(alpha: color.a * 0.25),
               color.withValues(alpha: 0),
             ],
-            stops: const <double>[0, 0.6, 0.85, 1],
+            stops: const <double>[0, 0.45, 0.8, 1],
           ),
         ),
       ),

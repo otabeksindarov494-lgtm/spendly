@@ -201,8 +201,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassEdgeShade: Color(0x331B2140),
     backdropLight: Color(0xFFFFFFFF),
     backdropShade: Color(0xFFCFF4EE),
-    orbTopRight: Color(0xB3A7F3D0),
-    orbBottomLeft: Color(0xB3BAE6FD),
+    orbTopRight: Color(0x80A7F3D0),
+    orbBottomLeft: Color(0x80BAE6FD),
   );
 
   static const CustomTheme dark = CustomTheme(

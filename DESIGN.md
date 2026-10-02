@@ -31,13 +31,13 @@ Shaffof "oyna" kartalar — ortidagi fon xiralashib ko'rinadi.
 | Element | Qiymat | Joyi |
 |---|---|---|
 | Gradient | `#F4F5F9` → `#FBFBFD` → `#EFF1F6` | yuqori-chap → pastki-o'ng |
-| Och yashil doira | `#A7F3D0`, 70% | yuqori-o'ng burchak, 260 px, dumaloq |
-| Och ko'k doira | `#BAE6FD`, 70% | pastki-chap burchak, 280 px, dumaloq |
+| Och yashil doira | `#A7F3D0`, 50% | yuqori-o'ng burchak, 260 px, dumaloq |
+| Och ko'k doira | `#BAE6FD`, 50% | pastki-chap burchak, 280 px, dumaloq |
 | Och yashil-ko'k shakl | `#CFF4EE` | o'ng tomon |
 | Oq yorug'lik shakli | `#FFFFFF` | yuqori-chap |
 
-Doiralar markazdan ~60% gacha to'liq rangda, faqat chekkasida so'nadi —
-aniq dumaloq. **Qizil, siyohrang, to'q ko'k nurlar ishlatilmaydi.**
+Doiralar markazdan ~45% gacha to'liq rangda, so'ng mayin eriydi —
+dumaloq, chekkasi yumshoq. **Qizil, siyohrang, to'q ko'k nurlar ishlatilmaydi.**
 
 ### Shisha tokenlari
 
