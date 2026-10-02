@@ -29,7 +29,7 @@ Tekshirish:
 
 ```sh
 flutter analyze     # 0 muammo
-flutter test        # 115 test
+flutter test        # 122 test
 ```
 
 ---
@@ -130,8 +130,12 @@ yarim to'ldirilgan profil qolmaydi. Tugagach `publicProfiles` ham yoziladi.
   vaqtni to'g'rilash. Saqlashdan oldin natija ko'rsatiladi.
 
 ### 4.4 Hisobot
-Oy tanlash, joriy hisoblangan oylik, progress bar, statistika kartalari,
-kunlik yozuvlar. Yozuvni bosganda check-in/out rasmlari ochiladi.
+Oy tanlash, joriy hisoblangan oylik, progress bar, statistika kartalari.
+**Kunlik yozuvlar — oyning har bir kuni** (`MonthDays`, sof Dart +
+testlar): kelgan kunlar to'liq (keldi/ketdi, ishladi, kechikish, erta
+ketish, jarima, kunlik maosh), kelmagan va dam olish kunlari ham.
+Ikkala selfi kartaning o'zida; bosilsa dialogda katta ochiladi.
+Ro'yxat dangasa quriladi, selfilar kichraytirib dekodlanadi.
 
 ### 4.5 Qarzlar va ovoz moduli
 Ilovaning asosiy afzalligi — qarzni **gapirib** yozib qo'yish.
@@ -327,6 +331,8 @@ oylar o'z qiymati bilan qoladi.
 | `test/utils/reminder_planner_test.dart` | Eslatmalar: 3 ta vaqt, dam olish kunlari, check-in/out, o'tgan vaqt, tungi smena, ID'lar |
 | `test/widgets/phone_formatter_test.dart` | Telefon formati: guruhlash, +998, qisman yozish, o'chirish |
 | `test/widgets/app_toast_test.dart` | Toast tepada chiqadi, o'zi yo'qoladi, yangisi eskisini almashtiradi |
+| `test/utils/month_days_test.dart` | Oyning har bir kuni: yozuv/kelmadi/dam olish/bugun, o'tgan va kelajak oy |
+| `test/widgets/report_day_tile_test.dart` | Hisobot kun kartasi: barcha raqamlar, holatlar, toshib ketmaydi |
 | `test/utils/notification_history_test.dart` | Kelgan/kelmagan, qayta rejalashtirish, 30 kun, o'qilmaganlar soni, JSON |
 
 ---

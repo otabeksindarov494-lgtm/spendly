@@ -141,6 +141,16 @@ ikonka. Material Icons ishlatilmaydi.
   `notification`; o'qilmaganlar soni brend qizilidagi nishonda (9 dan
   ko'p — "9+"). Bosilganda "Bildirishnomalar" ekrani.
 
+### Hisobot — kunlik yozuvlar
+- Oyning **har bir** kuni (joriy oyda bugungacha): kelgan, "Kelmadi",
+  "Dam olish", "Bugun". Yangi kunlar tepada.
+- Kun kartasi: sana + holat chipi (Vaqtida — yashil, Kechikdi — sariq,
+  Kelmadi — qizil, Ishda — brend, Dam olish/Bugun — kulrang); raqamlar
+  (Keldi, Ketdi, Ishladi, Kechikish, Erta ketish, Jarima, Kunlik maosh —
+  0 bo'lganlari yashiriladi; fixed maoshda kunlik maosh yo'q); o'ngda
+  ikkita 56 px selfi ("Kelgan", "Ketgan").
+- Selfi bosilsa — **dialogda** katta, kattalashtirib ko'rish mumkin.
+
 ### Bildirishnomalar ekrani
 - Shisha kartalar: tur ikonkasi (oldin — sariq `timer_1`, boshlanish —
   qizil `login`, tugash — yashil `logout`), sarlavha, matn, vaqt

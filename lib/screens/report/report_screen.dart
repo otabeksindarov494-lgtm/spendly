@@ -8,14 +8,15 @@ import '../../providers/attendance_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
+import '../../utils/month_days.dart';
 import '../../utils/salary_calculator.dart';
-import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/glass.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
 import '../../widgets/common/stat_card.dart';
+import 'report_day_tile.dart';
 
 /// 2-tab: tanlangan oy bo'yicha to'liq hisobot (PROJECT.md 5.2).
 class ReportScreen extends ConsumerWidget {
@@ -44,7 +45,7 @@ class ReportScreen extends ConsumerWidget {
             if (summary == null || profile == null)
               const ShimmerBox(height: 170, borderRadius: 24)
             else
-              _buildHeroCard(theme, profile, summary, currency),
+              _buildHeroCard(context, theme, profile, summary, currency),
             const SizedBox(height: 20),
             if (summary == null)
               const ShimmerBox(height: 220, borderRadius: 20)
@@ -52,30 +53,40 @@ class ReportScreen extends ConsumerWidget {
               _buildStatsGrid(theme, summary),
             const SizedBox(height: 24),
             const SectionTitle(title: 'Kunlik yozuvlar'),
-            recordsAsync.when(
-              loading: () => const ShimmerList(itemCount: 4),
-              error: (Object e, StackTrace _) =>
-                  ErrorView(message: 'Yozuvlar yuklanmadi: $e'),
+            // Oyning HAR BIR kuni (kelmagan va dam olish kunlari ham).
+            // Elementlar to'g'ridan-to'g'ri ListView'ga qo'yiladi — faqat
+            // ekranda ko'ringan kunlar (va ularning selfilari) quriladi.
+            ...recordsAsync.when(
+              loading: () => <Widget>[const ShimmerList(itemCount: 4)],
+              error: (Object e, StackTrace _) => <Widget>[
+                ErrorView(message: 'Yozuvlar yuklanmadi: $e'),
+              ],
               data: (List<Attendance> records) {
-                if (records.isEmpty) {
-                  return EmptyState(
-                    icon: IconsaxPlusLinear.calendar_2,
-                    title: '${Formatters.monthYear(month)} uchun yozuv yo\'q',
-                    message: 'Bu oyda hali davomat qayd etilmagan.',
-                  );
-                }
-                return Column(
-                  children: <Widget>[
-                    for (final Attendance record in records)
-                      AttendanceTile(
-                        attendance: record,
-                        currency: currency,
-                        // Fixed maoshda pul kunlarga bo'linmaydi — kunlik
-                        // summa ko'rsatilsa "0 so'm" bo'lib chalg'itardi.
-                        showEarning: profile?.salaryType != SalaryType.fixed,
-                      ),
-                  ],
+                final List<ReportDay> days = MonthDays.build(
+                  month: month,
+                  records: records,
+                  workDays: profile?.workDays ?? const <int>[],
+                  now: DateTime.now(),
                 );
+                if (records.isEmpty || days.isEmpty) {
+                  return <Widget>[
+                    EmptyState(
+                      icon: IconsaxPlusLinear.calendar_2,
+                      title: '${Formatters.monthYear(month)} uchun yozuv yo\'q',
+                      message: 'Bu oyda hali davomat qayd etilmagan.',
+                    ),
+                  ];
+                }
+                return <Widget>[
+                  for (final ReportDay day in days)
+                    ReportDayTile(
+                      day: day,
+                      currency: currency,
+                      // Fixed maoshda pul kunlarga bo'linmaydi — kunlik
+                      // summa ko'rsatilsa "0 so'm" bo'lib chalg'itardi.
+                      showEarning: profile?.salaryType != SalaryType.fixed,
+                    ),
+                ];
               },
             ),
           ],
@@ -85,6 +96,7 @@ class ReportScreen extends ConsumerWidget {
   }
 
   Widget _buildHeroCard(
+    BuildContext context,
     CustomTheme theme,
     UserProfile profile,
     MonthlySummary summary,
@@ -97,21 +109,14 @@ class ReportScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'Joriy hisoblangan oylik',
-            style: TextStyle(fontSize: 13, color: theme.textGray),
-          ),
+          Text('Joriy hisoblangan oylik', style: context.text.bodySmall),
           const SizedBox(height: 6),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
               Formatters.money(summary.earnedAmount, currency: currency),
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: theme.mainDarkBlue,
-              ),
+              style: context.text.displaySmall,
             ),
           ),
           const SizedBox(height: 10),
@@ -120,7 +125,7 @@ class ReportScreen extends ConsumerWidget {
             '${Formatters.money(profile.salaryAmount, currency: currency)}'
             '  |  Jarima: '
             '-${Formatters.money(summary.penaltyAmount, currency: currency)}',
-            style: TextStyle(fontSize: 12, color: theme.textGray),
+            style: context.text.labelSmall,
           ),
           const SizedBox(height: 16),
           ClipRRect(
@@ -135,7 +140,7 @@ class ReportScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             '${summary.elapsedWorkDays}/${summary.plannedWorkDays} ish kuni',
-            style: TextStyle(fontSize: 12, color: theme.textGray),
+            style: context.text.labelSmall,
           ),
         ],
       ),
@@ -149,7 +154,8 @@ class ReportScreen extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.35,
+      // 1.25: shkaladagi shrift bilan ikki qatorli yorliq sig'ishi uchun.
+      childAspectRatio: 1.25,
       children: <Widget>[
         StatCard(
           icon: IconsaxPlusLinear.timer,
@@ -216,17 +222,18 @@ class _MonthSelector extends ConsumerWidget {
       child: Row(
         children: <Widget>[
           IconButton(
-            icon: Icon(IconsaxPlusLinear.arrow_left_1, color: theme.mainDarkBlue),
+            icon: Icon(
+              IconsaxPlusLinear.arrow_left_1,
+              color: theme.mainDarkBlue,
+            ),
             onPressed: notifier.previous,
           ),
           Expanded(
             child: Text(
               Formatters.monthYear(month),
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
+              style: context.text.titleSmall?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: theme.mainDarkBlue,
               ),
             ),
           ),
