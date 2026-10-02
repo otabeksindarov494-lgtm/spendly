@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
-import 'glass.dart';
 
 /// Yagona uslubdagi kiritish maydoni — Liquid Glass shisha qutida.
 ///
-/// Quti [GlassSurface] (yorug'lik gradienti + yaltiroq qirra); ingichka
-/// kulrang chegara saqlanadi, shunda oq bottom sheet'larda ham ko'rinadi.
+/// Quti — shisha yorug'lik gradienti (qirqilmaydi) + input'ning ingichka
+/// kulrang chegarasi, shunda u butun aylana bo'ylab to'liq va oq bottom
+/// sheet'larda ham ko'rinadi.
 /// Validatsiya xatosi shisha qutidan TASHQARIDA, pastida chiqadi.
 ///
 /// Ishlatilishi: Login/Register, Onboarding qadamlari, Qarz formalari,
@@ -83,9 +83,18 @@ class _AppTextFieldState extends State<AppTextField> {
           ),
           const SizedBox(height: 8),
         ],
-        GlassSurface(
-          borderRadius: radius,
-          showShadow: false,
+        // Shisha gradienti — QIRQMAYDIGAN fon sifatida. `ClipRRect` ichida
+        // bo'lsa input'ning chegarasi (qirra ustiga chiziladi) yarmi
+        // kesilib, uzuq ko'rinardi. Chegara faqat input'ning o'zidan.
+        DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[theme.glassFill, theme.glassFillLow],
+            ),
+          ),
           child: TextFormField(
             controller: widget.controller,
             keyboardType: widget.keyboardType,

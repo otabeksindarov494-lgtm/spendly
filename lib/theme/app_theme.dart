@@ -453,13 +453,21 @@ abstract final class AppTheme {
         ),
         // Ingichka chegaralar: oddiy holatda 0.6, fokus/xatoda 1.0 —
         // shisha uslubiga mos nafis ko'rinish.
+        // Input chegarasi umumiy borderGray'dan to'qroq: 0.6 ingichkalikda
+        // och shisha fon ustida ham butun aylana bo'ylab aniq ko'rinadi.
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.borderGray, width: 0.6),
+          borderSide: BorderSide(
+            color: c.textGray.withValues(alpha: 0.45),
+            width: 0.6,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: c.borderGray, width: 0.6),
+          borderSide: BorderSide(
+            color: c.textGray.withValues(alpha: 0.45),
+            width: 0.6,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.md),
