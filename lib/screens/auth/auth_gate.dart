@@ -27,6 +27,8 @@ class AuthGate extends ConsumerWidget {
     // o'zgarganda qayta rejalashtiriladi; chiqilganda bekor qilinadi.
     // AuthGate kirish va chiqishda ham ekranda turgani uchun shu yerda.
     ref.watch(reminderSyncProvider);
+    // Chat ro'yxatida ko'rinish uchun ochiq profil (eski foydalanuvchilar).
+    ref.watch(publicProfileSyncProvider);
 
     final AsyncValue<User?> authState = ref.watch(authStateProvider);
 

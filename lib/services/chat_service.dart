@@ -27,8 +27,12 @@ class ChatService {
       _db.collection('chats');
 
   /// Ro'yxatdan o'tgan barcha foydalanuvchilar (o'zidan tashqari).
+  ///
+  /// `orderBy` ataylab serverda emas: Firestore `orderBy('fullName')` da
+  /// shu maydoni yo'q hujjatlarni jimgina chiqarib tashlaydi — foydalanuvchi
+  /// ro'yxatdan "yo'qolib" qolardi. Saralash telefonda, alifbo bo'yicha.
   Stream<List<PublicProfile>> watchUsers(String currentUserId) {
-    return _publicProfiles.orderBy('fullName').snapshots().map(
+    return _publicProfiles.snapshots().map(
           (QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
               .where(
                 (QueryDocumentSnapshot<Map<String, dynamic>> doc) =>
@@ -38,7 +42,11 @@ class ChatService {
                 (QueryDocumentSnapshot<Map<String, dynamic>> doc) =>
                     PublicProfile.fromMap(doc.id, doc.data()),
               )
-              .toList(),
+              .toList()
+            ..sort(
+              (PublicProfile a, PublicProfile b) =>
+                  a.fullName.toLowerCase().compareTo(b.fullName.toLowerCase()),
+            ),
         );
   }
 

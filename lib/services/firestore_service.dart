@@ -66,6 +66,28 @@ class ProfileService {
     );
   }
 
+  /// Ochiq profil yo'q yoki ismi eskirgan bo'lsa yozadi.
+  ///
+  /// Chat funksiyasidan oldin ro'yxatdan o'tganlarda `publicProfiles`
+  /// hujjati yo'q — ular chat ro'yxatida ko'rinmasdi. Ilova ochilganda
+  /// bir marta chaqiriladi; hammasi joyida bo'lsa faqat bitta o'qish.
+  Future<void> ensurePublicProfile(
+    String userId, {
+    required String fullName,
+    required Future<String?> Function() avatar,
+  }) async {
+    final DocumentSnapshot<Map<String, dynamic>> doc =
+        await publicDoc(userId).get();
+    final String expected =
+        fullName.trim().isEmpty ? 'Foydalanuvchi' : fullName.trim();
+    if (doc.exists && doc.data()?['fullName'] == expected) return;
+    await syncPublicProfile(
+      userId,
+      fullName: fullName,
+      avatarBase64: await avatar(),
+    );
+  }
+
   /// Yangi foydalanuvchi uchun bo'sh profil yaratadi (onboarding'gacha).
   Future<void> createIfMissing(String userId) async {
     final DocumentSnapshot<Map<String, dynamic>> snapshot =
