@@ -7,6 +7,7 @@ import '../../providers/core_providers.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_logo.dart';
 import '../../widgets/common/app_text_field.dart';
 
 /// Kirish va ro'yxatdan o'tish (PROJECT.md 1-bosqich).
@@ -171,15 +172,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        const AppLogo(size: 56),
+        const SizedBox(height: 24),
         Text(
           _isRegisterMode ? 'Keling, boshlaymiz' : 'Xush kelibsiz',
-          style: TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
-            letterSpacing: -0.5,
-            color: theme.mainDarkBlue,
-          ),
+          style: context.text.displaySmall,
         ),
         const SizedBox(height: 8),
         Text(
@@ -187,7 +184,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ? 'Bir daqiqada hisob yarating — ish vaqtingiz va '
                     'moliyangiz shu yerda yig\'iladi.'
               : 'Davomat, maosh va qarzlaringiz sizni kutmoqda.',
-          style: TextStyle(fontSize: 13, height: 1.5, color: theme.textGray),
+          style: context.text.bodyMedium?.copyWith(color: theme.textGray),
         ),
       ],
     );
@@ -224,7 +221,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           obscureText: _obscurePassword,
           suffix: IconButton(
             icon: Icon(
-              _obscurePassword ? IconsaxPlusLinear.eye_slash : IconsaxPlusLinear.eye,
+              _obscurePassword
+                  ? IconsaxPlusLinear.eye_slash
+                  : IconsaxPlusLinear.eye,
               size: 18,
               color: theme.textGray,
             ),
@@ -251,11 +250,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               child: Text(
                 'Parolni unutdingizmi?',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: theme.blue,
-                ),
+                style: context.text.labelMedium?.copyWith(color: theme.blue),
               ),
             ),
           ),
@@ -272,18 +267,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       decoration: BoxDecoration(
         color: theme.red.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(color: theme.red.withValues(alpha: 0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(IconsaxPlusLinear.information, size: 15, color: theme.red),
+          Icon(IconsaxPlusLinear.information, size: 16, color: theme.red),
           const SizedBox(width: 9),
           Expanded(
             child: Text(
               _errorMessage!,
-              style: TextStyle(fontSize: 12, height: 1.4, color: theme.red),
+              style: context.text.bodySmall?.copyWith(color: theme.red),
             ),
           ),
         ],
@@ -309,10 +304,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Expanded(child: Divider(color: theme.borderGray, height: 1)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                'yoki',
-                style: TextStyle(fontSize: 11, color: theme.textGray),
-              ),
+              child: Text('yoki', style: context.text.labelSmall),
             ),
             Expanded(child: Divider(color: theme.borderGray, height: 1)),
           ],
@@ -325,7 +317,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Text.rich(
               TextSpan(
-                style: TextStyle(fontSize: 13, color: theme.textGray),
+                style: context.text.bodyMedium?.copyWith(color: theme.textGray),
                 children: <InlineSpan>[
                   TextSpan(
                     text: _isRegisterMode
@@ -362,7 +354,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Text.rich(
       TextSpan(
-        style: TextStyle(fontSize: 11, height: 1.6, color: theme.textGray),
+        style: context.text.labelSmall?.copyWith(height: 1.6),
         children: <InlineSpan>[
           TextSpan(
             text: _isRegisterMode
@@ -439,21 +431,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: theme.mainDarkBlue,
-                    ),
-                  ),
+                  Text(title, style: context.text.titleMedium),
                   const SizedBox(height: 14),
                   Flexible(
                     child: SingleChildScrollView(
                       child: Text(
                         body,
-                        style: TextStyle(
-                          fontSize: 13,
+                        style: context.text.bodyMedium?.copyWith(
                           height: 1.6,
                           color: theme.textGray,
                         ),
