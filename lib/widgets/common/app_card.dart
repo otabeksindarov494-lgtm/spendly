@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
+import 'glass.dart';
 
-/// Ilova bo'ylab yagona ko'rinishdagi karta konteyneri — "shisha" karta.
+/// Ilova bo'ylab yagona ko'rinishdagi karta — Liquid Glass uslubidagi
+/// shisha yuza ([GlassSurface]): yorug'lik gradienti, yaltiroq qirra,
+/// yumshoq soya.
 ///
-/// Yarim shaffof to'ldirish + yorug' chegara + yumshoq soya. Haqiqiy blur
-/// ishlatilmaydi (ro'yxatlarda ko'p karta bo'ladi), gradient fon ustida
-/// baribir shisha bo'lib ko'rinadi. Haqiqiy blur kerak bo'lsa — `GlassPanel`.
+/// Haqiqiy blur ishlatilmaydi (ro'yxatlarda ko'p karta bo'ladi); kerak
+/// bo'lsa — `GlassPanel`.
 ///
 /// Ishlatilishi: Home, Hisobot, Qarzlar, Profil ekranlari.
 class AppCard extends StatelessWidget {
@@ -27,34 +29,17 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CustomTheme theme = context.theme;
     final BorderRadius radius = BorderRadius.circular(borderRadius);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: radius,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: theme.glassShadow,
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      borderRadius: radius,
+      showBorder: showBorder,
       child: Material(
-        color: theme.glassFill,
-        borderRadius: radius,
+        type: MaterialType.transparency,
         child: InkWell(
           onTap: onTap,
           borderRadius: radius,
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              borderRadius: radius,
-              border: showBorder ? Border.all(color: theme.glassBorder) : null,
-            ),
-            child: child,
-          ),
+          child: Padding(padding: padding, child: child),
         ),
       ),
     );

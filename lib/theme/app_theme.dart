@@ -32,6 +32,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     required this.glassFill,
     required this.glassBorder,
     required this.glassShadow,
+    required this.glassFillLow,
+    required this.glassEdgeShade,
+    required this.backdropLight,
+    required this.backdropShade,
   });
 
   /// Kartalar, sahifa foni.
@@ -102,6 +106,18 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   /// Shisha karta soyasi.
   final Color glassShadow;
 
+  /// Shisha yuzasi gradientining pastki-o'ng (shaffofroq) rangi;
+  /// [glassFill] — yuqori-chap (yorug'lik tushgan) rangi.
+  final Color glassFillLow;
+
+  /// Shisha qirrasining pastki-o'ng xira tomoni ([glassBorder] — yorug' tomoni).
+  final Color glassEdgeShade;
+
+  /// Fondagi neytral "kumush" shakllar: yorug' va soya dog'lari.
+  /// Rangsiz — shisha ortida faqat yorug'lik farqi bo'ladi.
+  final Color backdropLight;
+  final Color backdropShade;
+
   // --- Light ---------------------------------------------------------------
   static const Color _lightBackground = Color(0xFFFFFFFF);
   static const Color _lightInputColor = Color(0xFFF7F6FB);
@@ -171,9 +187,13 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       end: Alignment.bottomRight,
       colors: <Color>[Color(0xFFF4F5F9), Color(0xFFFBFBFD), Color(0xFFEFF1F6)],
     ),
-    glassFill: Color(0xA6FFFFFF),
-    glassBorder: Color(0xF2FFFFFF),
-    glassShadow: Color(0x141B2140),
+    glassFill: Color(0xD1FFFFFF),
+    glassBorder: Color(0xFFFFFFFF),
+    glassShadow: Color(0x1A1B2140),
+    glassFillLow: Color(0x80FFFFFF),
+    glassEdgeShade: Color(0x261B2140),
+    backdropLight: Color(0xFFFFFFFF),
+    backdropShade: Color(0xFFD5DAE3),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -203,9 +223,13 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       end: Alignment.bottomRight,
       colors: <Color>[Color(0xFF16171B), Color(0xFF111215), Color(0xFF181A20)],
     ),
-    glassFill: Color(0x1AFFFFFF),
-    glassBorder: Color(0x33FFFFFF),
+    glassFill: Color(0x29FFFFFF),
+    glassBorder: Color(0x66FFFFFF),
     glassShadow: Color(0x66000000),
+    glassFillLow: Color(0x0FFFFFFF),
+    glassEdgeShade: Color(0x14FFFFFF),
+    backdropLight: Color(0xFF2B2E36),
+    backdropShade: Color(0xFF07080A),
   );
 
   @override
@@ -231,6 +255,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     Color? glassFill,
     Color? glassBorder,
     Color? glassShadow,
+    Color? glassFillLow,
+    Color? glassEdgeShade,
+    Color? backdropLight,
+    Color? backdropShade,
   }) {
     return CustomTheme(
       background: background ?? this.background,
@@ -254,6 +282,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       glassFill: glassFill ?? this.glassFill,
       glassBorder: glassBorder ?? this.glassBorder,
       glassShadow: glassShadow ?? this.glassShadow,
+      glassFillLow: glassFillLow ?? this.glassFillLow,
+      glassEdgeShade: glassEdgeShade ?? this.glassEdgeShade,
+      backdropLight: backdropLight ?? this.backdropLight,
+      backdropShade: backdropShade ?? this.backdropShade,
     );
   }
 
@@ -294,6 +326,10 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       glassFill: Color.lerp(glassFill, other.glassFill, t)!,
       glassBorder: Color.lerp(glassBorder, other.glassBorder, t)!,
       glassShadow: Color.lerp(glassShadow, other.glassShadow, t)!,
+      glassFillLow: Color.lerp(glassFillLow, other.glassFillLow, t)!,
+      glassEdgeShade: Color.lerp(glassEdgeShade, other.glassEdgeShade, t)!,
+      backdropLight: Color.lerp(backdropLight, other.backdropLight, t)!,
+      backdropShade: Color.lerp(backdropShade, other.backdropShade, t)!,
     );
   }
 }
@@ -406,7 +442,10 @@ abstract final class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: c.inputColor,
-        hintStyle: textTheme.bodyMedium?.copyWith(color: c.textGray),
+        // Och kulrang hint — kiritilgan matndan aniq ajralib turadi.
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: c.textGray.withValues(alpha: 0.7),
+        ),
         errorStyle: textTheme.labelSmall?.copyWith(color: c.red),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,

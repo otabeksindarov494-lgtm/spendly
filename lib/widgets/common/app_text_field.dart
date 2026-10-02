@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../theme/app_theme.dart';
+import 'glass.dart';
 
-/// Yagona uslubdagi kiritish maydoni.
+/// Yagona uslubdagi kiritish maydoni — Liquid Glass shisha qutida.
+///
+/// Quti [GlassSurface] (yorug'lik gradienti + yaltiroq qirra); ingichka
+/// kulrang chegara saqlanadi, shunda oq bottom sheet'larda ham ko'rinadi.
+/// Validatsiya xatosi shisha qutidan TASHQARIDA, pastida chiqadi.
 ///
 /// Ishlatilishi: Login/Register, Onboarding qadamlari, Qarz formalari,
 /// Profil tahrirlash oynalari.
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   const AppTextField({
     super.key,
     this.controller,
@@ -41,50 +46,85 @@ class AppTextField extends StatelessWidget {
   final bool autofocus;
 
   @override
+  State<AppTextField> createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
+  /// Oxirgi validatsiya natijasi — qutidan tashqarida ko'rsatiladi.
+  String? _error;
+
+  /// Asl validator'ni chaqiradi (Form'ning `validate()` natijasi o'zgarmaydi)
+  /// va xatoni keyingi kadrda o'z holatiga yozadi — validatsiya build
+  /// paytida chaqirilsa ham `setState` xavfsiz.
+  String? _validate(String? value) {
+    final String? error = widget.validator?.call(value);
+    if (error != _error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _error = error);
+      });
+    }
+    return error;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
+    const BorderRadius radius = BorderRadius.all(Radius.circular(AppRadius.md));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (label != null) ...<Widget>[
+        if (widget.label != null) ...<Widget>[
           Text(
-            label!,
+            widget.label!,
             style: context.text.labelMedium?.copyWith(
               color: theme.mainDarkBlue.withValues(alpha: 0.72),
             ),
           ),
           const SizedBox(height: 8),
         ],
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          validator: validator,
-          onChanged: onChanged,
-          inputFormatters: inputFormatters,
-          maxLines: obscureText ? 1 : maxLines,
-          autofocus: autofocus,
-          textCapitalization: textCapitalization,
-          style: context.text.bodyLarge,
-          // iOS uslubidagi yumshoq his: yumaloq kursor, Cupertino
-          // belgilash menyusi va mavzuga mos klaviatura ko'rinishi.
-          cursorColor: theme.blue,
-          cursorRadius: const Radius.circular(2),
-          cursorWidth: 2,
-          selectionControls: cupertinoTextSelectionControls,
-          keyboardAppearance: Theme.of(context).brightness,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: prefixIcon == null
-                ? null
-                : Icon(prefixIcon, size: 20, color: theme.textGray),
-            suffixIcon: suffix,
-            // Shisha input: yarim shaffof to'ldirish; chegara mavzudan
-            // (ko'rinadigan kulrang, fokusda brend rangi).
-            fillColor: theme.glassFill,
+        GlassSurface(
+          borderRadius: radius,
+          showShadow: false,
+          child: TextFormField(
+            controller: widget.controller,
+            keyboardType: widget.keyboardType,
+            obscureText: widget.obscureText,
+            validator: widget.validator == null ? null : _validate,
+            onChanged: widget.onChanged,
+            inputFormatters: widget.inputFormatters,
+            maxLines: widget.obscureText ? 1 : widget.maxLines,
+            autofocus: widget.autofocus,
+            textCapitalization: widget.textCapitalization,
+            style: context.text.bodyLarge,
+            // iOS uslubidagi yumshoq his: yumaloq kursor, Cupertino
+            // belgilash menyusi va mavzuga mos klaviatura ko'rinishi.
+            cursorColor: theme.blue,
+            cursorRadius: const Radius.circular(2),
+            cursorWidth: 2,
+            selectionControls: cupertinoTextSelectionControls,
+            keyboardAppearance: Theme.of(context).brightness,
+            decoration: InputDecoration(
+              hintText: widget.hint,
+              prefixIcon: widget.prefixIcon == null
+                  ? null
+                  : Icon(widget.prefixIcon, size: 20, color: theme.textGray),
+              suffixIcon: widget.suffix,
+              // To'ldirishni shisha quti beradi.
+              filled: false,
+              // Xato matni quti ichida chiqmasin — pastda o'zimiz chizamiz;
+              // xato chegarasi (qizil) baribir ko'rinadi.
+              errorStyle: const TextStyle(height: 0, fontSize: 0),
+            ),
           ),
         ),
+        if (_error != null) ...<Widget>[
+          const SizedBox(height: 6),
+          Text(
+            _error!,
+            style: context.text.labelSmall?.copyWith(color: theme.red),
+          ),
+        ],
       ],
     );
   }
