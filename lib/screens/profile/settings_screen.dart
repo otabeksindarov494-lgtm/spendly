@@ -1,14 +1,16 @@
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/core_providers.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/section_title.dart';
 
-/// Sozlamalar: mavzu, til va ilova versiyasi.
+/// Sozlamalar: mavzu, eslatmalar, til va ilova versiyasi.
 ///
 /// Profil ekrani faqat kirish nuqtasi bo'lib qolishi uchun alohida
 /// ekranga ajratilgan.
@@ -28,6 +30,7 @@ class SettingsScreen extends ConsumerWidget {
     final CustomTheme theme = context.theme;
     final ThemeMode mode = ref.watch(themeModeProvider);
     final AsyncValue<String> version = ref.watch(appVersionProvider);
+    final bool remindersEnabled = ref.watch(notificationsEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Sozlamalar')),
@@ -123,6 +126,49 @@ class SettingsScreen extends ConsumerWidget {
                           ),
                         ),
                     ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const SectionTitle(title: 'Bildirishnomalar'),
+            AppCard(
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    IconsaxPlusLinear.notification,
+                    size: 17,
+                    color: theme.textGray,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Ish vaqti eslatmalari',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: theme.mainDarkBlue,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Ish boshlanishidan 10 daqiqa oldin, boshlanganda '
+                          'va tugaganda eslatadi. Dam olish kunlari jim.',
+                          style: TextStyle(fontSize: 11, color: theme.textGray),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  CupertinoSwitch(
+                    value: remindersEnabled,
+                    activeTrackColor: theme.blue,
+                    onChanged: (bool value) => ref
+                        .read(notificationsEnabledProvider.notifier)
+                        .setEnabled(value),
                   ),
                 ],
               ),

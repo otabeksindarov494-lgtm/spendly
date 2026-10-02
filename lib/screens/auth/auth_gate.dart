@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/user_profile_model.dart';
 import '../../providers/core_providers.dart';
+import '../../providers/notification_provider.dart';
 import '../../providers/profile_provider.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common/error_view.dart';
@@ -22,6 +23,11 @@ class AuthGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Ish vaqti eslatmalari: profil, bugungi davomat yoki sozlama
+    // o'zgarganda qayta rejalashtiriladi; chiqilganda bekor qilinadi.
+    // AuthGate kirish va chiqishda ham ekranda turgani uchun shu yerda.
+    ref.watch(reminderSyncProvider);
+
     final AsyncValue<User?> authState = ref.watch(authStateProvider);
 
     return authState.when(

@@ -93,7 +93,7 @@ class ProfileScreen extends ConsumerWidget {
         MenuCard(
           icon: IconsaxPlusLinear.setting_2,
           title: 'Sozlamalar',
-          subtitle: 'Mavzu, til va ilova versiyasi',
+          subtitle: 'Mavzu, eslatmalar, til va versiya',
           onTap: () => SettingsScreen.open(context),
         ),
         MenuCard(
