@@ -31,8 +31,8 @@ Shaffof "oyna" kartalar — ortidagi fon xiralashib ko'rinadi.
 | Element | Qiymat | Joyi |
 |---|---|---|
 | Gradient | `#F4F5F9` → `#FBFBFD` → `#EFF1F6` | yuqori-chap → pastki-o'ng |
-| Och yashil doira | `#A7F3D0`, 80% | yuqori-o'ng burchak, 260 px, dumaloq |
-| Och ko'k doira | `#BAE6FD`, 80% | pastki-chap burchak, 280 px, dumaloq |
+| Och yashil doira | `#A7F3D0`, 70% | yuqori-o'ng burchak, 260 px, dumaloq |
+| Och ko'k doira | `#BAE6FD`, 70% | pastki-chap burchak, 280 px, dumaloq |
 | Och yashil-ko'k shakl | `#CFF4EE` | o'ng tomon |
 | Oq yorug'lik shakli | `#FFFFFF` | yuqori-chap |
 
