@@ -201,8 +201,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassEdgeShade: Color(0x331B2140),
     backdropLight: Color(0xFFFFFFFF),
     backdropShade: Color(0xFFC3CAD6),
-    orbTopRight: Color(0xA65EEAD4),
-    orbBottomLeft: Color(0xA67DD3FC),
+    orbTopRight: Color(0x595EEAD4),
+    orbBottomLeft: Color(0x597DD3FC),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -239,8 +239,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassEdgeShade: Color(0x14FFFFFF),
     backdropLight: Color(0xFF2B2E36),
     backdropShade: Color(0xFF07080A),
-    orbTopRight: Color(0x665EEAD4),
-    orbBottomLeft: Color(0x667DD3FC),
+    orbTopRight: Color(0x405EEAD4),
+    orbBottomLeft: Color(0x407DD3FC),
   );
 
   @override
