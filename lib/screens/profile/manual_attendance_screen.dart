@@ -16,6 +16,7 @@ import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/progress_dialog.dart';
+import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/cupertino_pickers.dart';
 
 /// Davomat yozuvini qo'lda kiritish yoki tuzatish (Profil bo'limidan).
@@ -147,9 +148,7 @@ class _ManualAttendanceScreenState
     ref.invalidate(currentMonthAttendanceProvider);
     ref.invalidate(monthAttendanceProvider);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${Formatters.longDate(_date)} uchun saqlandi')),
-    );
+    AppToast.show(context, '${Formatters.longDate(_date)} uchun saqlandi');
     Navigator.of(context).pop();
   }
 

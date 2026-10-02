@@ -8,6 +8,7 @@ import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_logo.dart';
+import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/app_text_field.dart';
 import '../../widgets/common/glass.dart';
 
@@ -105,9 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       await ref.read(authServiceProvider).sendPasswordReset(email);
       if (!mounted) return;
       setState(() => _errorMessage = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$email manziliga tiklash havolasi yuborildi.')),
-      );
+      AppToast.show(context, '$email manziliga tiklash havolasi yuborildi.');
     } on AuthFailure catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);

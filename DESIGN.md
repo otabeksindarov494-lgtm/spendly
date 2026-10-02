@@ -128,6 +128,16 @@ ikonka. Material Icons ishlatilmaydi.
 ### Tanlov variantlari (onboarding chiplari, kartalari)
 - Tanlanmagan: shisha to'ldirish, chegara 0.6 px. Tanlangan: brend qizili.
 
+### Toast (qisqa xabar)
+- `AppToast.show(context, matn, isError: ...)` — ekranning **yuqori**
+  qismida, status bar ostida; tepadan silliq tushadi, shisha panel,
+  ikonka (muvaffaqiyat — yashil belgi, xato — qizil "!"), 2.6 s dan keyin
+  yo'qoladi, bosilsa yopiladi. `ScaffoldMessenger.showSnackBar`
+  (pastdan chiqadi) ishlatilmaydi.
+
+### Salomlashuv (Bosh sahifa)
+- "Assalomu alaykum" ostida ism va yonida 👋 stikeri: "Azizbek 👋".
+
 ### Pastki menyu
 - Shisha panel, yuqorida yorug' chiziq; ikki chetdan **12 px** padding.
 - Yozuvlar 12 px (faol — w700). Faol ikonka Bold, qolganlari Linear.

@@ -13,6 +13,7 @@ import '../../utils/formatters.dart';
 import '../../utils/time_utils.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
+import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/user_avatar.dart';
 
 /// Ikki kishilik suhbat.
@@ -77,9 +78,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       if (!mounted) return;
       // Yuborilmagan matn yo'qolmasin.
       _controller.text = text;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Xabar yuborilmadi: $e')));
+      AppToast.show(context, 'Xabar yuborilmadi: $e', isError: true);
     } finally {
       if (mounted) setState(() => _isSending = false);
     }
@@ -129,9 +128,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       case 'copy':
         await Clipboard.setData(ClipboardData(text: message.text));
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Matn nusxalandi')));
+        AppToast.show(context, 'Matn nusxalandi');
       case 'delete':
         final String? userId = ref.read(currentUserIdProvider);
         if (userId == null) return;
