@@ -74,12 +74,12 @@ tegib qolmaslik uchun.
 
 ## Brend, shrift va ikonkalar
 
-- **Logo** — `assets/app-logo.jpeg` (manba). Undan generatsiya qilinganlar:
+- **Logo** — `assets/app-logo.jpg` (manba). Undan generatsiya qilinganlar:
   - `assets/logo.png` — ilova ichida (splash, Login, onboarding)
   - `assets/icon/app_icon.png` — iOS va Android legacy launcher ikonkasi
   - `assets/icon/app_icon_foreground.png` — Android adaptive: oq "S" alfa
     kanal bilan ajratilgan, doiraviy/squircle maskada kesilmaydi
-  - `assets/icon/app_icon_background.png` — logoning o'z ko'k gradienti
+  - `assets/icon/app_icon_background.png` — logoning o'z qizil foni
 
   Launcher ikonkalarini qayta generatsiya qilish:
 

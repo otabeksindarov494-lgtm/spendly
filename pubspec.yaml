@@ -63,7 +63,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
-# Launcher ikonkasi assets/app-logo.jpeg dan generatsiya qilingan.
+# Launcher ikonkasi assets/app-logo.jpg dan generatsiya qilingan.
 # Qayta generatsiya: dart run flutter_launcher_icons
 flutter_launcher_icons:
   image_path: "assets/icon/app_icon.png"

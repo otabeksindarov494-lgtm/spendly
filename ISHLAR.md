@@ -198,7 +198,7 @@ qarzlar va yozishmalar joyida qoladi.
 tasdiq xabari (snackbar) chiqadi.
 
 ### 4.9 Brend
-Logo `assets/app-logo.jpeg` dan generatsiya qilinadi:
+Logo `assets/app-logo.jpg` dan generatsiya qilinadi:
 `dart run flutter_launcher_icons`. Android adaptive ikonkada oq "S"
 alfa kanal bilan ajratilgan — doiraviy maskada kesilmaydi.
 
