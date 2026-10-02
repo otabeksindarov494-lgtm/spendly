@@ -239,13 +239,13 @@ abstract final class AppTheme {
   /// Butun ilova shrifti — `google_fonts` orqali olinadi.
   ///
   /// PROJECT.md'da Gilroy ko'rsatilgan, lekin u tijoriy shrift va Google
-  /// Fonts'da mavjud emas. **Manrope** — unga eng yaqin bepul geometrik
-  /// grotesk. Boshqa shriftga o'tish uchun faqat shu ikkita metodni
-  /// o'zgartirish kifoya (masalan `GoogleFonts.poppins`).
-  static TextStyle fontStyle() => GoogleFonts.manrope();
+  /// Fonts'da mavjud emas. Foydalanuvchi tanlovi bilan **Inter** ishlatiladi.
+  /// Boshqa shriftga o'tish uchun faqat shu ikkita metodni o'zgartirish
+  /// kifoya (masalan `GoogleFonts.poppins`).
+  static TextStyle fontStyle() => GoogleFonts.inter();
 
   static TextTheme fontTextTheme(TextTheme base) =>
-      GoogleFonts.manropeTextTheme(base);
+      GoogleFonts.interTextTheme(base);
 
   /// Kod/buyruq matnlari uchun monoshrift.
   static TextStyle monoStyle() => GoogleFonts.robotoMono();
