@@ -109,7 +109,7 @@ class _DebtFormState extends State<DebtForm> {
           AppTextField(
             controller: _nameController,
             label: 'Ism',
-            hint: 'Masalan: Alisher',
+            hint: 'Ismini kiriting',
             prefixIcon: IconsaxPlusLinear.user,
             textCapitalization: TextCapitalization.words,
             validator: (String? value) =>
@@ -119,7 +119,7 @@ class _DebtFormState extends State<DebtForm> {
           AppTextField(
             controller: _amountController,
             label: 'Summa',
-            hint: '30 000',
+            hint: 'Summani kiriting',
             prefixIcon: IconsaxPlusLinear.moneys,
             keyboardType: TextInputType.number,
             inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],

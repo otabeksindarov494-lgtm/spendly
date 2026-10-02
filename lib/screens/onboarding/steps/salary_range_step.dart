@@ -100,7 +100,7 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
                 child: AppTextField(
                   controller: _minController,
                   label: 'Eng kam',
-                  hint: '4 000 000',
+                  hint: 'Summani kiriting',
                   keyboardType: TextInputType.number,
                   inputFormatters: const <TextInputFormatter>[
                     ThousandsFormatter(),
@@ -114,7 +114,7 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
                 child: AppTextField(
                   controller: _maxController,
                   label: 'Eng ko\'p',
-                  hint: '5 000 000',
+                  hint: 'Summani kiriting',
                   keyboardType: TextInputType.number,
                   inputFormatters: const <TextInputFormatter>[
                     ThousandsFormatter(),
@@ -143,11 +143,11 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
           ),
           Row(
             children: <Widget>[
-              Text('0', style: TextStyle(fontSize: 12, color: theme.textGray)),
+              Text('0', style: context.text.labelSmall),
               const Spacer(),
               Text(
                 '${(ceiling / 1000000).round()} mln',
-                style: TextStyle(fontSize: 12, color: theme.textGray),
+                style: context.text.labelSmall,
               ),
             ],
           ),
@@ -164,16 +164,12 @@ class _SalaryRangeStepState extends State<SalaryRangeStep> {
               children: <Widget>[
                 Text(
                   'Hisob-kitobda ishlatiladi',
-                  style: TextStyle(fontSize: 12, color: theme.textGray),
+                  style: context.text.labelSmall,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   Formatters.money(average, currency: widget.currency),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: theme.blue,
-                  ),
+                  style: context.text.titleLarge?.copyWith(color: theme.blue),
                 ),
               ],
             ),

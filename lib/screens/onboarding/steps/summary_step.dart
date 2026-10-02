@@ -65,19 +65,12 @@ class SummaryStep extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             entry.label,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: theme.textGray,
-                            ),
+                            style: context.text.labelSmall,
                           ),
                           const SizedBox(height: 2),
                           Text(
                             entry.value,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: theme.mainDarkBlue,
-                            ),
+                            style: context.text.titleSmall,
                           ),
                         ],
                       ),

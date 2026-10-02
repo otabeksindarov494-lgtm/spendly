@@ -50,7 +50,7 @@ class ChoiceStep<T> extends StatelessWidget {
                       color: option.value == selected
                           ? theme.blue
                           : theme.borderGray,
-                      width: option.value == selected ? 1.5 : 1,
+                      width: option.value == selected ? 1.2 : 0.6,
                     ),
                   ),
                   child: Row(

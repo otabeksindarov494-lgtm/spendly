@@ -30,7 +30,7 @@ class SalaryStep extends StatelessWidget {
         children: <Widget>[
           AppTextField(
             controller: controller,
-            hint: '5 000 000',
+            hint: 'Oylik summasi',
             keyboardType: TextInputType.number,
             onChanged: onChanged,
             inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],

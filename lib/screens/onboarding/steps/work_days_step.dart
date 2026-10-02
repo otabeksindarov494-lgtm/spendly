@@ -41,6 +41,7 @@ class WorkDaysStep extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,
+                  width: 0.6,
                 ),
               ),
               child: Text(

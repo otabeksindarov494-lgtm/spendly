@@ -37,9 +37,9 @@ class WelcomeStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const SizedBox(height: 24),
-          const AppLogo(size: 72),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
+          const AppLogo(size: 60),
+          const SizedBox(height: 20),
           Text('Spendly\'ga xush kelibsiz', style: context.text.displaySmall),
           const SizedBox(height: 10),
           Text(
@@ -47,14 +47,14 @@ class WelcomeStep extends StatelessWidget {
             'va qarzlaringizni bir joyda saqlang.',
             style: context.text.bodyMedium?.copyWith(color: theme.textGray),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 22),
           for (final (IconData icon, String title, String body) feature
               in _features)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               // Har bir imkoniyat — alohida shisha karta.
               child: AppCard(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(14),
                 child: Row(
                   children: <Widget>[
                     Container(

@@ -40,6 +40,7 @@ class PayDayStep extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,
+                  width: 0.6,
                 ),
               ),
               child: Text(

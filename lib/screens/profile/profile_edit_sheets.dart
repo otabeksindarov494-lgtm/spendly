@@ -133,7 +133,7 @@ abstract final class ProfileEditSheets {
       context: context,
       title: 'Ism-familiya',
       initialValue: profile.fullName,
-      hint: 'Masalan: Azizbek Erkinov',
+      hint: 'Ism va familiyangiz',
       onSave: (String value) =>
           _update(context, ref, <String, dynamic>{'fullName': value.trim()}),
     );
@@ -207,7 +207,7 @@ abstract final class ProfileEditSheets {
       context: context,
       title: 'Telefon raqami',
       initialValue: profile.phoneNumber,
-      hint: '+998 90 123 45 67',
+      hint: 'Telefon raqamingiz',
       keyboardType: TextInputType.phone,
       inputFormatters: const <TextInputFormatter>[UzPhoneFormatter()],
       textCapitalization: TextCapitalization.none,
@@ -225,7 +225,7 @@ abstract final class ProfileEditSheets {
       context: context,
       title: 'Lavozim',
       initialValue: profile.position,
-      hint: 'Masalan: Flutter dasturchi',
+      hint: 'Lavozimingiz',
       onSave: (String value) =>
           _update(context, ref, <String, dynamic>{'position': value.trim()}),
     );
@@ -406,7 +406,7 @@ abstract final class ProfileEditSheets {
                   child: AppTextField(
                     controller: minController,
                     label: 'Eng kam',
-                    hint: '4 000 000',
+                    hint: 'Summani kiriting',
                     keyboardType: TextInputType.number,
                     inputFormatters: const <TextInputFormatter>[
                       ThousandsFormatter(),
@@ -418,7 +418,7 @@ abstract final class ProfileEditSheets {
                   child: AppTextField(
                     controller: maxController,
                     label: 'Eng ko\'p',
-                    hint: '5 000 000',
+                    hint: 'Summani kiriting',
                     keyboardType: TextInputType.number,
                     inputFormatters: const <TextInputFormatter>[
                       ThousandsFormatter(),

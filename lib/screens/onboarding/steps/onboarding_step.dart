@@ -27,24 +27,12 @@ class OnboardingStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const SizedBox(height: 24),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: theme.mainDarkBlue,
-              height: 1.25,
-            ),
-          ),
+          Text(title, style: context.text.headlineSmall),
           if (subtitle != null) ...<Widget>[
             const SizedBox(height: 8),
             Text(
               subtitle!,
-              style: TextStyle(
-                fontSize: 13,
-                color: theme.textGray,
-                height: 1.45,
-              ),
+              style: context.text.bodyMedium?.copyWith(color: theme.textGray),
             ),
           ],
           const SizedBox(height: 28),

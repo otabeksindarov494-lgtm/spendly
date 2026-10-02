@@ -222,13 +222,26 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 child: Text(
                   _errorMessage!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13, color: theme.red),
+                  style: context.text.bodySmall?.copyWith(color: theme.red),
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+              padding: const EdgeInsets.fromLTRB(24, 4, 24, 12),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  // "O'tkazib yuborish" asosiy tugmaning USTIDA — asosiy
+                  // tugma 18 ta qadamning hammasida ekranning eng pastida,
+                  // aynan bir joyda turadi.
+                  if (_canSkip) ...<Widget>[
+                    AppButton(
+                      label: 'O\'tkazib yuborish',
+                      variant: AppButtonVariant.text,
+                      height: 44,
+                      onPressed: _next,
+                    ),
+                    const SizedBox(height: 4),
+                  ],
                   AppButton(
                     label: isLastStep
                         ? 'Tasdiqlash va boshlash'
@@ -238,15 +251,6 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                         ? (isLastStep ? _finish : _next)
                         : null,
                   ),
-                  if (_canSkip) ...<Widget>[
-                    const SizedBox(height: 8),
-                    AppButton(
-                      label: 'O\'tkazib yuborish',
-                      variant: AppButtonVariant.text,
-                      height: 44,
-                      onPressed: _next,
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -287,11 +291,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
           const SizedBox(width: 14),
           Text(
             '${_index + 1}/$_stepCount',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: theme.textGray,
-            ),
+            style: context.text.labelMedium?.copyWith(color: theme.textGray),
           ),
         ],
       ),
@@ -309,7 +309,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Ismingiz nima?',
         subtitle: 'Ism va familiyangizni kiriting.',
         controller: _nameController,
-        hint: 'Masalan: Azizbek Erkinov',
+        hint: 'Ism va familiyangiz',
         onChanged: (String value) => setState(() => _fullName = value),
       ),
       // 3
@@ -328,7 +328,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Telefon raqamingiz',
         subtitle: 'Ixtiyoriy — faqat profilingizda saqlanadi.',
         controller: _phoneController,
-        hint: '+998 90 123 45 67',
+        hint: 'Telefon raqamingiz',
         textCapitalization: TextCapitalization.none,
         keyboardType: TextInputType.phone,
         inputFormatters: const <TextInputFormatter>[UzPhoneFormatter()],
@@ -347,7 +347,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Qayerda ishlaysiz?',
         subtitle: 'Kompaniya yoki tashkilot nomi.',
         controller: _companyController,
-        hint: 'Masalan: Chaqqon',
+        hint: 'Kompaniya nomi',
         onChanged: (String value) => setState(() => _company = value),
       ),
       // 7
@@ -355,7 +355,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Lavozimingiz nima?',
         subtitle: 'Ixtiyoriy.',
         controller: _positionController,
-        hint: 'Masalan: Flutter dasturchi',
+        hint: 'Lavozimingiz',
         onChanged: (String value) => setState(() => _position = value),
       ),
       // 8

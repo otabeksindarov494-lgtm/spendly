@@ -52,6 +52,7 @@ class LunchBreakStep extends StatelessWidget {
                         color: preset == minutes
                             ? theme.blue
                             : theme.borderGray,
+                        width: 0.6,
                       ),
                     ),
                     child: Text(
