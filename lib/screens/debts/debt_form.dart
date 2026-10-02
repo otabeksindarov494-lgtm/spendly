@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -110,7 +110,7 @@ class _DebtFormState extends State<DebtForm> {
             controller: _nameController,
             label: 'Ism',
             hint: 'Masalan: Alisher',
-            prefixIcon: BootstrapIcons.person,
+            prefixIcon: IconsaxPlusLinear.user,
             textCapitalization: TextCapitalization.words,
             validator: (String? value) =>
                 (value ?? '').trim().isEmpty ? 'Ismni kiriting' : null,
@@ -120,7 +120,7 @@ class _DebtFormState extends State<DebtForm> {
             controller: _amountController,
             label: 'Summa',
             hint: '30 000',
-            prefixIcon: BootstrapIcons.cash_coin,
+            prefixIcon: IconsaxPlusLinear.moneys,
             keyboardType: TextInputType.number,
             inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],
             validator: (String? value) =>
@@ -213,8 +213,8 @@ class _TypeOption extends StatelessWidget {
           children: <Widget>[
             Icon(
               isSelected
-                  ? BootstrapIcons.record_circle_fill
-                  : BootstrapIcons.circle,
+                  ? IconsaxPlusBold.record_circle
+                  : IconsaxPlusLinear.record,
               size: 18,
               color: isSelected ? color : theme.favoriteGray,
             ),

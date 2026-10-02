@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/image_service.dart';
@@ -49,7 +49,7 @@ class PhotoStep extends StatelessWidget {
                   ? Center(child: CircularProgressIndicator(color: theme.blue))
                   : bytes == null
                   ? Icon(
-                      BootstrapIcons.person,
+                      IconsaxPlusLinear.user,
                       size: 56,
                       color: theme.favoriteGray,
                     )
@@ -62,7 +62,7 @@ class PhotoStep extends StatelessWidget {
               Expanded(
                 child: AppButton(
                   label: 'Kamera',
-                  icon: BootstrapIcons.camera,
+                  icon: IconsaxPlusLinear.camera,
                   variant: AppButtonVariant.secondary,
                   onPressed: isBusy ? null : onCamera,
                 ),
@@ -71,7 +71,7 @@ class PhotoStep extends StatelessWidget {
               Expanded(
                 child: AppButton(
                   label: 'Galereya',
-                  icon: BootstrapIcons.images,
+                  icon: IconsaxPlusLinear.gallery,
                   variant: AppButtonVariant.secondary,
                   onPressed: isBusy ? null : onGallery,
                 ),

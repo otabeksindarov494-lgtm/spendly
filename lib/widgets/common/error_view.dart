@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
@@ -19,7 +19,7 @@ class ErrorView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(BootstrapIcons.exclamation_circle, size: 36, color: theme.red),
+          Icon(IconsaxPlusLinear.information, size: 36, color: theme.red),
           const SizedBox(height: 12),
           Text(
             message,

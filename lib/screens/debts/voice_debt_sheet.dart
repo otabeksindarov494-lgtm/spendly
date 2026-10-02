@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -222,7 +222,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                 Row(
                   children: <Widget>[
                     Icon(
-                      BootstrapIcons.globe2,
+                      IconsaxPlusLinear.global,
                       size: 11,
                       color: _locale.isUzbek ? theme.green : theme.yellow,
                     ),
@@ -240,7 +240,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           ),
         ),
         IconButton(
-          icon: Icon(BootstrapIcons.x_lg, size: 16, color: theme.textGray),
+          icon: Icon(IconsaxPlusLinear.close_circle, size: 16, color: theme.textGray),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ],
@@ -305,7 +305,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         const SizedBox(height: 20),
         AppButton(
           label: 'Tugatdim',
-          icon: BootstrapIcons.stop_fill,
+          icon: IconsaxPlusBold.stop,
           onPressed: _stopAndReview,
         ),
       ],
@@ -324,14 +324,14 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         const SizedBox(height: 18),
         AppButton(
           label: 'Qayta urinish',
-          icon: BootstrapIcons.mic_fill,
+          icon: IconsaxPlusBold.microphone_2,
           variant: AppButtonVariant.secondary,
           onPressed: _start,
         ),
         const SizedBox(height: 10),
         AppButton(
           label: 'Qo\'lda kiritish',
-          icon: BootstrapIcons.pencil_square,
+          icon: IconsaxPlusLinear.edit,
           onPressed: () => setState(() {
             _parsed = const ParsedDebt(rawText: '');
             _phase = _Phase.review;
@@ -364,7 +364,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         const SizedBox(height: 6),
         AppButton(
           label: 'Qaytadan gapirish',
-          icon: BootstrapIcons.mic_fill,
+          icon: IconsaxPlusBold.microphone_2,
           variant: AppButtonVariant.text,
           height: 44,
           onPressed: _isSaving ? null : _start,
@@ -392,7 +392,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           Row(
             children: <Widget>[
               Icon(
-                BootstrapIcons.soundwave,
+                IconsaxPlusLinear.sound,
                 size: 13,
                 color: theme.textGray,
               ),
@@ -467,7 +467,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Icon(
-            BootstrapIcons.exclamation_triangle,
+            IconsaxPlusLinear.danger,
             size: 13,
             color: theme.yellow,
           ),

@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -65,7 +65,7 @@ class InfoRow extends ConsumerWidget {
                 ),
                 if (onTap != null)
                   Icon(
-                    BootstrapIcons.chevron_right,
+                    IconsaxPlusLinear.arrow_right_3,
                     size: 13,
                     color: theme.favoriteGray,
                   ),

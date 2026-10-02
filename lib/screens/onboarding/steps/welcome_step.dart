@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -11,17 +11,17 @@ class WelcomeStep extends StatelessWidget {
   static const List<(IconData, String, String)> _features =
       <(IconData, String, String)>[
         (
-          BootstrapIcons.camera,
+          IconsaxPlusLinear.camera,
           'Selfie bilan davomat',
           'Ishga kelish va ketish vaqtini rasm bilan qayd eting',
         ),
         (
-          BootstrapIcons.calculator,
+          IconsaxPlusLinear.calculator,
           'Avtomatik maosh',
           'Kechikish va erta ketish jarimalari o\'zi hisoblanadi',
         ),
         (
-          BootstrapIcons.mic,
+          IconsaxPlusLinear.microphone_2,
           'Ovoz orqali qarz',
           'Gapirib ayting — qarz o\'zi yozib olinadi',
         ),

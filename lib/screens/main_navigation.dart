@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,11 +33,11 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
 
   static const List<(IconData, IconData, String)> _tabs =
       <(IconData, IconData, String)>[
-        (BootstrapIcons.house, BootstrapIcons.house_fill, 'Bosh sahifa'),
-        (BootstrapIcons.bar_chart, BootstrapIcons.bar_chart_fill, 'Hisobot'),
-        (BootstrapIcons.chat_dots, BootstrapIcons.chat_dots_fill, 'Chat'),
-        (BootstrapIcons.wallet2, BootstrapIcons.wallet_fill, 'Qarzlar'),
-        (BootstrapIcons.person, BootstrapIcons.person_fill, 'Profil'),
+        (IconsaxPlusLinear.home_2, IconsaxPlusBold.home_2, 'Bosh sahifa'),
+        (IconsaxPlusLinear.chart, IconsaxPlusBold.chart, 'Hisobot'),
+        (IconsaxPlusLinear.message, IconsaxPlusBold.message, 'Chat'),
+        (IconsaxPlusLinear.empty_wallet, IconsaxPlusBold.empty_wallet, 'Qarzlar'),
+        (IconsaxPlusLinear.user, IconsaxPlusBold.user, 'Profil'),
       ];
 
   @override

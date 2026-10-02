@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -214,7 +214,7 @@ class _ManualAttendanceScreenState
                   const SizedBox(height: 18),
                   _buildRow(
                     theme: theme,
-                    icon: BootstrapIcons.calendar_event,
+                    icon: IconsaxPlusLinear.calendar_1,
                     label: 'Sana',
                     value: Formatters.longDate(_date),
                     onTap: _pickDate,
@@ -222,7 +222,7 @@ class _ManualAttendanceScreenState
                   const SizedBox(height: 10),
                   _buildRow(
                     theme: theme,
-                    icon: BootstrapIcons.box_arrow_in_right,
+                    icon: IconsaxPlusLinear.login,
                     label: 'Kelgan vaqt',
                     value: TimeUtils.hmFromMinutes(_checkInMinutes),
                     onTap: () => _pickTime(isCheckIn: true),
@@ -230,7 +230,7 @@ class _ManualAttendanceScreenState
                   const SizedBox(height: 10),
                   _buildRow(
                     theme: theme,
-                    icon: BootstrapIcons.box_arrow_right,
+                    icon: IconsaxPlusLinear.logout,
                     label: 'Ketgan vaqt',
                     value: _stillAtWork
                         ? 'Hali ishda'
@@ -287,7 +287,7 @@ class _ManualAttendanceScreenState
                   const SizedBox(height: 22),
                   AppButton(
                     label: _recordExists ? 'Yangilash' : 'Saqlash',
-                    icon: BootstrapIcons.check_circle_fill,
+                    icon: IconsaxPlusBold.tick_circle,
                     isLoading: _isLoadingDay,
                     onPressed: () => _save(profile),
                   ),
@@ -316,7 +316,7 @@ class _ManualAttendanceScreenState
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(BootstrapIcons.info_circle, size: 15, color: theme.blue),
+          Icon(IconsaxPlusLinear.info_circle, size: 15, color: theme.blue),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -366,7 +366,7 @@ class _ManualAttendanceScreenState
           if (onTap != null) ...<Widget>[
             const SizedBox(width: 6),
             Icon(
-              BootstrapIcons.chevron_right,
+              IconsaxPlusLinear.arrow_right_3,
               size: 13,
               color: theme.favoriteGray,
             ),

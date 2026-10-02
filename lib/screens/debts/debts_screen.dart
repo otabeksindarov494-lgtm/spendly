@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,7 +42,7 @@ class DebtsScreen extends ConsumerWidget {
               children: <Widget>[
                 Expanded(
                   child: _AddButton(
-                    icon: BootstrapIcons.mic_fill,
+                    icon: IconsaxPlusBold.microphone_2,
                     label: 'Ovoz orqali',
                     background: theme.blue,
                     foreground: CustomTheme.onAccent,
@@ -52,7 +52,7 @@ class DebtsScreen extends ConsumerWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _AddButton(
-                    icon: BootstrapIcons.pencil_square,
+                    icon: IconsaxPlusLinear.edit,
                     label: 'Qo\'lda',
                     background: theme.background,
                     foreground: theme.mainDarkBlue,
@@ -72,7 +72,7 @@ class DebtsScreen extends ConsumerWidget {
               data: (List<Debt> all) {
                 if (all.isEmpty) {
                   return const EmptyState(
-                    icon: BootstrapIcons.wallet2,
+                    icon: IconsaxPlusLinear.empty_wallet,
                     title: 'Qarzlar ro\'yxati bo\'sh',
                     message:
                         'Mikrofon tugmasini bosib aytib yuboring yoki qo\'lda '
@@ -81,7 +81,7 @@ class DebtsScreen extends ConsumerWidget {
                 }
                 if (filtered.isEmpty) {
                   return const EmptyState(
-                    icon: BootstrapIcons.funnel,
+                    icon: IconsaxPlusLinear.filter,
                     title: 'Bu filtrga mos qarz yo\'q',
                   );
                 }
@@ -315,7 +315,7 @@ class _DebtTile extends ConsumerWidget {
             color: theme.red,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Icon(BootstrapIcons.trash, color: CustomTheme.onAccent),
+          child: const Icon(IconsaxPlusLinear.trash, color: CustomTheme.onAccent),
         ),
         confirmDismiss: (DismissDirection _) => _confirmDelete(context, theme),
         onDismissed: (DismissDirection _) {
@@ -371,7 +371,7 @@ class _DebtTile extends ConsumerWidget {
                         if (debt.createdVia == DebtSource.voice) ...<Widget>[
                           const SizedBox(width: 6),
                           Icon(
-                            BootstrapIcons.mic_fill,
+                            IconsaxPlusBold.microphone_2,
                             size: 13,
                             color: theme.favoriteGray,
                           ),
@@ -418,8 +418,8 @@ class _DebtTile extends ConsumerWidget {
                       children: <Widget>[
                         Icon(
                           debt.isPaid
-                              ? BootstrapIcons.check_square_fill
-                              : BootstrapIcons.square,
+                              ? IconsaxPlusBold.tick_square
+                              : IconsaxPlusLinear.stop,
                           size: 16,
                           color: debt.isPaid ? theme.green : theme.favoriteGray,
                         ),

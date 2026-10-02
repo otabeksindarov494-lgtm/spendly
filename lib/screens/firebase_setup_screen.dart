@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -27,7 +27,7 @@ class FirebaseSetupScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const SizedBox(height: 24),
-              Icon(BootstrapIcons.cloud_slash, size: 44, color: theme.yellow),
+              Icon(IconsaxPlusLinear.cloud_cross, size: 44, color: theme.yellow),
               const SizedBox(height: 20),
               Text(
                 'Firebase sozlanmagan',
@@ -80,7 +80,7 @@ class FirebaseSetupScreen extends StatelessWidget {
               const SizedBox(height: 24),
               AppButton(
                 label: 'Buyruqni nusxalash',
-                icon: BootstrapIcons.copy,
+                icon: IconsaxPlusLinear.copy,
                 variant: AppButtonVariant.secondary,
                 onPressed: () async {
                   await Clipboard.setData(const ClipboardData(text: _command));

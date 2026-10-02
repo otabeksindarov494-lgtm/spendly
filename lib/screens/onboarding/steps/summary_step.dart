@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -83,7 +83,7 @@ class SummaryStep extends StatelessWidget {
                       ),
                     ),
                     Icon(
-                      BootstrapIcons.pencil_square,
+                      IconsaxPlusLinear.edit,
                       size: 18,
                       color: theme.favoriteGray,
                     ),

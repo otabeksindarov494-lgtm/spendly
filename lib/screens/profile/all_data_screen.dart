@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,14 +61,14 @@ class AllDataScreen extends ConsumerWidget {
           child: Column(
             children: <Widget>[
               InfoRow(
-                icon: BootstrapIcons.person,
+                icon: IconsaxPlusLinear.user,
                 label: 'Ism-familiya',
                 value: orDash(profile.fullName),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editFullName(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.cake2,
+                icon: IconsaxPlusLinear.cake,
                 label: 'Tug\'ilgan kun',
                 value: profile.birthDate == null
                     ? '—'
@@ -77,7 +77,7 @@ class AllDataScreen extends ConsumerWidget {
                     ProfileEditSheets.editBirthDate(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.telephone,
+                icon: IconsaxPlusLinear.call,
                 label: 'Telefon',
                 value: orDash(profile.phoneNumber),
                 isLast: true,
@@ -94,21 +94,21 @@ class AllDataScreen extends ConsumerWidget {
           child: Column(
             children: <Widget>[
               InfoRow(
-                icon: BootstrapIcons.building,
+                icon: IconsaxPlusLinear.building,
                 label: 'Kompaniya',
                 value: orDash(profile.companyName),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editCompany(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.person_vcard,
+                icon: IconsaxPlusLinear.personalcard,
                 label: 'Lavozim',
                 value: orDash(profile.position),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editPosition(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.calendar_check,
+                icon: IconsaxPlusLinear.calendar_tick,
                 label: 'Ishga kirgan sana',
                 value: profile.employmentStartDate == null
                     ? '—'
@@ -127,14 +127,14 @@ class AllDataScreen extends ConsumerWidget {
           child: Column(
             children: <Widget>[
               InfoRow(
-                icon: BootstrapIcons.wallet2,
+                icon: IconsaxPlusLinear.empty_wallet,
                 label: 'Maosh turi',
                 value: profile.salaryType.label,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editSalaryType(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.cash_coin,
+                icon: IconsaxPlusLinear.moneys,
                 label: 'Maosh oralig\'i',
                 value: profile.salaryMin <= 0 && profile.salaryMax <= 0
                     ? Formatters.money(
@@ -147,7 +147,7 @@ class AllDataScreen extends ConsumerWidget {
                     ProfileEditSheets.editSalary(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.calculator,
+                icon: IconsaxPlusLinear.calculator,
                 label: 'Hisobda ishlatiladi',
                 value: Formatters.money(
                   profile.salaryAmount,
@@ -157,14 +157,14 @@ class AllDataScreen extends ConsumerWidget {
                     ProfileEditSheets.editSalary(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.currency_exchange,
+                icon: IconsaxPlusLinear.dollar_circle,
                 label: 'Valyuta',
                 value: profile.currency,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editCurrency(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.calendar_check,
+                icon: IconsaxPlusLinear.calendar_tick,
                 label: 'Maosh beriladigan kun',
                 value: 'Oyning ${profile.salaryPayDay}-kuni',
                 isLast: true,
@@ -181,14 +181,14 @@ class AllDataScreen extends ConsumerWidget {
           child: Column(
             children: <Widget>[
               InfoRow(
-                icon: BootstrapIcons.clock,
+                icon: IconsaxPlusLinear.clock,
                 label: 'Ish vaqti',
                 value: '${profile.workStartTime} – ${profile.workEndTime}',
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editWorkTime(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.cup_hot,
+                icon: IconsaxPlusLinear.coffee,
                 label: 'Tushlik tanaffusi',
                 value: profile.lunchBreakMinutes == 0
                     ? 'Yo\'q'
@@ -197,7 +197,7 @@ class AllDataScreen extends ConsumerWidget {
                     ProfileEditSheets.editLunchBreak(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.calendar3,
+                icon: IconsaxPlusLinear.calendar,
                 label: 'Ish kunlari',
                 value: profile.workDays.isEmpty
                     ? '—'
@@ -206,7 +206,7 @@ class AllDataScreen extends ConsumerWidget {
                     ProfileEditSheets.editWorkDays(context, ref, profile),
               ),
               InfoRow(
-                icon: BootstrapIcons.alarm,
+                icon: IconsaxPlusLinear.alarm,
                 label: 'Kechikish jarimasi',
                 value: profile.penaltyEnabled ? 'Ushlanadi' : 'Ushlanmaydi',
                 isLast: true,
@@ -248,7 +248,7 @@ class AllDataScreen extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(BootstrapIcons.info_circle, size: 15, color: theme.blue),
+          Icon(IconsaxPlusLinear.info_circle, size: 15, color: theme.blue),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

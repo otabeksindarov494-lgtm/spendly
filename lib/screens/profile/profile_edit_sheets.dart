@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,18 +79,18 @@ abstract final class ProfileEditSheets {
           children: <Widget>[
             const SizedBox(height: 8),
             ListTile(
-              leading: Icon(BootstrapIcons.camera, color: theme.blue),
+              leading: Icon(IconsaxPlusLinear.camera, color: theme.blue),
               title: const Text('Kameradan olish'),
               onTap: () => Navigator.of(context).pop('camera'),
             ),
             ListTile(
-              leading: Icon(BootstrapIcons.images, color: theme.blue),
+              leading: Icon(IconsaxPlusLinear.gallery, color: theme.blue),
               title: const Text('Galereyadan tanlash'),
               onTap: () => Navigator.of(context).pop('gallery'),
             ),
             if (profile.profilePhotoBase64 != null)
               ListTile(
-                leading: Icon(BootstrapIcons.trash, color: theme.red),
+                leading: Icon(IconsaxPlusLinear.trash, color: theme.red),
                 title: Text(
                   'Rasmni olib tashlash',
                   style: TextStyle(color: theme.red),

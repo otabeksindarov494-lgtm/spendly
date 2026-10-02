@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,7 +44,7 @@ class ChatListScreen extends ConsumerWidget {
           data: (List<PublicProfile> users) {
             if (entries.isEmpty) {
               return const EmptyState(
-                icon: BootstrapIcons.people,
+                icon: IconsaxPlusLinear.profile_2user,
                 title: 'Hozircha boshqa foydalanuvchi yo\'q',
                 message:
                     'Kimdir ro\'yxatdan o\'tib profilini to\'ldirgach, shu '

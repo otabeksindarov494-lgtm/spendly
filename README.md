@@ -93,8 +93,9 @@ tegib qolmaslik uchun.
   Almashtirish uchun `lib/theme/app_theme.dart`dagi `AppTheme.fontStyle()` va
   `AppTheme.fontTextTheme()` metodlarini o'zgartirish kifoya.
 
-- **Ikonkalar** — [`bootstrap_icons`](https://pub.dev/packages/bootstrap_icons)
-  (`BootstrapIcons.*`). Material Icons ishlatilmaydi.
+- **Ikonkalar** — [`iconsax_plus`](https://pub.dev/packages/iconsax_plus)
+  (Iconsax, MIT): `IconsaxPlusLinear.*`, faol holatlar uchun
+  `IconsaxPlusBold.*`. Material Icons ishlatilmaydi.
 
 `google_fonts` shriftni birinchi ishga tushirishda internetdan yuklab, keyin
 qurilmada keshlaydi. Butunlay oflayn kerak bo'lsa, `.ttf` fayllarni

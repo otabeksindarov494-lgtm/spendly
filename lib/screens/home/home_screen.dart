@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -155,7 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 data: (List<Attendance> records) {
                   if (records.isEmpty) {
                     return const EmptyState(
-                      icon: BootstrapIcons.calendar_x,
+                      icon: IconsaxPlusLinear.calendar_remove,
                       title: 'Hali yozuv yo\'q',
                       message:
                           'Birinchi marta "Ishga keldim" tugmasini bosganingizda '
@@ -227,7 +227,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Row(
             children: <Widget>[
               Icon(
-                BootstrapIcons.calendar_event,
+                IconsaxPlusLinear.calendar_1,
                 size: 16,
                 color: context.theme.textGray,
               ),
@@ -301,7 +301,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 16),
         AppButton(
           label: 'Ishga keldim',
-          icon: BootstrapIcons.camera_fill,
+          icon: IconsaxPlusBold.camera,
           isLoading: _isBusy,
           onPressed: () => _record(profile: profile, today: today),
         ),
@@ -329,7 +329,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         const SizedBox(height: 16),
         AppButton(
           label: 'Ishdan ketyapman',
-          icon: BootstrapIcons.box_arrow_right,
+          icon: IconsaxPlusLinear.logout,
           variant: AppButtonVariant.secondary,
           isLoading: _isBusy,
           onPressed: () => _record(profile: profile, today: today),
@@ -368,7 +368,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Row(
             children: <Widget>[
               Icon(
-                BootstrapIcons.check_circle_fill,
+                IconsaxPlusBold.tick_circle,
                 size: 15,
                 color: context.theme.green,
               ),
@@ -521,7 +521,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       childAspectRatio: 1.35,
       children: <Widget>[
         StatCard(
-          icon: BootstrapIcons.stopwatch,
+          icon: IconsaxPlusLinear.timer_1,
           label: 'Bugun ishlagan',
           value: today == null || !today.hasCheckedOut
               ? '—'
@@ -529,13 +529,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           accentColor: theme.blue,
         ),
         StatCard(
-          icon: BootstrapIcons.calendar_check,
+          icon: IconsaxPlusLinear.calendar_tick,
           label: 'Shu oy kelgan kunlar',
           value: summary == null ? '—' : '${summary.presentDays} kun',
           accentColor: theme.green,
         ),
         StatCard(
-          icon: BootstrapIcons.alarm,
+          icon: IconsaxPlusLinear.alarm,
           label: 'Shu oy kechikish',
           value: summary == null
               ? '—'
@@ -543,7 +543,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           accentColor: theme.yellow,
         ),
         StatCard(
-          icon: BootstrapIcons.cash_coin,
+          icon: IconsaxPlusLinear.moneys,
           label: 'Joriy oylik',
           value: summary == null
               ? '—'

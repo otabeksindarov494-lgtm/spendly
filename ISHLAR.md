@@ -19,7 +19,7 @@ turganini bir joyda saqlaydi. Yangi ish qo'shilganda shu faylga yoziladi.
 | Flutter | 3.44.0 · Dart 3.12 |
 | State management | Riverpod **3** (`Notifier`, deprecated `StateProvider` emas) |
 | Shrift | Manrope (`google_fonts`) |
-| Ikonkalar | Bootstrap Icons (`bootstrap_icons`) — Material Icons ishlatilmaydi |
+| Ikonkalar | Iconsax (`iconsax_plus`) — Linear, faol holatda Bold. Material Icons ishlatilmaydi |
 | Til | Interfeys to'liq o'zbekcha (`Locale('uz')`) |
 | Mavzu | Yorug' / Tungi. Sukut — **Yorug'**, tizim rangi olinmaydi |
 

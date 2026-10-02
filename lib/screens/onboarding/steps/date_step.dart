@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -21,7 +21,7 @@ class DateStep extends StatelessWidget {
     required this.firstDate,
     required this.lastDate,
     this.initialWhenEmpty,
-    this.icon = BootstrapIcons.calendar_event,
+    this.icon = IconsaxPlusLinear.calendar_1,
     this.emptyLabel = 'Sanani tanlang',
   });
 
@@ -63,7 +63,7 @@ class DateStep extends StatelessWidget {
               ),
             ),
             Icon(
-              BootstrapIcons.chevron_right,
+              IconsaxPlusLinear.arrow_right_3,
               size: 14,
               color: theme.favoriteGray,
             ),

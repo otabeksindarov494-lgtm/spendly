@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -54,7 +54,7 @@ class WorkTimeStep extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(BootstrapIcons.chevron_right, color: theme.textGray),
+            Icon(IconsaxPlusLinear.arrow_right_3, color: theme.textGray),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -78,26 +78,26 @@ class ProfileScreen extends ConsumerWidget {
         ],
         const SizedBox(height: 30),
         MenuCard(
-          icon: BootstrapIcons.person_vcard,
+          icon: IconsaxPlusLinear.personalcard,
           title: 'Barcha ma\'lumotlar',
           subtitle: 'Shaxsiy, ish joyi, maosh va ish jadvali',
           onTap: () => AllDataScreen.open(context),
         ),
         MenuCard(
-          icon: BootstrapIcons.calendar_plus,
+          icon: IconsaxPlusLinear.calendar_add,
           title: 'Davomat',
           subtitle: 'Qo\'lda kiritish yoki vaqtni tuzatish',
           accentColor: theme.green,
           onTap: () => ManualAttendanceScreen.open(context),
         ),
         MenuCard(
-          icon: BootstrapIcons.gear,
+          icon: IconsaxPlusLinear.setting_2,
           title: 'Sozlamalar',
           subtitle: 'Mavzu, til va ilova versiyasi',
           onTap: () => SettingsScreen.open(context),
         ),
         MenuCard(
-          icon: BootstrapIcons.box_arrow_right,
+          icon: IconsaxPlusLinear.logout,
           title: 'Chiqish',
           subtitle: 'Ma\'lumotlaringiz o\'chirilmaydi',
           accentColor: theme.red,
@@ -140,7 +140,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
               child: photo == null
                   ? Icon(
-                      BootstrapIcons.person,
+                      IconsaxPlusLinear.user,
                       size: 42,
                       color: theme.favoriteGray,
                     )
@@ -157,7 +157,7 @@ class ProfileScreen extends ConsumerWidget {
                   border: Border.all(color: theme.inputColor, width: 2),
                 ),
                 child: const Icon(
-                  BootstrapIcons.camera_fill,
+                  IconsaxPlusBold.camera,
                   size: 12,
                   color: CustomTheme.onAccent,
                 ),

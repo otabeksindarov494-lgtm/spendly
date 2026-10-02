@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -265,7 +265,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 ? null
                 : IconButton(
                     icon: Icon(
-                      BootstrapIcons.arrow_left,
+                      IconsaxPlusLinear.arrow_left,
                       color: theme.mainDarkBlue,
                     ),
                     onPressed: _isSaving ? null : _back,
@@ -318,7 +318,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         firstDate: DateTime(now.year - 100),
         lastDate: now,
         initialWhenEmpty: DateTime(now.year - 25, now.month, now.day),
-        icon: BootstrapIcons.cake2,
+        icon: IconsaxPlusLinear.cake,
         onChanged: (DateTime value) => setState(() => _birthDate = value),
       ),
       // 4
@@ -363,7 +363,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         firstDate: DateTime(now.year - 50),
         lastDate: now,
         initialWhenEmpty: DateTime(now.year, now.month, 1),
-        icon: BootstrapIcons.building,
+        icon: IconsaxPlusLinear.building,
         onChanged: (DateTime value) => setState(() => _employmentStart = value),
       ),
       // 9 — eng muhim savol: butun hisob-kitob shunga bog'liq
@@ -406,7 +406,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Ish nechada boshlanadi?',
         subtitle: 'Kechikish shu vaqtdan hisoblanadi.',
         value: _workStart,
-        icon: BootstrapIcons.box_arrow_in_right,
+        icon: IconsaxPlusLinear.login,
         onChanged: (String value) => setState(() => _workStart = value),
       ),
       // 13
@@ -414,7 +414,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         title: 'Ish nechada tugaydi?',
         subtitle: 'Erta ketish shu vaqtga nisbatan hisoblanadi.',
         value: _workEnd,
-        icon: BootstrapIcons.box_arrow_right,
+        icon: IconsaxPlusLinear.logout,
         onChanged: (String value) => setState(() => _workEnd = value),
       ),
       // 14
@@ -481,37 +481,37 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         label: 'Ism-familiya',
         value: orDash(_fullName),
         stepIndex: 1,
-        icon: BootstrapIcons.person,
+        icon: IconsaxPlusLinear.user,
       ),
       SummaryEntry(
         label: 'Tug\'ilgan kun',
         value: _birthDate == null ? '—' : Formatters.longDate(_birthDate!),
         stepIndex: 2,
-        icon: BootstrapIcons.cake2,
+        icon: IconsaxPlusLinear.cake,
       ),
       SummaryEntry(
         label: 'Telefon',
         value: orDash(_phone),
         stepIndex: 3,
-        icon: BootstrapIcons.telephone,
+        icon: IconsaxPlusLinear.call,
       ),
       SummaryEntry(
         label: 'Profil rasmi',
         value: _photoBase64 == null ? 'Qo\'yilmagan' : 'Qo\'yilgan',
         stepIndex: 4,
-        icon: BootstrapIcons.camera,
+        icon: IconsaxPlusLinear.camera,
       ),
       SummaryEntry(
         label: 'Ish joyi',
         value: orDash(_company),
         stepIndex: 5,
-        icon: BootstrapIcons.building,
+        icon: IconsaxPlusLinear.building,
       ),
       SummaryEntry(
         label: 'Lavozim',
         value: orDash(_position),
         stepIndex: 6,
-        icon: BootstrapIcons.person_vcard,
+        icon: IconsaxPlusLinear.personalcard,
       ),
       SummaryEntry(
         label: 'Ishga kirgan sana',
@@ -519,13 +519,13 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
             ? '—'
             : Formatters.longDate(_employmentStart!),
         stepIndex: 7,
-        icon: BootstrapIcons.calendar_check,
+        icon: IconsaxPlusLinear.calendar_tick,
       ),
       SummaryEntry(
         label: 'Maosh turi',
         value: _salaryType.label,
         stepIndex: 8,
-        icon: BootstrapIcons.wallet2,
+        icon: IconsaxPlusLinear.empty_wallet,
       ),
       SummaryEntry(
         label: 'Maosh oralig\'i',
@@ -534,43 +534,43 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
             : '${Formatters.number(_salaryMin)} – '
                   '${Formatters.money(_salaryMax, currency: _currency)}',
         stepIndex: 10,
-        icon: BootstrapIcons.cash_coin,
+        icon: IconsaxPlusLinear.moneys,
       ),
       SummaryEntry(
         label: 'Hisobda ishlatiladi',
         value: Formatters.money(average, currency: _currency),
         stepIndex: 10,
-        icon: BootstrapIcons.calculator,
+        icon: IconsaxPlusLinear.calculator,
       ),
       SummaryEntry(
         label: 'Ish vaqti',
         value: '$_workStart – $_workEnd',
         stepIndex: 11,
-        icon: BootstrapIcons.clock,
+        icon: IconsaxPlusLinear.clock,
       ),
       SummaryEntry(
         label: 'Tushlik tanaffusi',
         value: _lunchBreak == 0 ? 'Yo\'q' : Formatters.minutes(_lunchBreak),
         stepIndex: 13,
-        icon: BootstrapIcons.cup_hot,
+        icon: IconsaxPlusLinear.coffee,
       ),
       SummaryEntry(
         label: 'Ish kunlari',
         value: _workDays.isEmpty ? '—' : Formatters.workDays(_workDays),
         stepIndex: 14,
-        icon: BootstrapIcons.calendar3,
+        icon: IconsaxPlusLinear.calendar,
       ),
       SummaryEntry(
         label: 'Maosh kuni',
         value: 'Oyning $_payDay-kuni',
         stepIndex: 15,
-        icon: BootstrapIcons.calendar_check,
+        icon: IconsaxPlusLinear.calendar_tick,
       ),
       SummaryEntry(
         label: 'Kechikish jarimasi',
         value: _penaltyEnabled ? 'Ushlanadi' : 'Ushlanmaydi',
         stepIndex: 16,
-        icon: BootstrapIcons.alarm,
+        icon: IconsaxPlusLinear.alarm,
       ),
     ];
   }

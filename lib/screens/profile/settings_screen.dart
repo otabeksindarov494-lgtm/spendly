@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,7 +44,7 @@ class SettingsScreen extends ConsumerWidget {
                   Row(
                     children: <Widget>[
                       Icon(
-                        BootstrapIcons.palette,
+                        IconsaxPlusLinear.colorfilter,
                         size: 17,
                         color: theme.textGray,
                       ),
@@ -98,8 +98,8 @@ class SettingsScreen extends ConsumerWidget {
                                   children: <Widget>[
                                     Icon(
                                       option == ThemeMode.dark
-                                          ? BootstrapIcons.moon
-                                          : BootstrapIcons.sun,
+                                          ? IconsaxPlusLinear.moon
+                                          : IconsaxPlusLinear.sun_1,
                                       size: 15,
                                       color: mode == option
                                           ? CustomTheme.onAccent
@@ -132,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
             AppCard(
               child: Row(
                 children: <Widget>[
-                  Icon(BootstrapIcons.globe2, size: 17, color: theme.textGray),
+                  Icon(IconsaxPlusLinear.global, size: 17, color: theme.textGray),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -157,7 +157,7 @@ class SettingsScreen extends ConsumerWidget {
               child: Row(
                 children: <Widget>[
                   Icon(
-                    BootstrapIcons.info_circle,
+                    IconsaxPlusLinear.info_circle,
                     size: 17,
                     color: theme.textGray,
                   ),

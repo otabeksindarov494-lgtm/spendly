@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -204,7 +204,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           controller: _emailController,
           label: 'Email manzil',
           hint: 'ism@example.com',
-          prefixIcon: BootstrapIcons.envelope,
+          prefixIcon: IconsaxPlusLinear.sms,
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
             final String text = (value ?? '').trim();
@@ -220,11 +220,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           controller: _passwordController,
           label: 'Parol',
           hint: 'Kamida 6 ta belgi',
-          prefixIcon: BootstrapIcons.lock,
+          prefixIcon: IconsaxPlusLinear.lock,
           obscureText: _obscurePassword,
           suffix: IconButton(
             icon: Icon(
-              _obscurePassword ? BootstrapIcons.eye_slash : BootstrapIcons.eye,
+              _obscurePassword ? IconsaxPlusLinear.eye_slash : IconsaxPlusLinear.eye,
               size: 18,
               color: theme.textGray,
             ),
@@ -278,7 +278,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(BootstrapIcons.exclamation_circle, size: 15, color: theme.red),
+          Icon(IconsaxPlusLinear.information, size: 15, color: theme.red),
           const SizedBox(width: 9),
           Expanded(
             child: Text(

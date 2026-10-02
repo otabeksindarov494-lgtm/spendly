@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/attendance_model.dart';
@@ -66,7 +66,7 @@ class PhotoPreviewSheet extends StatelessWidget {
             const SizedBox(height: 16),
             if (!hasAnyPhoto)
               const EmptyState(
-                icon: BootstrapIcons.camera,
+                icon: IconsaxPlusLinear.camera,
                 title: 'Bu kun uchun rasm yo\'q',
                 message: 'Check-in yoki check-out paytida rasm olinmagan.',
               )
@@ -126,7 +126,7 @@ class _PhotoTile extends StatelessWidget {
                     color: theme.gray,
                     alignment: Alignment.center,
                     child: Icon(
-                      BootstrapIcons.image,
+                      IconsaxPlusLinear.image,
                       color: theme.favoriteGray,
                     ),
                   )

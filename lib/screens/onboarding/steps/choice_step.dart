@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -58,8 +58,8 @@ class ChoiceStep<T> extends StatelessWidget {
                     children: <Widget>[
                       Icon(
                         option.value == selected
-                            ? BootstrapIcons.record_circle_fill
-                            : BootstrapIcons.circle,
+                            ? IconsaxPlusBold.record_circle
+                            : IconsaxPlusLinear.record,
                         size: 18,
                         color: option.value == selected
                             ? theme.blue

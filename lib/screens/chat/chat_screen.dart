@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,18 +100,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: <Widget>[
             const SizedBox(height: 8),
             ListTile(
-              leading: Icon(BootstrapIcons.reply, color: theme.blue),
+              leading: Icon(IconsaxPlusLinear.undo, color: theme.blue),
               title: const Text('Javob berish'),
               onTap: () => Navigator.of(context).pop('reply'),
             ),
             ListTile(
-              leading: Icon(BootstrapIcons.copy, color: theme.blue),
+              leading: Icon(IconsaxPlusLinear.copy, color: theme.blue),
               title: const Text('Nusxalash'),
               onTap: () => Navigator.of(context).pop('copy'),
             ),
             if (isMine)
               ListTile(
-                leading: Icon(BootstrapIcons.trash, color: theme.red),
+                leading: Icon(IconsaxPlusLinear.trash, color: theme.red),
                 title: Text('O\'chirish', style: TextStyle(color: theme.red)),
                 onTap: () => Navigator.of(context).pop('delete'),
               ),
@@ -199,7 +199,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 data: (List<ChatMessage> messages) {
                   if (messages.isEmpty) {
                     return EmptyState(
-                      icon: BootstrapIcons.chat_dots,
+                      icon: IconsaxPlusLinear.message,
                       title: 'Suhbat hali boshlanmagan',
                       message:
                           '${widget.peer.fullName} bilan birinchi xabarni '
@@ -332,7 +332,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: Icon(BootstrapIcons.x_lg, size: 16, color: theme.textGray),
+            icon: Icon(IconsaxPlusLinear.close_circle, size: 16, color: theme.textGray),
             onPressed: () => setState(() => _replyTo = null),
           ),
         ],
@@ -434,7 +434,7 @@ class _SendButton extends StatelessWidget {
                   ),
                 )
               : Icon(
-                  BootstrapIcons.send_fill,
+                  IconsaxPlusBold.send_2,
                   size: 18,
                   color: enabled ? CustomTheme.onAccent : theme.textGray,
                 ),
@@ -478,7 +478,7 @@ class _MessageBubble extends StatelessWidget {
         padding: const EdgeInsets.only(left: 8),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Icon(BootstrapIcons.reply, size: 18, color: theme.textGray),
+          child: Icon(IconsaxPlusLinear.undo, size: 18, color: theme.textGray),
         ),
       ),
       child: Align(

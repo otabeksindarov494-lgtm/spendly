@@ -1,4 +1,4 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,7 +58,7 @@ class ReportScreen extends ConsumerWidget {
               data: (List<Attendance> records) {
                 if (records.isEmpty) {
                   return EmptyState(
-                    icon: BootstrapIcons.calendar_week,
+                    icon: IconsaxPlusLinear.calendar_2,
                     title: '${Formatters.monthYear(month)} uchun yozuv yo\'q',
                     message: 'Bu oyda hali davomat qayd etilmagan.',
                   );
@@ -154,37 +154,37 @@ class ReportScreen extends ConsumerWidget {
       childAspectRatio: 1.35,
       children: <Widget>[
         StatCard(
-          icon: BootstrapIcons.hourglass_split,
+          icon: IconsaxPlusLinear.timer,
           label: 'Jami ishlangan soat',
           value: '${summary.workedHours.round()} soat',
           accentColor: theme.blue,
         ),
         StatCard(
-          icon: BootstrapIcons.calendar_check,
+          icon: IconsaxPlusLinear.calendar_tick,
           label: 'Kelgan kunlar',
           value: '${summary.presentDays} kun',
           accentColor: theme.green,
         ),
         StatCard(
-          icon: BootstrapIcons.calendar_x,
+          icon: IconsaxPlusLinear.calendar_remove,
           label: 'Kelmagan kunlar',
           value: '${summary.absentDays} kun',
           accentColor: theme.red,
         ),
         StatCard(
-          icon: BootstrapIcons.alarm,
+          icon: IconsaxPlusLinear.alarm,
           label: 'Jami kechikish',
           value: Formatters.minutes(summary.lateMinutes),
           accentColor: theme.yellow,
         ),
         StatCard(
-          icon: BootstrapIcons.box_arrow_right,
+          icon: IconsaxPlusLinear.logout,
           label: 'Jami erta ketish',
           value: Formatters.minutes(summary.earlyLeaveMinutes),
           accentColor: theme.yellow,
         ),
         StatCard(
-          icon: BootstrapIcons.dash_circle,
+          icon: IconsaxPlusLinear.minus_cirlce,
           label: 'Jami jarima',
           value: Formatters.money(summary.penaltyAmount),
           accentColor: theme.red,
@@ -218,7 +218,7 @@ class _MonthSelector extends ConsumerWidget {
       child: Row(
         children: <Widget>[
           IconButton(
-            icon: Icon(BootstrapIcons.chevron_left, color: theme.mainDarkBlue),
+            icon: Icon(IconsaxPlusLinear.arrow_left_1, color: theme.mainDarkBlue),
             onPressed: notifier.previous,
           ),
           Expanded(
@@ -234,7 +234,7 @@ class _MonthSelector extends ConsumerWidget {
           ),
           IconButton(
             icon: Icon(
-              BootstrapIcons.chevron_right,
+              IconsaxPlusLinear.arrow_right_3,
               color: canGoNext ? theme.mainDarkBlue : theme.favoriteGray,
             ),
             onPressed: canGoNext ? notifier.next : null,
