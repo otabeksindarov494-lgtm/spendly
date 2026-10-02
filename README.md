@@ -88,8 +88,8 @@ tegib qolmaslik uchun.
   ```
 
 - **Shrift** — [`google_fonts`](https://pub.dev/packages/google_fonts) orqali
-  **Manrope**. PROJECT.md'da Gilroy ko'rsatilgan, lekin u tijoriy shrift va
-  Google Fonts'da yo'q; Manrope unga eng yaqin bepul geometrik grotesk.
+  **Plus Jakarta Sans**. PROJECT.md'da Gilroy ko'rsatilgan, lekin u tijoriy shrift va
+  Google Fonts'da yo'q; Plus Jakarta Sans unga eng yaqin bepul geometrik shrift.
   Almashtirish uchun `lib/theme/app_theme.dart`dagi `AppTheme.fontStyle()` va
   `AppTheme.fontTextTheme()` metodlarini o'zgartirish kifoya.
 

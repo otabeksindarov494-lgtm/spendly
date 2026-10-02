@@ -18,7 +18,7 @@ turganini bir joyda saqlaydi. Yangi ish qo'shilganda shu faylga yoziladi.
 | Firebase loyihasi | `spendly-68d5a` |
 | Flutter | 3.44.0 · Dart 3.12 |
 | State management | Riverpod **3** (`Notifier`, deprecated `StateProvider` emas) |
-| Shrift | Manrope (`google_fonts`) |
+| Shrift | Plus Jakarta Sans (`google_fonts`) |
 | Ikonkalar | Iconsax (`iconsax_plus`) — Linear, faol holatda Bold. Material Icons ishlatilmaydi |
 | Til | Interfeys to'liq o'zbekcha (`Locale('uz')`) |
 | Mavzu | Yorug' / Tungi. Sukut — **Yorug'**, tizim rangi olinmaydi |
@@ -266,7 +266,7 @@ oylar o'z qiymati bilan qoladi.
 | Nima | Nega |
 |---|---|
 | `"oldim"` → `i_owe` (PRD'da `owed_to_me`) | PRD'ning o'zi savol belgisi qo'ygan. Alisherdan pul **olgan** bo'lsam, qarzdor — men. `voice_parser.dart:_detectType` da bir qatorda qaytariladi |
-| Gilroy → **Manrope** | Gilroy tijoriy, Google Fonts'da yo'q. `AppTheme.fontStyle()` da almashtiriladi |
+| Gilroy → **Plus Jakarta Sans** | Gilroy tijoriy, Google Fonts'da yo'q. `AppTheme.fontStyle()` da almashtiriladi |
 | `workDays`: 1 = Dushanba … 7 = Yakshanba | PRD "ES6 weekday" degan, lekin `[1..5]` = Dush–Juma Dart'ning `DateTime.weekday` bilan aynan mos |
 | Profil `users/{uid}` hujjatining o'zida | Hujjat ichida hujjat bo'lmaydi; PRD 3.3 qoidalari ham shunga mos |
 | Mavzuda "System" varianti yo'q | Foydalanuvchi so'rovi: sukut har doim Yorug' |
