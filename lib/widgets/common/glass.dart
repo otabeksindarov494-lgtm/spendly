@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 
-/// Har bir sahifa ostidagi fon: neytral gradient + rangsiz "kumush"
-/// shakllar (yorug' va soya dog'lari).
+/// Har bir sahifa ostidagi fon: neytral gradient, rangsiz "kumush"
+/// shakllar va ikki burchakdagi dumaloq yalpiz/osmon doiralari.
 ///
-/// Rangli nurlar ataylab yo'q (foydalanuvchi so'rovi). Shakllar faqat
-/// yorug'lik farqini beradi — shisha yuzalar orqali xiralashib ko'rinib,
-/// "chuqurlik" hosil qiladi. Blur emas, radial gradient — tez.
+/// Shaffof shisha yuzalar orqali ular xiralashib ko'rinib, "oyna"
+/// effektini beradi. Blur emas, radial gradient — tez.
 class GlassBackground extends StatelessWidget {
   const GlassBackground({super.key, required this.child});
 
@@ -23,25 +22,28 @@ class GlassBackground extends StatelessWidget {
       decoration: BoxDecoration(gradient: theme.backgroundGradient),
       child: Stack(
         children: <Widget>[
+          // Neytral kumush shakllar — yorug'lik farqi.
           Positioned(
             top: -120,
             left: -100,
             child: _Shape(color: theme.backdropLight, size: 420),
           ),
           Positioned(
-            top: 180,
+            bottom: 160,
             right: -150,
-            child: _Shape(color: theme.backdropShade, size: 360),
+            child: _Shape(color: theme.backdropShade, size: 340),
+          ),
+          // Ikki burchakdagi dumaloq rangli doiralar: yalpiz yuqori-o'ngda,
+          // osmon ko'ki pastki-chapda. Shaffof shisha orqali xiralashib ko'rinadi.
+          Positioned(
+            top: -70,
+            right: -70,
+            child: _Orb(color: theme.orbTopRight, size: 260),
           ),
           Positioned(
-            bottom: -140,
-            left: -120,
-            child: _Shape(color: theme.backdropShade, size: 380),
-          ),
-          Positioned(
-            bottom: 120,
-            right: -60,
-            child: _Shape(color: theme.backdropLight, size: 260),
+            bottom: -80,
+            left: -80,
+            child: _Orb(color: theme.orbBottomLeft, size: 280),
           ),
           Positioned.fill(child: child),
         ],
@@ -71,6 +73,38 @@ class _Shape extends StatelessWidget {
               color.withValues(alpha: 0),
             ],
             stops: const <double>[0, 0.5, 1],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Dumaloq rangli doira: markazdan chetning ~60% igacha deyarli to'liq
+/// rangda, faqat eng chekkasida yumshoq so'nadi — shaklsiz dog' emas,
+/// aniq doira bo'lib ko'rinadi.
+class _Orb extends StatelessWidget {
+  const _Orb({required this.color, required this.size});
+
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: <Color>[
+              color,
+              color.withValues(alpha: color.a * 0.85),
+              color.withValues(alpha: color.a * 0.3),
+              color.withValues(alpha: 0),
+            ],
+            stops: const <double>[0, 0.6, 0.85, 1],
           ),
         ),
       ),

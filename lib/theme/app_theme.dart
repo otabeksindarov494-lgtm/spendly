@@ -36,6 +36,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     required this.glassEdgeShade,
     required this.backdropLight,
     required this.backdropShade,
+    required this.orbTopRight,
+    required this.orbBottomLeft,
   });
 
   /// Kartalar, sahifa foni.
@@ -118,6 +120,11 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   final Color backdropLight;
   final Color backdropShade;
 
+  /// Ikki burchakdagi dumaloq rangli doiralar: yalpiz (yuqori-o'ng) va
+  /// osmon ko'ki (pastki-chap). Shaffof shisha orqali xiralashib ko'rinadi.
+  final Color orbTopRight;
+  final Color orbBottomLeft;
+
   // --- Light ---------------------------------------------------------------
   static const Color _lightBackground = Color(0xFFFFFFFF);
   static const Color _lightInputColor = Color(0xFFF7F6FB);
@@ -194,6 +201,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassEdgeShade: Color(0x331B2140),
     backdropLight: Color(0xFFFFFFFF),
     backdropShade: Color(0xFFC3CAD6),
+    orbTopRight: Color(0xA65EEAD4),
+    orbBottomLeft: Color(0xA67DD3FC),
   );
 
   static const CustomTheme dark = CustomTheme(
@@ -230,6 +239,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     glassEdgeShade: Color(0x14FFFFFF),
     backdropLight: Color(0xFF2B2E36),
     backdropShade: Color(0xFF07080A),
+    orbTopRight: Color(0x665EEAD4),
+    orbBottomLeft: Color(0x667DD3FC),
   );
 
   @override
@@ -259,6 +270,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     Color? glassEdgeShade,
     Color? backdropLight,
     Color? backdropShade,
+    Color? orbTopRight,
+    Color? orbBottomLeft,
   }) {
     return CustomTheme(
       background: background ?? this.background,
@@ -286,6 +299,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       glassEdgeShade: glassEdgeShade ?? this.glassEdgeShade,
       backdropLight: backdropLight ?? this.backdropLight,
       backdropShade: backdropShade ?? this.backdropShade,
+      orbTopRight: orbTopRight ?? this.orbTopRight,
+      orbBottomLeft: orbBottomLeft ?? this.orbBottomLeft,
     );
   }
 
@@ -330,6 +345,8 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
       glassEdgeShade: Color.lerp(glassEdgeShade, other.glassEdgeShade, t)!,
       backdropLight: Color.lerp(backdropLight, other.backdropLight, t)!,
       backdropShade: Color.lerp(backdropShade, other.backdropShade, t)!,
+      orbTopRight: Color.lerp(orbTopRight, other.orbTopRight, t)!,
+      orbBottomLeft: Color.lerp(orbBottomLeft, other.orbBottomLeft, t)!,
     );
   }
 }
