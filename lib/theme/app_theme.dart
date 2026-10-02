@@ -148,7 +148,7 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
   static const Color _green = Color(0xFF46E180);
 
   /// Brend qizili — logodagi qizildan biroz yumshoqroq, ko'zni charchatmaydi.
-  static const Color _brand = Color(0xFFE5232F);
+  static const Color _brand = Color(0xFFEE1C25);
 
   static const CustomTheme light = CustomTheme(
     background: _lightBackground,
@@ -168,7 +168,7 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[_brand, Color(0xFFB0121C)],
+      colors: <Color>[Color(0xFFFF3B42), _brand],
     ),
     shimmerBase: _lightBorderGray,
     shimmerHighlight: _lightGray,
@@ -202,7 +202,7 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     gradient: LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: <Color>[_brand, Color(0xFF7A0E15)],
+      colors: <Color>[Color(0xFFFF3B42), Color(0xFFD9141D)],
     ),
     shimmerBase: _darkInputColor,
     shimmerHighlight: _darkBorderGray,
