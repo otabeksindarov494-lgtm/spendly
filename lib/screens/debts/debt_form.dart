@@ -201,7 +201,7 @@ class _TypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.12) : theme.background,
+          color: isSelected ? color.withValues(alpha: 0.12) : theme.glassFill,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: isSelected ? color : theme.borderGray,

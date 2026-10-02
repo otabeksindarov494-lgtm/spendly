@@ -44,7 +44,7 @@ class ChoiceStep<T> extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: option.value == selected
                         ? theme.blue.withValues(alpha: 0.06)
-                        : theme.background,
+                        : theme.glassFill,
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(
                       color: option.value == selected

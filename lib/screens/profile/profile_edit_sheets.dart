@@ -339,7 +339,7 @@ abstract final class ProfileEditSheets {
                     decoration: BoxDecoration(
                       color: option.$1 == current
                           ? theme.blue.withValues(alpha: 0.06)
-                          : theme.background,
+                          : theme.glassFill,
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
                         color: option.$1 == current
@@ -581,7 +581,7 @@ abstract final class ProfileEditSheets {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: isSelected ? theme.blue : theme.background,
+                        color: isSelected ? theme.blue : theme.glassFill,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                         border: Border.all(
                           color: isSelected ? theme.blue : theme.borderGray,
@@ -650,7 +650,7 @@ abstract final class ProfileEditSheets {
                       height: 44,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: isSelected ? theme.blue : theme.background,
+                        color: isSelected ? theme.blue : theme.glassFill,
                         borderRadius: BorderRadius.circular(AppRadius.sm),
                         border: Border.all(
                           color: isSelected ? theme.blue : theme.borderGray,

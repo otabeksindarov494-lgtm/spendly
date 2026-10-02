@@ -46,7 +46,7 @@ class LunchBreakStep extends StatelessWidget {
                       vertical: 13,
                     ),
                     decoration: BoxDecoration(
-                      color: preset == minutes ? theme.blue : theme.background,
+                      color: preset == minutes ? theme.blue : theme.glassFill,
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
                         color: preset == minutes

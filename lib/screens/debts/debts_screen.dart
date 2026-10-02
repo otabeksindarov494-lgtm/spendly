@@ -54,7 +54,7 @@ class DebtsScreen extends ConsumerWidget {
                   child: _AddButton(
                     icon: IconsaxPlusLinear.edit,
                     label: 'Qo\'lda',
-                    background: theme.background,
+                    background: theme.glassFill,
                     foreground: theme.mainDarkBlue,
                     borderColor: theme.borderGray,
                     onTap: () => ManualDebtSheet.show(context),
@@ -173,7 +173,7 @@ class DebtsScreen extends ConsumerWidget {
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: filter == active ? theme.blue : theme.background,
+                    color: filter == active ? theme.blue : theme.glassFill,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(
                       color: filter == active ? theme.blue : theme.borderGray,

@@ -37,7 +37,7 @@ class WorkDaysStep extends StatelessWidget {
               duration: const Duration(milliseconds: 150),
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
               decoration: BoxDecoration(
-                color: isSelected ? theme.blue : theme.background,
+                color: isSelected ? theme.blue : theme.glassFill,
                 borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,

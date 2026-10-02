@@ -40,7 +40,7 @@ class PhotoStep extends StatelessWidget {
               width: 140,
               height: 140,
               decoration: BoxDecoration(
-                color: theme.gray,
+                color: theme.glassFill,
                 shape: BoxShape.circle,
                 border: Border.all(color: theme.borderGray, width: 2),
               ),

@@ -134,7 +134,7 @@ class ProfileScreen extends ConsumerWidget {
               height: 104,
               clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
-                color: theme.gray,
+                color: theme.glassFill,
                 shape: BoxShape.circle,
                 border: Border.all(color: theme.borderGray, width: 2),
               ),

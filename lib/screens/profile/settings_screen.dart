@@ -93,7 +93,7 @@ class SettingsScreen extends ConsumerWidget {
                                 decoration: BoxDecoration(
                                   color: mode == option
                                       ? theme.blue
-                                      : theme.inputColor,
+                                      : theme.glassFill,
                                   borderRadius: BorderRadius.circular(AppRadius.sm),
                                 ),
                                 child: Row(

@@ -12,6 +12,7 @@ import '../../utils/salary_calculator.dart';
 import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
+import '../../widgets/common/glass.dart';
 import '../../widgets/common/section_title.dart';
 import '../../widgets/common/shimmer_box.dart';
 import '../../widgets/common/stat_card.dart';
@@ -89,13 +90,10 @@ class ReportScreen extends ConsumerWidget {
     MonthlySummary summary,
     String currency,
   ) {
-    return Container(
+    // Ekranning asosiy elementi — haqiqiy blur'li shisha panel.
+    return GlassPanel(
+      borderRadius: const BorderRadius.all(Radius.circular(AppRadius.xl)),
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.background,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: theme.borderGray),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -211,9 +209,9 @@ class _MonthSelector extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: theme.background,
+        color: theme.glassFill,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: theme.borderGray),
+        border: Border.all(color: theme.glassBorder),
       ),
       child: Row(
         children: <Widget>[

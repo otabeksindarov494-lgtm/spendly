@@ -36,7 +36,7 @@ class PayDayStep extends StatelessWidget {
               height: 46,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isSelected ? theme.blue : theme.background,
+                color: isSelected ? theme.blue : theme.glassFill,
                 borderRadius: BorderRadius.circular(AppRadius.sm),
                 border: Border.all(
                   color: isSelected ? theme.blue : theme.borderGray,

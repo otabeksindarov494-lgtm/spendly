@@ -344,8 +344,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       decoration: BoxDecoration(
-        color: theme.background,
-        border: Border(top: BorderSide(color: theme.borderGray)),
+        color: theme.glassFill,
+        border: Border(top: BorderSide(color: theme.glassBorder)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -365,7 +365,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   hintText: 'Xabar yozing...',
                   counterText: '',
                   filled: true,
-                  fillColor: theme.inputColor,
+                  fillColor: theme.glassFill,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
@@ -463,7 +463,7 @@ class _MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
-    final Color bubbleColor = isMine ? theme.blue : theme.background;
+    final Color bubbleColor = isMine ? theme.blue : theme.glassFill;
     final Color textColor = isMine ? CustomTheme.onAccent : theme.mainDarkBlue;
 
     return Dismissible(
