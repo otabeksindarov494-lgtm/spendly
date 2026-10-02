@@ -65,19 +65,24 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
         ),
         child: SafeArea(
           top: false,
-          child: Row(
-            children: <Widget>[
-              for (int i = 0; i < _tabs.length; i++)
-                Expanded(
-                  child: _NavItem(
-                    icon: _tabs[i].$1,
-                    activeIcon: _tabs[i].$2,
-                    label: _tabs[i].$3,
-                    isActive: _index == i,
-                    onTap: () => setState(() => _index = i),
+          // Ikki chetdan ozgina ichkariga — chetki tablar ekran qirrasiga
+          // yopishmaydi.
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: <Widget>[
+                for (int i = 0; i < _tabs.length; i++)
+                  Expanded(
+                    child: _NavItem(
+                      icon: _tabs[i].$1,
+                      activeIcon: _tabs[i].$2,
+                      label: _tabs[i].$3,
+                      isActive: _index == i,
+                      onTap: () => setState(() => _index = i),
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
