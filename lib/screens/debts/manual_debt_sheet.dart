@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,8 +8,6 @@ import '../../theme/app_theme.dart';
 import 'debt_form.dart';
 
 /// Qo'lda qarz qo'shish oynasi (PROJECT.md 5.3).
-///
-/// [existing] berilsa mavjud qarz tahrirlanadi.
 class ManualDebtSheet extends ConsumerStatefulWidget {
   const ManualDebtSheet({super.key, this.existing});
 
@@ -69,7 +68,7 @@ class _ManualDebtSheetState extends ConsumerState<ManualDebtSheet> {
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = 'Saqlashda xatolik: $e');
+      setState(() => _errorMessage = 'save_error_format'.tr(args: [e.toString()]));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -102,7 +101,7 @@ class _ManualDebtSheetState extends ConsumerState<ManualDebtSheet> {
               ),
               const SizedBox(height: 16),
               Text(
-                existing == null ? 'Yangi qarz' : 'Qarzni tahrirlash',
+                existing == null ? 'new_debt'.tr() : 'edit_debt'.tr(),
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -115,7 +114,7 @@ class _ManualDebtSheetState extends ConsumerState<ManualDebtSheet> {
                 initialAmount: existing?.amount,
                 initialType: existing?.type,
                 initialDescription: existing?.description,
-                submitLabel: existing == null ? 'Saqlash' : 'Yangilash',
+                submitLabel: existing == null ? 'save'.tr() : 'update'.tr(),
                 isSaving: _isSaving,
                 onSubmit: _save,
               ),

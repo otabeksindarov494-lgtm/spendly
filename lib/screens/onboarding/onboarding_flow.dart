@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -130,7 +131,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       if (encoded != null) setState(() => _photoBase64 = encoded);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = 'Rasmni olishda xatolik: $e');
+      setState(() => _errorMessage = 'photo_error_format'.tr(args: [e.toString()]));
     } finally {
       if (mounted) setState(() => _isPhotoBusy = false);
     }
@@ -141,7 +142,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
   Future<void> _finish() async {
     final String? userId = ref.read(currentUserIdProvider);
     if (userId == null) {
-      setState(() => _errorMessage = 'Sessiya tugagan. Qayta kiring.');
+      setState(() => _errorMessage = 'session_expired'.tr());
       return;
     }
 
@@ -191,7 +192,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       // foydalanuvchini asosiy ekranga o'tkazadi.
     } catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = 'Saqlashda xatolik: $e');
+      setState(() => _errorMessage = 'save_error_format'.tr(args: [e.toString()]));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -232,8 +233,8 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                 children: <Widget>[
                   AppButton(
                     label: isLastStep
-                        ? 'Tasdiqlash va boshlash'
-                        : (_index == 0 ? 'Boshlash' : 'Davom etish'),
+                        ? 'onboarding_confirm_and_start'.tr()
+                        : (_index == 0 ? 'get_started'.tr() : 'next'.tr()),
                     isLoading: _isSaving,
                     onPressed: _canContinue
                         ? (isLastStep ? _finish : _next)
@@ -244,7 +245,7 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
                   if (_canSkip) ...<Widget>[
                     const SizedBox(height: 4),
                     AppButton(
-                      label: 'O\'tkazib yuborish',
+                      label: 'skip'.tr(),
                       variant: AppButtonVariant.text,
                       height: 44,
                       onPressed: _next,
@@ -305,16 +306,16 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       const WelcomeStep(),
       // 2
       TextInputStep(
-        title: 'Ismingiz nima?',
-        subtitle: 'Ism va familiyangizni kiriting.',
+        title: 'onboarding_name_title'.tr(),
+        subtitle: 'onboarding_name_subtitle'.tr(),
         controller: _nameController,
-        hint: 'Ism va familiyangiz',
+        hint: 'onboarding_name_hint'.tr(),
         onChanged: (String value) => setState(() => _fullName = value),
       ),
       // 3
       DateStep(
-        title: 'Tug\'ilgan kuningiz qachon?',
-        subtitle: 'Bu ma\'lumot faqat profilingizda ko\'rinadi.',
+        title: 'onboarding_birth_title'.tr(),
+        subtitle: 'onboarding_birth_subtitle'.tr(),
         value: _birthDate,
         firstDate: DateTime(now.year - 100),
         lastDate: now,
@@ -324,10 +325,10 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 4
       TextInputStep(
-        title: 'Telefon raqamingiz',
-        subtitle: 'Ixtiyoriy — faqat profilingizda saqlanadi.',
+        title: 'onboarding_phone_title'.tr(),
+        subtitle: 'onboarding_phone_subtitle'.tr(),
         controller: _phoneController,
-        hint: 'Telefon raqamingiz',
+        hint: 'onboarding_phone_hint'.tr(),
         textCapitalization: TextCapitalization.none,
         keyboardType: TextInputType.phone,
         inputFormatters: const <TextInputFormatter>[UzPhoneFormatter()],
@@ -343,24 +344,24 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 6
       TextInputStep(
-        title: 'Qayerda ishlaysiz?',
-        subtitle: 'Kompaniya yoki tashkilot nomi.',
+        title: 'onboarding_company_title'.tr(),
+        subtitle: 'onboarding_company_subtitle'.tr(),
         controller: _companyController,
-        hint: 'Kompaniya nomi',
+        hint: 'onboarding_company_hint'.tr(),
         onChanged: (String value) => setState(() => _company = value),
       ),
       // 7
       TextInputStep(
-        title: 'Lavozimingiz nima?',
-        subtitle: 'Ixtiyoriy.',
+        title: 'onboarding_position_title'.tr(),
+        subtitle: 'optional'.tr(),
         controller: _positionController,
-        hint: 'Lavozimingiz',
+        hint: 'onboarding_position_hint'.tr(),
         onChanged: (String value) => setState(() => _position = value),
       ),
       // 8
       DateStep(
-        title: 'Qachon ishga kirgansiz?',
-        subtitle: 'Ixtiyoriy — ish stajini ko\'rsatish uchun.',
+        title: 'onboarding_employment_date_title'.tr(),
+        subtitle: 'onboarding_employment_date_subtitle'.tr(),
         value: _employmentStart,
         firstDate: DateTime(now.year - 50),
         lastDate: now,
@@ -370,8 +371,8 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 9 — eng muhim savol: butun hisob-kitob shunga bog'liq
       ChoiceStep<SalaryType>(
-        title: 'Maoshingiz qanday kelishilgan?',
-        subtitle: 'Bu tanlov oylik qanday hisoblanishini belgilaydi.',
+        title: 'onboarding_salary_type_title'.tr(),
+        subtitle: 'onboarding_salary_type_subtitle'.tr(),
         options: <ChoiceOption<SalaryType>>[
           for (final SalaryType type in SalaryType.values)
             ChoiceOption<SalaryType>(
@@ -385,10 +386,10 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 10
       ChoiceStep<String>(
-        title: 'Maosh qaysi valyutada?',
-        options: const <ChoiceOption<String>>[
-          ChoiceOption<String>(value: 'so\'m', label: 'So\'m (UZS)'),
-          ChoiceOption<String>(value: 'USD', label: 'Dollar (USD)'),
+        title: 'onboarding_currency_title'.tr(),
+        options: [
+          ChoiceOption<String>(value: 'so\'m', label: 'currency_uzs'.tr()),
+          ChoiceOption<String>(value: 'USD', label: 'currency_usd'.tr()),
         ],
         selected: _currency,
         onChanged: (String value) => setState(() => _currency = value),
@@ -405,16 +406,16 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 12
       WorkTimeStep(
-        title: 'Ish nechada boshlanadi?',
-        subtitle: 'Kechikish shu vaqtdan hisoblanadi.',
+        title: 'onboarding_work_start_title'.tr(),
+        subtitle: 'onboarding_work_start_subtitle'.tr(),
         value: _workStart,
         icon: IconsaxPlusLinear.login,
         onChanged: (String value) => setState(() => _workStart = value),
       ),
       // 13
       WorkTimeStep(
-        title: 'Ish nechada tugaydi?',
-        subtitle: 'Erta ketish shu vaqtga nisbatan hisoblanadi.',
+        title: 'onboarding_work_end_title'.tr(),
+        subtitle: 'onboarding_work_end_subtitle'.tr(),
         value: _workEnd,
         icon: IconsaxPlusLinear.logout,
         onChanged: (String value) => setState(() => _workEnd = value),
@@ -447,22 +448,18 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
       ),
       // 17
       ChoiceStep<bool>(
-        title: 'Kechikkanda pul ushlanadimi?',
-        subtitle: 'Ba\'zi ish joylarida kechikish uchun jarima yo\'q.',
-        options: const <ChoiceOption<bool>>[
+        title: 'onboarding_penalty_title'.tr(),
+        subtitle: 'onboarding_penalty_subtitle'.tr(),
+        options: [
           ChoiceOption<bool>(
             value: true,
-            label: 'Ha, ushlanadi',
-            description:
-                'Kechikkan va erta ketgan daqiqalar uchun soatlik '
-                'stavkadan pul ayiriladi.',
+            label: 'penalty_yes_label'.tr(),
+            description: 'penalty_yes_desc'.tr(),
           ),
           ChoiceOption<bool>(
             value: false,
-            label: 'Yo\'q, ushlanmaydi',
-            description:
-                'Kechikish faqat statistika uchun yoziladi, '
-                'maoshga ta\'sir qilmaydi.',
+            label: 'penalty_no_label'.tr(),
+            description: 'penalty_no_desc'.tr(),
           ),
         ],
         selected: _penaltyEnabled,
@@ -480,43 +477,43 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
 
     return <SummaryEntry>[
       SummaryEntry(
-        label: 'Ism-familiya',
+        label: 'full_name'.tr(),
         value: orDash(_fullName),
         stepIndex: 1,
         icon: IconsaxPlusLinear.user,
       ),
       SummaryEntry(
-        label: 'Tug\'ilgan kun',
+        label: 'birth_date_label'.tr(),
         value: _birthDate == null ? '—' : Formatters.longDate(_birthDate!),
         stepIndex: 2,
         icon: IconsaxPlusLinear.cake,
       ),
       SummaryEntry(
-        label: 'Telefon',
+        label: 'phone_label'.tr(),
         value: orDash(_phone),
         stepIndex: 3,
         icon: IconsaxPlusLinear.call,
       ),
       SummaryEntry(
-        label: 'Profil rasmi',
-        value: _photoBase64 == null ? 'Qo\'yilmagan' : 'Qo\'yilgan',
+        label: 'profile_photo_label'.tr(),
+        value: _photoBase64 == null ? 'not_set'.tr() : 'set'.tr(),
         stepIndex: 4,
         icon: IconsaxPlusLinear.camera,
       ),
       SummaryEntry(
-        label: 'Ish joyi',
+        label: 'company_label'.tr(),
         value: orDash(_company),
         stepIndex: 5,
         icon: IconsaxPlusLinear.building,
       ),
       SummaryEntry(
-        label: 'Lavozim',
+        label: 'position_label'.tr(),
         value: orDash(_position),
         stepIndex: 6,
         icon: IconsaxPlusLinear.personalcard,
       ),
       SummaryEntry(
-        label: 'Ishga kirgan sana',
+        label: 'employment_date_label'.tr(),
         value: _employmentStart == null
             ? '—'
             : Formatters.longDate(_employmentStart!),
@@ -524,13 +521,13 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         icon: IconsaxPlusLinear.calendar_tick,
       ),
       SummaryEntry(
-        label: 'Maosh turi',
+        label: 'salary_type_label'.tr(),
         value: _salaryType.label,
         stepIndex: 8,
         icon: IconsaxPlusLinear.empty_wallet,
       ),
       SummaryEntry(
-        label: 'Maosh oralig\'i',
+        label: 'salary_range_label'.tr(),
         value: _salaryMin <= 0 && _salaryMax <= 0
             ? '—'
             : '${Formatters.number(_salaryMin)} – '
@@ -539,38 +536,38 @@ class _OnboardingFlowState extends ConsumerState<OnboardingFlow> {
         icon: IconsaxPlusLinear.moneys,
       ),
       SummaryEntry(
-        label: 'Hisobda ishlatiladi',
+        label: 'used_in_calc_label'.tr(),
         value: Formatters.money(average, currency: _currency),
         stepIndex: 10,
         icon: IconsaxPlusLinear.calculator,
       ),
       SummaryEntry(
-        label: 'Ish vaqti',
+        label: 'work_time_label'.tr(),
         value: '$_workStart – $_workEnd',
         stepIndex: 11,
         icon: IconsaxPlusLinear.clock,
       ),
       SummaryEntry(
-        label: 'Tushlik tanaffusi',
-        value: _lunchBreak == 0 ? 'Yo\'q' : Formatters.minutes(_lunchBreak),
+        label: 'lunch_break_label'.tr(),
+        value: _lunchBreak == 0 ? 'none_label'.tr() : Formatters.minutes(_lunchBreak),
         stepIndex: 13,
         icon: IconsaxPlusLinear.coffee,
       ),
       SummaryEntry(
-        label: 'Ish kunlari',
+        label: 'work_days_label'.tr(),
         value: _workDays.isEmpty ? '—' : Formatters.workDays(_workDays),
         stepIndex: 14,
         icon: IconsaxPlusLinear.calendar,
       ),
       SummaryEntry(
-        label: 'Maosh kuni',
-        value: 'Oyning $_payDay-kuni',
+        label: 'pay_day_label'.tr(),
+        value: 'pay_day_format'.tr(args: [_payDay.toString()]),
         stepIndex: 15,
         icon: IconsaxPlusLinear.calendar_tick,
       ),
       SummaryEntry(
-        label: 'Kechikish jarimasi',
-        value: _penaltyEnabled ? 'Ushlanadi' : 'Ushlanmaydi',
+        label: 'penalty_policy_label'.tr(),
+        value: _penaltyEnabled ? 'deducted'.tr() : 'not_deducted'.tr(),
         stepIndex: 16,
         icon: IconsaxPlusLinear.alarm,
       ),

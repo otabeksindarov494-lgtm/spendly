@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,6 @@ import '../../utils/time_utils.dart';
 import 'empty_state.dart';
 
 /// Kunning check-in / check-out rasmlarini ko'rsatuvchi bottom sheet.
-///
-/// Ishlatilishi: Home ("Oxirgi 7 kun") va Hisobot (kunlik yozuvlar) —
-/// ikkalasida ham bir xil ko'rinish bo'lishi uchun umumiy widget.
 class PhotoPreviewSheet extends StatelessWidget {
   const PhotoPreviewSheet({super.key, required this.attendance});
 
@@ -65,10 +63,10 @@ class PhotoPreviewSheet extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             if (!hasAnyPhoto)
-              const EmptyState(
+              EmptyState(
                 icon: IconsaxPlusLinear.camera,
-                title: 'Bu kun uchun rasm yo\'q',
-                message: 'Check-in yoki check-out paytida rasm olinmagan.',
+                title: 'no_photo_title'.tr(),
+                message: 'no_photo_message'.tr(),
               )
             else
               Row(
@@ -76,7 +74,7 @@ class PhotoPreviewSheet extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: _PhotoTile(
-                      label: 'Kelgan',
+                      label: 'checked_in'.tr(),
                       time: attendance.checkInTime,
                       base64: attendance.checkInPhotoBase64,
                     ),
@@ -84,7 +82,7 @@ class PhotoPreviewSheet extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _PhotoTile(
-                      label: 'Ketgan',
+                      label: 'checked_out'.tr(),
                       time: attendance.checkOutTime,
                       base64: attendance.checkOutPhotoBase64,
                     ),

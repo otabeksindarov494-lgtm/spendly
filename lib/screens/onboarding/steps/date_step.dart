@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ import '../../../widgets/common/cupertino_pickers.dart';
 /// Ishlatilishi: tug'ilgan kun va ishga kirgan sana — ikkalasi bir xil
 /// ko'rinishda bo'lsin uchun bitta widget.
 class DateStep extends StatelessWidget {
-  const DateStep({
+  DateStep({
     super.key,
     required this.title,
     this.subtitle,
@@ -22,8 +23,8 @@ class DateStep extends StatelessWidget {
     required this.lastDate,
     this.initialWhenEmpty,
     this.icon = IconsaxPlusLinear.calendar_1,
-    this.emptyLabel = 'Sanani tanlang',
-  });
+    String? emptyLabel,
+  }) : emptyLabel = emptyLabel ?? 'date_picker_empty'.tr();
 
   final String title;
   final String? subtitle;

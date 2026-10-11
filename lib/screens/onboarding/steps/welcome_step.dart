@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -9,22 +10,22 @@ import '../../../widgets/common/app_logo.dart';
 class WelcomeStep extends StatelessWidget {
   const WelcomeStep({super.key});
 
-  static const List<(IconData, String, String)> _features =
+  List<(IconData, String, String)> get _features =>
       <(IconData, String, String)>[
         (
           IconsaxPlusLinear.camera,
-          'Selfie bilan davomat',
-          'Ishga kelish va ketish vaqtini rasm bilan qayd eting',
+          'feature_camera_title'.tr(),
+          'feature_camera_desc'.tr(),
         ),
         (
           IconsaxPlusLinear.calculator,
-          'Avtomatik maosh',
-          'Kechikish va erta ketish jarimalari o\'zi hisoblanadi',
+          'feature_calculator_title'.tr(),
+          'feature_calculator_desc'.tr(),
         ),
         (
           IconsaxPlusLinear.microphone_2,
-          'Ovoz orqali qarz',
-          'Gapirib ayting — qarz o\'zi yozib olinadi',
+          'feature_microphone_title'.tr(),
+          'feature_microphone_desc'.tr(),
         ),
       ];
 
@@ -40,11 +41,10 @@ class WelcomeStep extends StatelessWidget {
           const SizedBox(height: 8),
           const AppLogo(size: 60),
           const SizedBox(height: 20),
-          Text('Spendly\'ga xush kelibsiz', style: context.text.displaySmall),
+          Text('welcome_step_title'.tr(), style: context.text.displaySmall),
           const SizedBox(height: 10),
           Text(
-            'Ish vaqtingizni kuzating, maoshingizni avtomatik hisoblang '
-            'va qarzlaringizni bir joyda saqlang.',
+            'welcome_step_desc'.tr(),
             style: context.text.bodyMedium?.copyWith(color: theme.textGray),
           ),
           const SizedBox(height: 22),

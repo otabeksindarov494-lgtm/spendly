@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
@@ -68,13 +69,13 @@ class ReportDayTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   _SelfieThumb(
-                    label: 'Kelgan',
+                    label: 'arrived'.tr(),
                     time: record.checkInTime,
                     base64: record.checkInPhotoBase64,
                   ),
                   const SizedBox(width: 8),
                   _SelfieThumb(
-                    label: 'Ketgan',
+                    label: 'left'.tr(),
                     time: record.checkOutTime,
                     base64: record.checkOutPhotoBase64,
                   ),
@@ -93,24 +94,24 @@ class ReportDayTile extends StatelessWidget {
   static (String, Color) _status(CustomTheme theme, ReportDay day) {
     final Attendance? r = day.record;
     return switch (day.kind) {
-      ReportDayKind.dayOff => ('Dam olish', theme.textGray),
-      ReportDayKind.absent => ('Kelmadi', theme.red),
-      ReportDayKind.today => ('Bugun', theme.textGray),
+      ReportDayKind.dayOff => ('status_day_off'.tr(), theme.textGray),
+      ReportDayKind.absent => ('status_absent'.tr(), theme.red),
+      ReportDayKind.today => ('status_today'.tr(), theme.textGray),
       ReportDayKind.recorded when r != null && !r.hasCheckedOut => (
-        'Ishda',
+        'status_at_work'.tr(),
         theme.blue,
       ),
       ReportDayKind.recorded
           when r != null && (r.isLate || r.earlyLeaveMinutes > 0) =>
-        ('Kechikdi', theme.yellow),
-      ReportDayKind.recorded => ('Vaqtida', theme.green),
+        ('status_late'.tr(), theme.yellow),
+      ReportDayKind.recorded => ('status_on_time'.tr(), theme.green),
     };
   }
 
   static String _emptyNote(ReportDayKind kind) => switch (kind) {
-    ReportDayKind.dayOff => 'Hisob-kitob yuritilmaydi.',
-    ReportDayKind.absent => 'Davomat qayd etilmagan — 0 so\'m.',
-    ReportDayKind.today => 'Hali qayd etilmagan.',
+    ReportDayKind.dayOff => 'note_day_off'.tr(),
+    ReportDayKind.absent => 'note_absent'.tr(),
+    ReportDayKind.today => 'note_today'.tr(),
     ReportDayKind.recorded => '',
   };
 }
@@ -157,36 +158,36 @@ class _Facts extends StatelessWidget {
     final CustomTheme theme = context.theme;
     final List<(String, String, Color?)> rows = <(String, String, Color?)>[
       (
-        'Keldi',
+        'arrived'.tr(),
         record.checkInTime == null ? '—' : Formatters.time(record.checkInTime!),
         null,
       ),
       (
-        'Ketdi',
+        'left'.tr(),
         record.checkOutTime == null
             ? '—'
             : Formatters.time(record.checkOutTime!),
         null,
       ),
       if (record.hasCheckedOut)
-        ('Ishladi', Formatters.hours(record.workedHours), null),
+        ('worked'.tr(), Formatters.hours(record.workedHours), null),
       if (record.lateMinutes > 0)
-        ('Kechikish', Formatters.minutes(record.lateMinutes), theme.yellow),
+        ('lateness_stat'.tr(), Formatters.minutes(record.lateMinutes), theme.yellow),
       if (record.earlyLeaveMinutes > 0)
         (
-          'Erta ketish',
+          'early_leave'.tr(),
           Formatters.minutes(record.earlyLeaveMinutes),
           theme.yellow,
         ),
       if (record.penaltyAmount > 0)
         (
-          'Jarima',
+          'penalty'.tr(),
           '−${Formatters.money(record.penaltyAmount, currency: currency)}',
           theme.red,
         ),
       if (showEarning && record.hasCheckedOut)
         (
-          'Kunlik maosh',
+          'daily_earning'.tr(),
           Formatters.money(record.dailyEarning, currency: currency),
           theme.green,
         ),

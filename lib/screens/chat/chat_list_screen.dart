@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,10 +16,6 @@ import '../../widgets/common/shimmer_box.dart';
 import '../../widgets/common/user_avatar.dart';
 import 'chat_screen.dart';
 
-/// Chat tabi: ro'yxatdan o'tgan foydalanuvchilar ro'yxati.
-///
-/// Yozishmasi borlar yuqorida (oxirgi xabar vaqti bo'yicha), qolganlari
-/// alifbo tartibida.
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
 
@@ -31,7 +28,7 @@ class ChatListScreen extends ConsumerWidget {
     final String? currentUserId = ref.watch(currentUserIdProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
+      appBar: AppBar(title: Text('tab_chat'.tr())),
       body: SafeArea(
         top: false,
         child: usersAsync.when(
@@ -40,15 +37,13 @@ class ChatListScreen extends ConsumerWidget {
             child: ShimmerList(itemCount: 6, itemHeight: 64),
           ),
           error: (Object e, StackTrace _) =>
-              ErrorView(message: 'Foydalanuvchilar yuklanmadi: $e'),
+              ErrorView(message: 'chat_users_load_error'.tr(args: [e.toString()])),
           data: (List<PublicProfile> users) {
             if (entries.isEmpty) {
-              return const EmptyState(
+              return EmptyState(
                 icon: IconsaxPlusLinear.profile_2user,
-                title: 'Hozircha boshqa foydalanuvchi yo\'q',
-                message:
-                    'Kimdir ro\'yxatdan o\'tib profilini to\'ldirgach, shu '
-                    'yerda paydo bo\'ladi.',
+                title: 'no_other_users'.tr(),
+                message: 'no_other_users_subtitle'.tr(),
               );
             }
             return ListView.separated(
@@ -114,8 +109,8 @@ class _UserTile extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(
                     summary?.lastMessage == null
-                        ? 'Suhbatni boshlang'
-                        : '${isMine ? 'Siz: ' : ''}${summary!.lastMessage}',
+                        ? 'start_conversation'.tr()
+                        : '${isMine ? 'you_prefix'.tr() : ''}${summary!.lastMessage}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -141,7 +136,6 @@ class _UserTile extends StatelessWidget {
     );
   }
 
-  /// Bugungi xabar uchun soat, aks holda sana.
   static String _timeLabel(DateTime at) {
     return TimeUtils.isSameDay(at, DateTime.now())
         ? Formatters.time(at)

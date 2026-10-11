@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,12 +14,6 @@ import '../../widgets/common/voice_waveform.dart';
 import 'debt_form.dart';
 
 /// Ovoz orqali qarz qo'shish (PROJECT.md 5.3).
-///
-/// Oqim: tinglash → matnni tahlil qilish → **tasdiqlash formasi** → saqlash.
-/// Tasdiqlash bosqichi majburiy (PROJECT.md 10.8).
-///
-/// Butunlay tekin ishlaydi: nutqni qurilmaning o'z tizimi taniydi,
-/// tahlilni [VoiceParser] mahalliy bajaradi. Ovoz qurilmadan chiqmaydi.
 class VoiceDebtSheet extends ConsumerStatefulWidget {
   const VoiceDebtSheet({super.key});
 
@@ -49,8 +44,6 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
   bool _isSaving = false;
   String? _errorMessage;
 
-  /// Foydalanuvchiga ko'rsatiladigan misollar — nima deyish mumkinligi
-  /// aniq bo'lsin.
   static const List<String> _examples = <String>[
     'Alisherdan 30 ming so\'m oldim',
     'Boburga yarim million berdim',
@@ -65,7 +58,6 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
 
   @override
   void dispose() {
-    // Oyna yopilganda mikrofon bo'sh qolishi shart.
     _speech.cancel();
     super.dispose();
   }
@@ -153,13 +145,11 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = 'Saqlashda xatolik: $e');
+      setState(() => _errorMessage = 'save_error_format'.tr(args: [e.toString()]));
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
   }
-
-  // --- Qurish ----------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -206,10 +196,10 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
             children: <Widget>[
               Text(
                 switch (_phase) {
-                  _Phase.review => 'Tekshiring va tasdiqlang',
-                  _Phase.unavailable => 'Ovoz mavjud emas',
-                  _Phase.preparing => 'Tayyorlanmoqda...',
-                  _Phase.listening => 'Tinglayapman',
+                  _Phase.review => 'review_and_confirm'.tr(),
+                  _Phase.unavailable => 'voice_unavailable'.tr(),
+                  _Phase.preparing => 'speech_preparing'.tr(),
+                  _Phase.listening => 'speech_listening'.tr(),
                 },
                 style: TextStyle(
                   fontSize: 20,
@@ -229,8 +219,8 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                     const SizedBox(width: 5),
                     Text(
                       _locale.isUzbek
-                          ? 'O\'zbek tili'
-                          : '${_locale.name} — o\'zbek tili topilmadi',
+                          ? 'uzbek'.tr()
+                          : _locale.name,
                       style: TextStyle(fontSize: 12, color: theme.textGray),
                     ),
                   ],
@@ -273,7 +263,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
             border: Border.all(color: theme.borderGray, width: 0.6),
           ),
           child: Text(
-            hasText ? _recognizedText : 'Gapiring...',
+            hasText ? _recognizedText : 'speak_hint'.tr(),
             style: TextStyle(
               fontSize: 15,
               height: 1.4,
@@ -285,7 +275,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         if (!hasText) ...<Widget>[
           const SizedBox(height: 14),
           Text(
-            'Masalan:',
+            'examples'.tr(),
             style: TextStyle(fontSize: 12, color: theme.textGray),
           ),
           const SizedBox(height: 6),
@@ -304,7 +294,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
         ],
         const SizedBox(height: 20),
         AppButton(
-          label: 'Tugatdim',
+          label: 'finish_speech'.tr(),
           icon: IconsaxPlusBold.stop,
           onPressed: _stopAndReview,
         ),
@@ -317,20 +307,19 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Text(
-          'Qurilmangizda nutqni tanish ishlamadi. Mikrofon ruxsatini '
-          'tekshiring yoki qarzni qo\'lda kiriting.',
+          'speech_error_msg'.tr(),
           style: TextStyle(fontSize: 13, color: theme.textGray, height: 1.5),
         ),
         const SizedBox(height: 18),
         AppButton(
-          label: 'Qayta urinish',
+          label: 'retry'.tr(),
           icon: IconsaxPlusBold.microphone_2,
           variant: AppButtonVariant.secondary,
           onPressed: _start,
         ),
         const SizedBox(height: 10),
         AppButton(
-          label: 'Qo\'lda kiritish',
+          label: 'manual_entry'.tr(),
           icon: IconsaxPlusLinear.edit,
           onPressed: () => setState(() {
             _parsed = const ParsedDebt(rawText: '');
@@ -357,13 +346,13 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
           initialAmount: parsed.amount,
           initialType: parsed.type,
           initialDescription: parsed.description,
-          submitLabel: 'Tasdiqlash va saqlash',
+          submitLabel: 'confirm_and_save'.tr(),
           isSaving: _isSaving,
           onSubmit: _save,
         ),
         const SizedBox(height: 6),
         AppButton(
-          label: 'Qaytadan gapirish',
+          label: 'speak_again'.tr(),
           icon: IconsaxPlusBold.microphone_2,
           variant: AppButtonVariant.text,
           height: 44,
@@ -373,7 +362,6 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
     );
   }
 
-  /// Tanilgan matn va ishonch darajasi.
   Widget _buildTranscript(CustomTheme theme, ParsedDebt parsed) {
     final Color confidenceColor = parsed.confidence >= 0.9
         ? theme.green
@@ -399,7 +387,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
               const SizedBox(width: 7),
               Expanded(
                 child: Text(
-                  'Eshitilgan matn',
+                  'heard_text'.tr(),
                   style: TextStyle(fontSize: 12, color: theme.textGray),
                 ),
               ),
@@ -413,7 +401,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: Text(
-                  'Aniqlik ${(parsed.confidence * 100).round()}%',
+                  'accuracy'.tr(args: [(parsed.confidence * 100).round().toString()]),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -440,7 +428,7 @@ class _VoiceDebtSheetState extends ConsumerState<VoiceDebtSheet> {
             Text(
               '${parsed.personName} · '
               '${Formatters.money(parsed.amount!)} · '
-              '${parsed.type == DebtType.iOwe ? 'Men qarzdorman' : 'Menga qarz'}',
+              '${parsed.type == DebtType.iOwe ? 'i_owe'.tr() : 'owed_to_me'.tr()}',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

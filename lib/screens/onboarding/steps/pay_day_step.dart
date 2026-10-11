@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -19,8 +20,8 @@ class PayDayStep extends StatelessWidget {
     final CustomTheme theme = context.theme;
 
     return OnboardingStep(
-      title: 'Maosh oyning nechinchi kuni beriladi?',
-      subtitle: 'Masalan, 5-sana.',
+      title: 'onboarding_pay_day_title'.tr(),
+      subtitle: 'onboarding_pay_day_subtitle'.tr(),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,25 +9,25 @@ import '../../providers/attendance_provider.dart';
 import '../../providers/core_providers.dart';
 import '../../providers/notification_provider.dart';
 import '../../providers/profile_provider.dart';
+import '../../services/attendance_service.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/formatters.dart';
 import '../../utils/salary_calculator.dart';
 import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/attendance_tile.dart';
 import '../../widgets/common/empty_state.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/glass.dart';
-import '../notifications/notifications_screen.dart';
-import '../../widgets/common/section_title.dart';
-import '../../widgets/common/shimmer_box.dart';
-import '../../services/attendance_service.dart';
-import '../../widgets/common/app_card.dart';
-import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/progress_dialog.dart';
 import '../../widgets/common/progress_ring.dart';
+import '../../widgets/common/section_title.dart';
+import '../../widgets/common/shimmer_box.dart';
 import '../../widgets/common/stat_bar.dart';
 import '../../widgets/common/stat_card.dart';
+import '../notifications/notifications_screen.dart';
 
 /// 1-tab: bugungi check-in / check-out va joriy holat (PROJECT.md 5.1).
 class HomeScreen extends ConsumerStatefulWidget {
@@ -61,9 +62,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
       await runWithProgress<void>(
         context: context,
-        title: isCheckIn ? 'Kelish qayd etilmoqda' : 'Ketish qayd etilmoqda',
+        title: isCheckIn ? 'check_in_recording'.tr() : 'check_out_recording'.tr(),
         task: (ProgressReporter report) async {
-          report('Vaqt hisoblanmoqda...', 0.4);
+          report('calculating_time'.tr(), 0.4);
           if (isCheckIn) {
             await service.checkIn(
               userId: userId,
@@ -78,7 +79,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               photoBase64: photo,
             );
           }
-          report('Saqlanmoqda...', 0.85);
+          report('saving'.tr(), 0.85);
         },
       );
 
@@ -87,11 +88,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.invalidate(attendanceTotalsProvider);
       AppToast.show(
         context,
-        isCheckIn ? 'Kelganingiz qayd etildi' : 'Ketganingiz qayd etildi',
+        isCheckIn ? 'check_in_success'.tr() : 'check_out_success'.tr(),
       );
     } catch (e) {
       if (!mounted) return;
-      AppToast.show(context, 'Xatolik: $e', isError: true);
+      AppToast.show(context, 'error_prefix'.tr(args: [e.toString()]), isError: true);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }
@@ -125,7 +126,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               profileAsync.when(
                 loading: () => const ShimmerBox(height: 190, borderRadius: 24),
                 error: (Object e, StackTrace _) =>
-                    ErrorView(message: 'Profil yuklanmadi: $e'),
+                    ErrorView(message: 'profile_load_error'.tr(args: [e.toString()])),
                 data: (UserProfile? profile) {
                   if (profile == null) {
                     return const ShimmerBox(height: 190, borderRadius: 24);
@@ -134,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     loading: () =>
                         const ShimmerBox(height: 190, borderRadius: 24),
                     error: (Object e, StackTrace _) =>
-                        ErrorView(message: 'Davomat yuklanmadi: $e'),
+                        ErrorView(message: 'attendance_load_error'.tr(args: [e.toString()])),
                     data: (Attendance? today) =>
                         _buildTodayCard(theme, profile, today),
                   );
@@ -143,22 +144,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(height: 20),
               _buildStats(theme, profileAsync.value, todayAsync.value),
               const SizedBox(height: 24),
-              const SectionTitle(title: 'Statistika'),
+              SectionTitle(title: 'statistics'.tr()),
               _buildStatistics(theme, profileAsync.value),
               const SizedBox(height: 24),
-              const SectionTitle(title: 'Oxirgi 7 kun'),
+              SectionTitle(title: 'last_7_days'.tr()),
               weekAsync.when(
                 loading: () => const ShimmerList(itemCount: 3),
                 error: (Object e, StackTrace _) =>
-                    ErrorView(message: 'Ro\'yxat yuklanmadi: $e'),
+                    ErrorView(message: 'list_load_error'.tr(args: [e.toString()])),
                 data: (List<Attendance> records) {
                   if (records.isEmpty) {
-                    return const EmptyState(
+                    return EmptyState(
                       icon: IconsaxPlusLinear.calendar_remove,
-                      title: 'Hali yozuv yo\'q',
-                      message:
-                          'Birinchi marta "Ishga keldim" tugmasini bosganingizda '
-                          'shu yerda ko\'rinadi.',
+                      title: 'no_records_yet'.tr(),
+                      message: 'no_records_message'.tr(),
                     );
                   }
                   return Column(
@@ -166,7 +165,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       for (final Attendance record in records)
                         AttendanceTile(
                           attendance: record,
-                          currency: profileAsync.value?.currency ?? 'so\'m',
+                          currency: profileAsync.value?.currency ?? 'currency_so_m'.tr(),
                         ),
                     ],
                   );
@@ -191,11 +190,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Assalomu alaykum', style: context.text.bodySmall),
+              Text('greeting'.tr(), style: context.text.bodySmall),
               const SizedBox(height: 2),
               Text(
                 // Ism yonida qo'l silkitish stikeri (iOS'da rangli emoji).
-                firstName.isEmpty ? 'Spendly' : '$firstName 👋',
+                firstName.isEmpty ? 'app_title'.tr() : '$firstName 👋',
                 style: context.text.headlineSmall,
               ),
             ],
@@ -217,7 +216,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   ) {
     final bool isWorkDay = profile.workDays.contains(DateTime.now().weekday);
 
-    // Sahifaning asosiy elementi — haqiqiy blur'li shisha panel.
     return GlassPanel(
       borderRadius: const BorderRadius.all(Radius.circular(AppRadius.xl)),
       padding: const EdgeInsets.all(20),
@@ -250,7 +248,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(color: theme.borderGray, width: 0.6),
                   ),
-                  child: Text('Dam olish kuni', style: context.text.labelSmall),
+                  child: Text('rest_day'.tr(), style: context.text.labelSmall),
                 ),
             ],
           ),
@@ -272,10 +270,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Bugun dam olish kuni', style: context.text.titleLarge),
+        Text('rest_day_title'.tr(), style: context.text.titleLarge),
         const SizedBox(height: 6),
         Text(
-          'Bu kun uchun hisob-kitob va jarima yuritilmaydi.',
+          'rest_day_desc'.tr(),
           style: context.text.bodySmall,
         ),
       ],
@@ -287,12 +285,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Ish boshlanishi: ${profile.workStartTime}',
+          'work_starts'.tr(args: [profile.workStartTime]),
           style: context.text.bodySmall,
         ),
         const SizedBox(height: 16),
         AppButton(
-          label: 'Ishga keldim',
+          label: 'check_in_btn'.tr(),
           icon: IconsaxPlusBold.camera,
           isLoading: _isBusy,
           onPressed: () => _record(profile: profile, today: today),
@@ -308,19 +306,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Row(
           children: <Widget>[
             _HeroStat(
-              label: 'Kelgan vaqt',
+              label: 'arrived_time'.tr(),
               value: Formatters.time(today.checkInTime!),
             ),
             if (today.isLate)
               _HeroStat(
-                label: 'Kechikish',
+                label: 'late_time'.tr(),
                 value: Formatters.minutes(today.lateMinutes),
               ),
           ],
         ),
         const SizedBox(height: 16),
         AppButton(
-          label: 'Ishdan ketyapman',
+          label: 'check_out_btn'.tr(),
           icon: IconsaxPlusLinear.logout,
           variant: AppButtonVariant.secondary,
           isLoading: _isBusy,
@@ -337,15 +335,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Row(
           children: <Widget>[
             _HeroStat(
-              label: 'Kelgan',
+              label: 'arrived'.tr(),
               value: Formatters.time(today.checkInTime!),
             ),
             _HeroStat(
-              label: 'Ketgan',
+              label: 'left'.tr(),
               value: Formatters.time(today.checkOutTime!),
             ),
             _HeroStat(
-              label: 'Ishladi',
+              label: 'worked'.tr(),
               value: Formatters.hours(today.workedHours),
             ),
           ],
@@ -367,14 +365,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  // Fixed maoshda kunlik summa yozilmaydi — o'rniga
-                  // ishlangan vaqt ko'rsatiladi, aks holda "0 so'm"
-                  // chiqib chalg'itardi.
                   profile.salaryType == SalaryType.fixed
-                      ? 'Bugungi ish kuni yopildi — '
-                            '${Formatters.hours(today.workedHours)} ishladingiz'
-                      : 'Bugungi ish kuni yopildi — '
-                            '${Formatters.money(today.dailyEarning, currency: profile.currency)}',
+                      ? 'work_closed_hours'.tr(args: [Formatters.hours(today.workedHours)])
+                      : 'work_closed_money'.tr(args: [Formatters.money(today.dailyEarning, currency: profile.currency)]),
                   style: context.text.labelMedium?.copyWith(
                     color: context.theme.green,
                   ),
@@ -387,7 +380,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  /// Halqa + chiziqli barlar: oy davomidagi holat va umumiy ishlagan vaqt.
   Widget _buildStatistics(CustomTheme theme, UserProfile? profile) {
     final MonthlySummary? summary = ref.watch(currentMonthSummaryProvider);
     final AsyncValue<AttendanceTotals> totalsAsync = ref.watch(
@@ -400,7 +392,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final AttendanceTotals totals = totalsAsync.value ?? AttendanceTotals.empty;
 
-    // Oyda kutilayotgan soat: ish kunlari x smena uzunligi.
     final double shift = SalaryCalculator.shiftHours(
       workStartMinutes: TimeUtils.minutesFromHmOr(profile.workStartTime, 540),
       workEndMinutes: TimeUtils.minutesFromHmOr(profile.workEndTime, 1080),
@@ -421,7 +412,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 value: summary.progress,
                 centerLabel: '${(summary.progress * 100).round()}%',
                 centerCaption:
-                    '${summary.elapsedWorkDays}/${summary.plannedWorkDays}\nish kuni',
+                    'work_days_count'.tr(args: [summary.elapsedWorkDays.toString(), summary.plannedWorkDays.toString()]),
                 size: 124,
               ),
               const SizedBox(width: 18),
@@ -429,21 +420,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Jami ishlagan vaqt', style: context.text.labelSmall),
+                    Text('total_worked'.tr(), style: context.text.labelSmall),
                     const SizedBox(height: 4),
                     Text(
                       totalsAsync.isLoading && totalsAsync.value == null
                           ? '...'
-                          : '${totals.workedHours.round()} soat',
+                          : 'hours_suffix'.tr(args: [totals.workedHours.round().toString()]),
                       style: context.text.headlineSmall,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${totals.recordedDays} kun davomida',
+                      'days_count'.tr(args: [totals.recordedDays.toString()]),
                       style: context.text.labelSmall,
                     ),
                     const SizedBox(height: 14),
-                    Text('Shu oyda', style: context.text.labelSmall),
+                    Text('this_month'.tr(), style: context.text.labelSmall),
                     const SizedBox(height: 3),
                     Text(
                       Formatters.hours(summary.workedHours),
@@ -459,25 +450,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           const SizedBox(height: 22),
           StatBar(
-            label: 'Ishlangan soat',
+            label: 'worked_hours_stat'.tr(),
             value:
                 '${summary.workedHours.round()} / '
-                '${expectedHours.round()} soat',
+                '${expectedHours.round()} ' + 'hours_suffix'.tr(args: ['']).trim(),
             progress: expectedHours == 0
                 ? 0
                 : summary.workedHours / expectedHours,
             color: theme.blue,
           ),
           StatBar(
-            label: 'Davomat',
-            value: '${summary.presentDays} / ${summary.elapsedWorkDays} kun',
+            label: 'attendance_stat'.tr(),
+            value: 'work_days_count'.tr(args: [summary.presentDays.toString(), summary.elapsedWorkDays.toString()]),
             progress: attendanceRate,
             color: theme.green,
           ),
           StatBar(
-            label: 'Kechikish',
+            label: 'lateness_stat'.tr(),
             value: Formatters.minutes(summary.lateMinutes),
-            // Oyiga 10 soat kechikishni "to'liq shkala" deb olamiz.
             progress: summary.lateMinutes / 600,
             color: theme.yellow,
           ),
@@ -492,7 +482,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     Attendance? today,
   ) {
     final MonthlySummary? summary = ref.watch(currentMonthSummaryProvider);
-    final String currency = profile?.currency ?? 'so\'m';
+    final String currency = profile?.currency ?? 'currency_so_m'.tr();
 
     return GridView.count(
       crossAxisCount: 2,
@@ -500,12 +490,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      // 1.25: shkaladagi shrift bilan ikki qatorli yorliq sig'ishi uchun.
       childAspectRatio: 1.25,
       children: <Widget>[
         StatCard(
           icon: IconsaxPlusLinear.timer_1,
-          label: 'Bugun ishlagan',
+          label: 'working_hours'.tr(),
           value: today == null || !today.hasCheckedOut
               ? '—'
               : Formatters.hours(today.workedHours),
@@ -513,13 +502,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         StatCard(
           icon: IconsaxPlusLinear.calendar_tick,
-          label: 'Shu oy kelgan kunlar',
-          value: summary == null ? '—' : '${summary.presentDays} kun',
+          label: 'present_days_label'.tr(),
+          value: summary == null ? '—' : 'days_suffix'.tr(args: [summary.presentDays.toString()]),
           accentColor: theme.green,
         ),
         StatCard(
           icon: IconsaxPlusLinear.alarm,
-          label: 'Shu oy kechikish',
+          label: 'total_lateness'.tr(),
           value: summary == null
               ? '—'
               : Formatters.minutes(summary.lateMinutes),
@@ -527,7 +516,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         StatCard(
           icon: IconsaxPlusLinear.moneys,
-          label: 'Joriy oylik',
+          label: 'monthly_salary'.tr(),
           value: summary == null
               ? '—'
               : Formatters.money(summary.earnedAmount, currency: currency),
@@ -538,7 +527,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-/// Hero karta ichidagi kichik statistika ustuni.
 class _HeroStat extends StatelessWidget {
   const _HeroStat({required this.label, required this.value});
 
@@ -565,8 +553,6 @@ class _HeroStat extends StatelessWidget {
   }
 }
 
-/// Salomlashuv yonidagi qo'ng'iroqcha: shisha doira, o'qilmaganlar soni
-/// qizil nishonda.
 class _NotificationBell extends StatelessWidget {
   const _NotificationBell({required this.unread, required this.onTap});
 
@@ -580,8 +566,8 @@ class _NotificationBell extends StatelessWidget {
     return Semantics(
       button: true,
       label: unread == 0
-          ? 'Bildirishnomalar'
-          : 'Bildirishnomalar, $unread ta yangi',
+          ? 'notifications_title'.tr()
+          : '${'notifications_title'.tr()}, $unread',
       child: GestureDetector(
         onTap: onTap,
         child: SizedBox(

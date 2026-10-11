@@ -1,61 +1,58 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'time_utils.dart';
 
-/// O'zbekcha sana/pul formatlash.
-///
-/// `intl` locale ma'lumotlariga bog'lanmaslik uchun nomlar qo'lda
-/// berilgan — shunda `initializeDateFormatting` chaqirish shart emas
-/// va format har qanday qurilmada bir xil chiqadi.
+/// O'zbekcha / Xalqaro sana va pul formatlash.
 abstract final class Formatters {
-  static const List<String> monthsNominative = <String>[
-    'Yanvar',
-    'Fevral',
-    'Mart',
-    'Aprel',
-    'May',
-    'Iyun',
-    'Iyul',
-    'Avgust',
-    'Sentabr',
-    'Oktabr',
-    'Noyabr',
-    'Dekabr',
-  ];
+  static List<String> get monthsNominative => <String>[
+        'month_1'.tr(),
+        'month_2'.tr(),
+        'month_3'.tr(),
+        'month_4'.tr(),
+        'month_5'.tr(),
+        'month_6'.tr(),
+        'month_7'.tr(),
+        'month_8'.tr(),
+        'month_9'.tr(),
+        'month_10'.tr(),
+        'month_11'.tr(),
+        'month_12'.tr(),
+      ];
 
-  static const List<String> monthsShort = <String>[
-    'yan',
-    'fev',
-    'mar',
-    'apr',
-    'may',
-    'iyn',
-    'iyl',
-    'avg',
-    'sen',
-    'okt',
-    'noy',
-    'dek',
-  ];
+  static List<String> get monthsShort => <String>[
+        'month_short_1'.tr(),
+        'month_short_2'.tr(),
+        'month_short_3'.tr(),
+        'month_short_4'.tr(),
+        'month_short_5'.tr(),
+        'month_short_6'.tr(),
+        'month_short_7'.tr(),
+        'month_short_8'.tr(),
+        'month_short_9'.tr(),
+        'month_short_10'.tr(),
+        'month_short_11'.tr(),
+        'month_short_12'.tr(),
+      ];
 
   /// `DateTime.weekday` (1 = Dushanba … 7 = Yakshanba) bo'yicha.
-  static const List<String> weekdaysShort = <String>[
-    'Dush',
-    'Sesh',
-    'Chor',
-    'Pay',
-    'Jum',
-    'Shan',
-    'Yak',
-  ];
+  static List<String> get weekdaysShort => <String>[
+        'weekday_short_1'.tr(),
+        'weekday_short_2'.tr(),
+        'weekday_short_3'.tr(),
+        'weekday_short_4'.tr(),
+        'weekday_short_5'.tr(),
+        'weekday_short_6'.tr(),
+        'weekday_short_7'.tr(),
+      ];
 
-  static const List<String> weekdaysFull = <String>[
-    'Dushanba',
-    'Seshanba',
-    'Chorshanba',
-    'Payshanba',
-    'Juma',
-    'Shanba',
-    'Yakshanba',
-  ];
+  static List<String> get weekdaysFull => <String>[
+        'weekday_1'.tr(),
+        'weekday_2'.tr(),
+        'weekday_3'.tr(),
+        'weekday_4'.tr(),
+        'weekday_5'.tr(),
+        'weekday_6'.tr(),
+        'weekday_7'.tr(),
+      ];
 
   /// 5000000 → "5 000 000".
   static String number(num value) {
@@ -70,13 +67,18 @@ abstract final class Formatters {
   }
 
   /// 5000000 → "5 000 000 so'm".
-  static String money(num value, {String currency = 'so\'m'}) =>
-      '${number(value)} $currency';
+  static String money(num value, {String? currency}) {
+    final String defaultCurrency = 'currency_so_m'.tr();
+    final String curr = currency ?? defaultCurrency;
+    final String localizedCurr =
+        (curr == 'so\'m' || curr == 'som') ? defaultCurrency : curr;
+    return '${number(value)} $localizedCurr';
+  }
 
   /// Ishorasi bilan: 450000 → "+450 000 so'm".
-  static String signedMoney(num value, {String currency = 'so\'m'}) {
+  static String signedMoney(num value, {String? currency}) {
     final String sign = value > 0 ? '+' : '';
-    return '$sign${number(value)} $currency';
+    return '$sign${money(value, currency: currency)}';
   }
 
   /// "Sentabr 2026".
@@ -100,13 +102,17 @@ abstract final class Formatters {
     final int totalMinutes = (value * 60).round();
     final int h = totalMinutes ~/ 60;
     final int m = totalMinutes % 60;
-    return '${h}s ${m.toString().padLeft(2, '0')}daq';
+    return 'hours_and_minutes'.tr(
+      args: [h.toString(), m.toString().padLeft(2, '0')],
+    );
   }
 
   /// 95 → "1s 35daq", 40 → "40 daq".
   static String minutes(int value) {
-    if (value < 60) return '$value daq';
-    return '${value ~/ 60}s ${(value % 60).toString().padLeft(2, '0')}daq';
+    if (value < 60) return 'minutes_only'.tr(args: [value.toString()]);
+    return 'hours_and_minutes'.tr(
+      args: [(value ~/ 60).toString(), (value % 60).toString().padLeft(2, '0')],
+    );
   }
 
   /// [1,2,3,4,5] → "Dush, Sesh, Chor, Pay, Jum".

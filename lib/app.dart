@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'providers/theme_provider.dart';
@@ -23,16 +23,9 @@ class SpendlyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Spendly',
       debugShowCheckedModeBanner: false,
-      // Butun interfeys — o'zbek tilida. Bu Flutter'ning o'z oynalariga ham
-      // taalluqli: sana/vaqt tanlash, matnni nusxalash menyusi, "Bekor
-      // qilish"/"OK" tugmalari va h.k.
-      locale: const Locale('uz'),
-      supportedLocales: const <Locale>[Locale('uz')],
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      locale: context.locale,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,

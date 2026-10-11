@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 import 'model_utils.dart';
 
 /// Maosh kelishuvi turi.
@@ -28,18 +30,13 @@ enum SalaryType {
   }
 
   String get label => switch (this) {
-        SalaryType.fixed => 'Fixed (o\'zgarmas)',
-        SalaryType.calculated => 'Kunlik hisob',
+        SalaryType.fixed => 'salary_type_fixed_label'.tr(),
+        SalaryType.calculated => 'salary_type_calculated_label'.tr(),
       };
 
   String get description => switch (this) {
-        SalaryType.fixed =>
-          'Kelishilgan summa har oy to\'liq beriladi. Ishga bormagan kun '
-              'uchun pul ushlanmaydi, dam olish kunida ishlasangiz ham '
-              'qo\'shilmaydi.',
-        SalaryType.calculated =>
-          'Oylik maosh ish kunlariga bo\'linadi. Har bir kelgan kun uchun '
-              'kunlik stavka yoziladi, kelmagan kun hisoblanmaydi.',
+        SalaryType.fixed => 'salary_type_fixed_desc'.tr(),
+        SalaryType.calculated => 'salary_type_calculated_desc'.tr(),
       };
 }
 

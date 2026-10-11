@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/attendance_model.dart';
@@ -8,10 +9,6 @@ import 'app_card.dart';
 import 'photo_preview_sheet.dart';
 
 /// Bir kunlik davomat qatori.
-///
-/// Ishlatilishi: Home ("Oxirgi 7 kun") va Hisobot (oylik kunlik yozuvlar).
-/// [showEarning] `true` bo'lsa shu kunlik ishlab topilgan summa ham
-/// ko'rsatiladi — Hisobot ekrani uchun.
 class AttendanceTile extends StatelessWidget {
   const AttendanceTile({
     super.key,
@@ -84,7 +81,7 @@ class AttendanceTile extends StatelessWidget {
                 Text(
                   attendance.hasCheckedOut
                       ? Formatters.hours(attendance.workedHours)
-                      : (attendance.hasCheckedIn ? 'Ishda' : '—'),
+                      : (attendance.hasCheckedIn ? 'at_work'.tr() : '—'),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -102,7 +99,7 @@ class AttendanceTile extends StatelessWidget {
                   )
                 else if (attendance.isLate)
                   Text(
-                    '+${Formatters.minutes(attendance.lateMinutes)} kech',
+                    '+${Formatters.minutes(attendance.lateMinutes)} ${'late_suffix'.tr()}',
                     style: TextStyle(fontSize: 12, color: theme.yellow),
                   ),
               ],

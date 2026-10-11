@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,11 +17,6 @@ import '../../widgets/common/error_view.dart';
 import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/user_avatar.dart';
 
-/// Ikki kishilik suhbat.
-///
-/// Ro'yxat `reverse: true` bilan chiziladi: eng yangi xabar pastda turadi
-/// va yangi xabar kelganda ekran o'zi eng pastda qoladi — qo'lda scroll
-/// boshqarish shart emas.
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key, required this.peer});
 
@@ -66,7 +62,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           );
       if (!mounted) return;
       setState(() => _replyTo = null);
-      // `reverse: true` bo'lgani uchun eng past nuqta — offset 0.
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           0,
@@ -76,9 +71,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      // Yuborilmagan matn yo'qolmasin.
       _controller.text = text;
-      AppToast.show(context, 'Xabar yuborilmadi: $e', isError: true);
+      AppToast.show(context, 'message_not_sent'.tr(args: [e.toString()]), isError: true);
     } finally {
       if (mounted) setState(() => _isSending = false);
     }
@@ -100,18 +94,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             const SizedBox(height: 8),
             ListTile(
               leading: Icon(IconsaxPlusLinear.undo, color: theme.blue),
-              title: const Text('Javob berish'),
+              title: Text('reply'.tr()),
               onTap: () => Navigator.of(context).pop('reply'),
             ),
             ListTile(
               leading: Icon(IconsaxPlusLinear.copy, color: theme.blue),
-              title: const Text('Nusxalash'),
+              title: Text('copy'.tr()),
               onTap: () => Navigator.of(context).pop('copy'),
             ),
             if (isMine)
               ListTile(
                 leading: Icon(IconsaxPlusLinear.trash, color: theme.red),
-                title: Text('O\'chirish', style: TextStyle(color: theme.red)),
+                title: Text('delete'.tr(), style: TextStyle(color: theme.red)),
                 onTap: () => Navigator.of(context).pop('delete'),
               ),
             const SizedBox(height: 8),
@@ -128,7 +122,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       case 'copy':
         await Clipboard.setData(ClipboardData(text: message.text));
         if (!mounted) return;
-        AppToast.show(context, 'Matn nusxalandi');
+        AppToast.show(context, 'text_copied'.tr());
       case 'delete':
         final String? userId = ref.read(currentUserIdProvider);
         if (userId == null) return;
@@ -144,11 +138,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final CustomTheme theme = context.theme;
-    final String? userId = ref.watch(currentUserIdProvider);
+    final String? userId = ref.read(currentUserIdProvider);
 
     if (userId == null) {
-      return const Scaffold(
-        body: Center(child: ErrorView(message: 'Sessiya tugagan.')),
+      return Scaffold(
+        body: Center(child: ErrorView(message: 'error'.tr())),
       );
     }
 
@@ -192,15 +186,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 loading: () =>
                     Center(child: CircularProgressIndicator(color: theme.blue)),
                 error: (Object e, StackTrace _) =>
-                    ErrorView(message: 'Xabarlar yuklanmadi: $e'),
+                    ErrorView(message: 'error_prefix'.tr(args: [e.toString()])),
                 data: (List<ChatMessage> messages) {
                   if (messages.isEmpty) {
                     return EmptyState(
                       icon: IconsaxPlusLinear.message,
-                      title: 'Suhbat hali boshlanmagan',
-                      message:
-                          '${widget.peer.fullName} bilan birinchi xabarni '
-                          'siz yozing.',
+                      title: 'chat_not_started'.tr(),
+                      message: 'chat_not_started_subtitle'.tr(args: [widget.peer.fullName]),
                     );
                   }
                   return _buildMessageList(messages, userId);
@@ -218,13 +210,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget _buildMessageList(List<ChatMessage> messages, String userId) {
     return ListView.builder(
       controller: _scrollController,
-      // Eng yangi xabar pastda: ro'yxat teskari chiziladi.
       reverse: true,
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
       itemCount: messages.length,
       itemBuilder: (BuildContext context, int index) {
         final ChatMessage message = messages[index];
-        // Teskari ro'yxatda "keyingi element" — vaqt bo'yicha oldingisi.
         final ChatMessage? older = index + 1 < messages.length
             ? messages[index + 1]
             : null;
@@ -261,9 +251,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     final DateTime now = DateTime.now();
     final String label = TimeUtils.isSameDay(at, now)
-        ? 'Bugun'
+        ? 'today'.tr()
         : TimeUtils.isSameDay(at, now.subtract(const Duration(days: 1)))
-        ? 'Kecha'
+        ? 'yesterday'.tr()
         : Formatters.longDate(at);
 
     return Padding(
@@ -311,7 +301,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  replyingToMe ? 'Siz' : widget.peer.fullName,
+                  replyingToMe ? 'you_prefix'.tr().replaceAll(': ', '') : widget.peer.fullName,
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -359,7 +349,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 textCapitalization: TextCapitalization.sentences,
                 style: TextStyle(fontSize: 15, color: theme.mainDarkBlue),
                 decoration: InputDecoration(
-                  hintText: 'Xabar yozing...',
+                  hintText: 'chat_hint'.tr(),
                   counterText: '',
                   filled: true,
                   fillColor: theme.glassFill,
@@ -441,7 +431,6 @@ class _SendButton extends StatelessWidget {
   }
 }
 
-/// Bitta xabar puffagi. Chapga surish orqali ham javob berish mumkin.
 class _MessageBubble extends StatelessWidget {
   const _MessageBubble({
     required this.message,
@@ -466,7 +455,6 @@ class _MessageBubble extends StatelessWidget {
     return Dismissible(
       key: ValueKey<String>('swipe-${message.id}'),
       direction: DismissDirection.startToEnd,
-      // O'chirmaymiz — surish faqat "javob berish" ishorasi.
       confirmDismiss: (DismissDirection _) async {
         onSwipeReply();
         return false;
@@ -552,8 +540,8 @@ class _MessageBubble extends StatelessWidget {
         children: <Widget>[
           Text(
             message.replyToSenderId == message.senderId
-                ? (isMine ? 'Siz' : peerName)
-                : (isMine ? peerName : 'Siz'),
+                ? (isMine ? 'you_prefix'.tr().replaceAll(': ', '') : peerName)
+                : (isMine ? peerName : 'you_prefix'.tr().replaceAll(': ', '')),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,

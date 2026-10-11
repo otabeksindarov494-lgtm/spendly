@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
@@ -15,22 +16,22 @@ import '../../utils/salary_calculator.dart';
 import '../../utils/time_utils.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_card.dart';
-import '../../widgets/common/progress_dialog.dart';
 import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/cupertino_pickers.dart';
+import '../../widgets/common/progress_dialog.dart';
 
-/// Davomat yozuvini qo'lda kiritish yoki tuzatish (Profil bo'limidan).
-///
-/// Nima uchun kerak: ilova yangi o'rnatilganda o'tgan kunlar yozilmagan
-/// bo'ladi; check-in bosish esdan chiqishi mumkin; vaqt xato qayd etilishi
-/// mumkin. Bu ekran o'sha kunlarni to'g'rilash imkonini beradi.
+/// "Davomatni qo'lda kiritish" — o'tkazib yuborilgan yoki noto'g'ri
+/// yozilgan vaqtlarni to'g'rilash (PROJECT.md 6-bo'lim).
 class ManualAttendanceScreen extends ConsumerStatefulWidget {
-  const ManualAttendanceScreen({super.key});
+  const ManualAttendanceScreen({super.key, this.initialDate});
 
-  static Future<void> open(BuildContext context) {
+  final DateTime? initialDate;
+
+  static Future<void> open(BuildContext context, {DateTime? initialDate}) {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => const ManualAttendanceScreen(),
+        builder: (BuildContext context) =>
+            ManualAttendanceScreen(initialDate: initialDate),
       ),
     );
   }
@@ -42,82 +43,95 @@ class ManualAttendanceScreen extends ConsumerStatefulWidget {
 
 class _ManualAttendanceScreenState
     extends ConsumerState<ManualAttendanceScreen> {
-  DateTime _date = DateTime.now();
+  late DateTime _date;
   int _checkInMinutes = 9 * 60;
   int? _checkOutMinutes = 18 * 60;
-
-  /// `true` bo'lsa chiqish vaqti yozilmaydi — kun "ishda" holatida qoladi.
   bool _stillAtWork = false;
-
-  bool _isLoadingDay = true;
+  bool _isLoadingDay = false;
   bool _recordExists = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadDay());
+    final DateTime now = DateTime.now();
+    _date = widget.initialDate ?? DateTime(now.year, now.month, now.day);
+    _loadDayData();
   }
 
-  /// Tanlangan kunda yozuv bo'lsa, formani o'sha qiymatlar bilan to'ldiradi.
-  Future<void> _loadDay() async {
+  /// Tanlangan sana uchun mavjud yozuvni Firestore'dan o'qiydi.
+  Future<void> _loadDayData() async {
     final String? userId = ref.read(currentUserIdProvider);
     if (userId == null) return;
 
     setState(() => _isLoadingDay = true);
-    final Attendance? existing = await ref
-        .read(attendanceServiceProvider)
-        .fetchDay(userId, _date);
-    if (!mounted) return;
+    try {
+      final Attendance? record = await ref
+          .read(attendanceServiceProvider)
+          .fetchDay(userId, _date);
 
-    setState(() {
-      _recordExists = existing != null;
-      if (existing?.checkInTime != null) {
-        _checkInMinutes = TimeUtils.minutesOfDay(existing!.checkInTime!);
+      if (!mounted) return;
+      if (record == null) {
+        setState(() {
+          _recordExists = false;
+          _checkInMinutes = 9 * 60;
+          _checkOutMinutes = 18 * 60;
+          _stillAtWork = false;
+        });
+      } else {
+        setState(() {
+          _recordExists = true;
+          if (record.checkInTime != null) {
+            _checkInMinutes = TimeUtils.minutesOfDay(record.checkInTime!);
+          } else {
+            _checkInMinutes = 9 * 60;
+          }
+          if (record.checkOutTime == null) {
+            _stillAtWork = true;
+            _checkOutMinutes = 18 * 60;
+          } else {
+            _stillAtWork = false;
+            _checkOutMinutes = TimeUtils.minutesOfDay(record.checkOutTime!);
+          }
+        });
       }
-      if (existing?.checkOutTime != null) {
-        _checkOutMinutes = TimeUtils.minutesOfDay(existing!.checkOutTime!);
-        _stillAtWork = false;
-      } else if (existing != null) {
-        _stillAtWork = true;
-        _checkOutMinutes = null;
-      }
-      _isLoadingDay = false;
-    });
+    } finally {
+      if (mounted) setState(() => _isLoadingDay = false);
+    }
   }
 
   Future<void> _pickDate() async {
     final DateTime now = DateTime.now();
     final DateTime? picked = await SoftPickers.pickDate(
       context: context,
-      title: 'Qaysi kun uchun',
+      title: 'date'.tr(),
       initial: _date,
-      first: DateTime(now.year - 2),
-      // Kelajakdagi kunga davomat yozib bo'lmaydi.
+      first: DateTime(now.year - 5),
       last: now,
     );
-    if (picked == null) return;
-    setState(() => _date = picked);
-    await _loadDay();
+    if (picked != null && mounted) {
+      setState(() => _date = DateTime(picked.year, picked.month, picked.day));
+      _loadDayData();
+    }
   }
 
   Future<void> _pickTime({required bool isCheckIn}) async {
-    final int current = isCheckIn
+    final int initial = isCheckIn
         ? _checkInMinutes
         : (_checkOutMinutes ?? 18 * 60);
     final int? picked = await SoftPickers.pickTimeMinutes(
       context: context,
-      title: isCheckIn ? 'Kelgan vaqt' : 'Ketgan vaqt',
-      initialMinutes: current,
+      title: isCheckIn ? 'arrived_time'.tr() : 'left'.tr(),
+      initialMinutes: initial,
     );
-    if (picked == null) return;
-    setState(() {
-      final int minutes = picked;
-      if (isCheckIn) {
-        _checkInMinutes = minutes;
-      } else {
-        _checkOutMinutes = minutes;
-      }
-    });
+    if (picked != null && mounted) {
+      setState(() {
+        if (isCheckIn) {
+          _checkInMinutes = picked;
+        } else {
+          _checkOutMinutes = picked;
+        }
+      });
+    }
   }
 
   Future<void> _save(UserProfile profile) async {
@@ -126,19 +140,16 @@ class _ManualAttendanceScreenState
 
     await runWithProgress<void>(
       context: context,
-      title: 'Davomat saqlanmoqda',
+      title: 'saving'.tr(),
       task: (ProgressReporter report) async {
-        report('Hisob-kitob qilinmoqda...', 0.35);
-        await ref
-            .read(attendanceServiceProvider)
-            .saveManualEntry(
+        report('saving'.tr(), 0.5);
+        await ref.read(attendanceServiceProvider).saveManualEntry(
               userId: userId,
               profile: profile,
               date: _date,
               checkInMinutes: _checkInMinutes,
               checkOutMinutes: _stillAtWork ? null : _checkOutMinutes,
             );
-        report('Firestore\'ga yozilmoqda...', 0.8);
       },
     );
 
@@ -146,9 +157,8 @@ class _ManualAttendanceScreenState
     ref.invalidate(todayAttendanceProvider);
     ref.invalidate(last7DaysProvider);
     ref.invalidate(currentMonthAttendanceProvider);
-    ref.invalidate(monthAttendanceProvider);
 
-    AppToast.show(context, '${Formatters.longDate(_date)} uchun saqlandi');
+    AppToast.show(context, 'saved_for'.tr(args: [Formatters.longDate(_date)]));
     Navigator.of(context).pop();
   }
 
@@ -160,18 +170,18 @@ class _ManualAttendanceScreenState
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Yozuvni o\'chirish'),
+        title: Text('delete_record_title'.tr()),
         content: Text(
-          '${Formatters.longDate(_date)} uchun davomat yozuvi o\'chiriladi.',
+          'delete_record_confirm'.tr(args: [Formatters.longDate(_date)]),
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Bekor qilish'),
+            child: Text('cancel'.tr()),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('O\'chirish', style: TextStyle(color: theme.red)),
+            child: Text('delete'.tr(), style: TextStyle(color: theme.red)),
           ),
         ],
       ),
@@ -180,9 +190,9 @@ class _ManualAttendanceScreenState
 
     await runWithProgress<void>(
       context: context,
-      title: 'O\'chirilmoqda',
+      title: 'deleting'.tr(),
       task: (ProgressReporter report) async {
-        report('Yozuv o\'chirilmoqda...', 0.5);
+        report('deleting_record'.tr(), 0.5);
         await ref
             .read(attendanceServiceProvider)
             .deleteDay(userId: userId, date: _date);
@@ -202,7 +212,7 @@ class _ManualAttendanceScreenState
     final UserProfile? profile = ref.watch(profileProvider).value;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Davomatni qo\'lda kiritish')),
+      appBar: AppBar(title: Text('manual_attendance_title'.tr())),
       body: SafeArea(
         child: profile == null
             ? Center(child: CircularProgressIndicator(color: theme.blue))
@@ -214,7 +224,7 @@ class _ManualAttendanceScreenState
                   _buildRow(
                     theme: theme,
                     icon: IconsaxPlusLinear.calendar_1,
-                    label: 'Sana',
+                    label: 'date'.tr(),
                     value: Formatters.longDate(_date),
                     onTap: _pickDate,
                   ),
@@ -222,7 +232,7 @@ class _ManualAttendanceScreenState
                   _buildRow(
                     theme: theme,
                     icon: IconsaxPlusLinear.login,
-                    label: 'Kelgan vaqt',
+                    label: 'arrived_time'.tr(),
                     value: TimeUtils.hmFromMinutes(_checkInMinutes),
                     onTap: () => _pickTime(isCheckIn: true),
                   ),
@@ -230,9 +240,9 @@ class _ManualAttendanceScreenState
                   _buildRow(
                     theme: theme,
                     icon: IconsaxPlusLinear.logout,
-                    label: 'Ketgan vaqt',
+                    label: 'left'.tr(),
                     value: _stillAtWork
-                        ? 'Hali ishda'
+                        ? 'still_at_work'.tr()
                         : TimeUtils.hmFromMinutes(_checkOutMinutes ?? 18 * 60),
                     onTap: _stillAtWork
                         ? null
@@ -251,7 +261,7 @@ class _ManualAttendanceScreenState
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                'Hali ishdaman',
+                                'still_at_work_title'.tr(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -260,7 +270,7 @@ class _ManualAttendanceScreenState
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                'Ketgan vaqt yozilmaydi, kun ochiq qoladi',
+                                'still_at_work_desc'.tr(),
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: theme.textGray,
@@ -270,8 +280,6 @@ class _ManualAttendanceScreenState
                           ),
                         ),
                         const SizedBox(width: 12),
-                        // Ataylab Cupertino: Material switch qo'polroq
-                        // ko'rinadi, bu esa yengil va yumshoq.
                         CupertinoSwitch(
                           value: _stillAtWork,
                           activeTrackColor: theme.blue,
@@ -285,7 +293,7 @@ class _ManualAttendanceScreenState
                   _buildPreview(theme, profile),
                   const SizedBox(height: 22),
                   AppButton(
-                    label: _recordExists ? 'Yangilash' : 'Saqlash',
+                    label: _recordExists ? 'update'.tr() : 'save'.tr(),
                     icon: IconsaxPlusBold.tick_circle,
                     isLoading: _isLoadingDay,
                     onPressed: () => _save(profile),
@@ -293,7 +301,7 @@ class _ManualAttendanceScreenState
                   if (_recordExists) ...<Widget>[
                     const SizedBox(height: 10),
                     AppButton(
-                      label: 'Bu kunning yozuvini o\'chirish',
+                      label: 'delete_record_btn'.tr(),
                       variant: AppButtonVariant.text,
                       height: 46,
                       onPressed: _delete,
@@ -319,9 +327,7 @@ class _ManualAttendanceScreenState
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'Check-in bosilmagan yoki vaqt noto\'g\'ri yozilgan kunlarni '
-              'shu yerdan to\'g\'rilashingiz mumkin. Jarima va kunlik maosh '
-              'avtomatik qayta hisoblanadi.',
+              'manual_attendance_hint'.tr(),
               style: TextStyle(
                 fontSize: 13,
                 height: 1.45,
@@ -375,7 +381,6 @@ class _ManualAttendanceScreenState
     );
   }
 
-  /// Saqlashdan oldin natijani ko'rsatadi — "nima yoziladi" aniq bo'lsin.
   Widget _buildPreview(CustomTheme theme, UserProfile profile) {
     final DateTime checkIn = DateTime(
       _date.year,
@@ -410,7 +415,7 @@ class _ManualAttendanceScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            'Natija',
+            'result'.tr(),
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -421,40 +426,40 @@ class _ManualAttendanceScreenState
           if (!isWorkDay)
             _previewRow(
               theme,
-              'Bu kun dam olish kuni',
-              'hisobga olinmaydi',
+              'day_off_note'.tr(),
+              'not_calculated'.tr(),
               theme.yellow,
             )
           else ...<Widget>[
             _previewRow(
               theme,
-              'Kechikish',
+              'late_time'.tr(),
               Formatters.minutes(calc.lateMinutes),
               calc.lateMinutes > 0 ? theme.yellow : theme.green,
             ),
             _previewRow(
               theme,
-              'Erta ketish',
+              'early_leave'.tr(),
               Formatters.minutes(calc.earlyLeaveMinutes),
               calc.earlyLeaveMinutes > 0 ? theme.yellow : theme.green,
             ),
             _previewRow(
               theme,
-              'Ishlagan vaqt',
+              'worked_time'.tr(),
               checkOut == null ? '—' : Formatters.hours(calc.workedHours),
               theme.mainDarkBlue,
             ),
             _previewRow(
               theme,
-              'Jarima',
+              'penalty'.tr(),
               '-${Formatters.money(calc.penaltyAmount, currency: profile.currency)}',
               calc.penaltyAmount > 0 ? theme.red : theme.textGray,
             ),
             _previewRow(
               theme,
-              'Kunlik maosh',
+              'daily_earning'.tr(),
               checkOut == null
-                  ? 'kun yopilmagan'
+                  ? 'day_not_closed'.tr()
                   : Formatters.money(
                       calc.dailyEarning,
                       currency: profile.currency,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +32,7 @@ class AllDataScreen extends ConsumerWidget {
     final AsyncValue<UserProfile?> profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Barcha ma\'lumotlar')),
+      appBar: AppBar(title: Text('all_data'.tr())),
       body: SafeArea(
         top: false,
         child: profileAsync.when(
@@ -40,9 +41,9 @@ class AllDataScreen extends ConsumerWidget {
             child: ShimmerList(itemCount: 8, itemHeight: 56),
           ),
           error: (Object e, StackTrace _) =>
-              ErrorView(message: 'Profil yuklanmadi: $e'),
+              ErrorView(message: 'profile_load_error'.tr(args: [e.toString()])),
           data: (UserProfile? profile) => profile == null
-              ? const ErrorView(message: 'Profil topilmadi.')
+              ? ErrorView(message: 'profile_not_found'.tr())
               : _buildBody(context, profile),
         ),
       ),
@@ -55,21 +56,21 @@ class AllDataScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
       children: <Widget>[
-        const SectionTitle(title: 'Shaxsiy'),
+        SectionTitle(title: 'personal_section'.tr()),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: <Widget>[
               InfoRow(
                 icon: IconsaxPlusLinear.user,
-                label: 'Ism-familiya',
+                label: 'full_name'.tr(),
                 value: orDash(profile.fullName),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editFullName(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.cake,
-                label: 'Tug\'ilgan kun',
+                label: 'birth_date_label'.tr(),
                 value: profile.birthDate == null
                     ? '—'
                     : Formatters.longDate(profile.birthDate!),
@@ -78,7 +79,7 @@ class AllDataScreen extends ConsumerWidget {
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.call,
-                label: 'Telefon',
+                label: 'phone_label'.tr(),
                 value: orDash(profile.phoneNumber),
                 isLast: true,
                 onTap: (WidgetRef ref) =>
@@ -88,28 +89,28 @@ class AllDataScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const SectionTitle(title: 'Ish joyi'),
+        SectionTitle(title: 'workplace_section'.tr()),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: <Widget>[
               InfoRow(
                 icon: IconsaxPlusLinear.building,
-                label: 'Kompaniya',
+                label: 'company_label'.tr(),
                 value: orDash(profile.companyName),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editCompany(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.personalcard,
-                label: 'Lavozim',
+                label: 'position_label'.tr(),
                 value: orDash(profile.position),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editPosition(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.calendar_tick,
-                label: 'Ishga kirgan sana',
+                label: 'employment_date_label'.tr(),
                 value: profile.employmentStartDate == null
                     ? '—'
                     : Formatters.longDate(profile.employmentStartDate!),
@@ -121,21 +122,21 @@ class AllDataScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const SectionTitle(title: 'Maosh'),
+        SectionTitle(title: 'salary_section'.tr()),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: <Widget>[
               InfoRow(
                 icon: IconsaxPlusLinear.empty_wallet,
-                label: 'Maosh turi',
+                label: 'salary_type_label'.tr(),
                 value: profile.salaryType.label,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editSalaryType(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.moneys,
-                label: 'Maosh oralig\'i',
+                label: 'salary_range_label'.tr(),
                 value: profile.salaryMin <= 0 && profile.salaryMax <= 0
                     ? Formatters.money(
                         profile.salaryAmount,
@@ -148,7 +149,7 @@ class AllDataScreen extends ConsumerWidget {
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.calculator,
-                label: 'Hisobda ishlatiladi',
+                label: 'used_in_calc_label'.tr(),
                 value: Formatters.money(
                   profile.salaryAmount,
                   currency: profile.currency,
@@ -158,15 +159,15 @@ class AllDataScreen extends ConsumerWidget {
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.dollar_circle,
-                label: 'Valyuta',
+                label: 'select_currency'.tr(),
                 value: profile.currency,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editCurrency(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.calendar_tick,
-                label: 'Maosh beriladigan kun',
-                value: 'Oyning ${profile.salaryPayDay}-kuni',
+                label: 'pay_day_label'.tr(),
+                value: 'pay_day_format'.tr(args: [profile.salaryPayDay.toString()]),
                 isLast: true,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editPayDay(context, ref, profile),
@@ -175,30 +176,30 @@ class AllDataScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 24),
-        const SectionTitle(title: 'Ish jadvali'),
+        SectionTitle(title: 'schedule_section'.tr()),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: <Widget>[
               InfoRow(
                 icon: IconsaxPlusLinear.clock,
-                label: 'Ish vaqti',
+                label: 'work_time_label'.tr(),
                 value: '${profile.workStartTime} – ${profile.workEndTime}',
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editWorkTime(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.coffee,
-                label: 'Tushlik tanaffusi',
+                label: 'lunch_break_label'.tr(),
                 value: profile.lunchBreakMinutes == 0
-                    ? 'Yo\'q'
+                    ? 'none_label'.tr()
                     : Formatters.minutes(profile.lunchBreakMinutes),
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editLunchBreak(context, ref, profile),
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.calendar,
-                label: 'Ish kunlari',
+                label: 'work_days_label'.tr(),
                 value: profile.workDays.isEmpty
                     ? '—'
                     : Formatters.workDays(profile.workDays),
@@ -207,8 +208,8 @@ class AllDataScreen extends ConsumerWidget {
               ),
               InfoRow(
                 icon: IconsaxPlusLinear.alarm,
-                label: 'Kechikish jarimasi',
-                value: profile.penaltyEnabled ? 'Ushlanadi' : 'Ushlanmaydi',
+                label: 'penalty_policy_label'.tr(),
+                value: profile.penaltyEnabled ? 'deducted'.tr() : 'not_deducted'.tr(),
                 isLast: true,
                 onTap: (WidgetRef ref) =>
                     ProfileEditSheets.editPenaltyPolicy(context, ref, profile),
@@ -222,22 +223,18 @@ class AllDataScreen extends ConsumerWidget {
     );
   }
 
-  /// Tanlangan sozlamalar amalda nimani anglatishini oddiy til bilan
-  /// tushuntiradi — foydalanuvchi noto'g'ri tanlab qo'ymasin.
+  /// Tanlangan sozlamalar amalda nimani anglatishini tushuntiradi.
   Widget _buildRuleNote(BuildContext context, UserProfile profile) {
     final CustomTheme theme = context.theme;
     final bool isFixed = profile.salaryType == SalaryType.fixed;
 
     final String text = isFixed
-        ? 'Maoshingiz **fixed**: kelishilgan summa har oy to\'liq beriladi. '
-              'Ishga bormagan kun uchun pul ushlanmaydi, dam olish kunida '
-              'ishlasangiz ham qo\'shilmaydi.'
-        : 'Maoshingiz **kunlik hisob**: oylik summa ish kunlariga bo\'linadi '
-              'va har bir kelgan kun uchun alohida yoziladi.';
+        ? 'fixed_rule_note'.tr()
+        : 'calculated_rule_note'.tr();
 
     final String penaltyText = profile.penaltyEnabled
-        ? ' Kechikish va erta ketish uchun pul ushlanadi.'
-        : ' Kechikish pulga ta\'sir qilmaydi, faqat statistikada ko\'rinadi.';
+        ? 'penalty_rule_active'.tr()
+        : 'penalty_rule_inactive'.tr();
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -252,7 +249,7 @@ class AllDataScreen extends ConsumerWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              text.replaceAll('**', '') + penaltyText,
+              text + penaltyText,
               style: TextStyle(
                 fontSize: 13,
                 height: 1.5,

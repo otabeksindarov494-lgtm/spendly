@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +9,6 @@ import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_text_field.dart';
 
 /// Qarz ma'lumotlarini kiritish/tahrirlash formasi.
-///
-/// Ikkala joyda ishlatiladi:
-///  * `ManualDebtSheet` — qo'lda kiritish,
-///  * `VoiceDebtSheet` — ovozdan olingan natijani tasdiqlash
-///    (PROJECT.md 10.8: tasdiqlash ekranisiz saqlanmaydi).
 class DebtForm extends StatefulWidget {
   const DebtForm({
     super.key,
@@ -64,8 +60,6 @@ class _DebtFormState extends State<DebtForm> {
     _descriptionController = TextEditingController(
       text: widget.initialDescription ?? '',
     );
-    // Ovozdan yo'nalish aniqlanmagan bo'lsa, xavfsiz standart tanlanadi
-    // va foydalanuvchi uni ko'rib chiqadi.
     _type = widget.initialType ?? DebtType.iOwe;
   }
 
@@ -108,29 +102,29 @@ class _DebtFormState extends State<DebtForm> {
         children: <Widget>[
           AppTextField(
             controller: _nameController,
-            label: 'Ism',
-            hint: 'Ismini kiriting',
+            label: 'name'.tr(),
+            hint: 'name_hint'.tr(),
             prefixIcon: IconsaxPlusLinear.user,
             textCapitalization: TextCapitalization.words,
             validator: (String? value) =>
-                (value ?? '').trim().isEmpty ? 'Ismni kiriting' : null,
+                (value ?? '').trim().isEmpty ? 'name_required'.tr() : null,
           ),
           const SizedBox(height: 16),
           AppTextField(
             controller: _amountController,
-            label: 'Summa',
-            hint: 'Summani kiriting',
+            label: 'amount'.tr(),
+            hint: 'debt_amount_hint'.tr(),
             prefixIcon: IconsaxPlusLinear.moneys,
             keyboardType: TextInputType.number,
             inputFormatters: const <TextInputFormatter>[ThousandsFormatter()],
             validator: (String? value) =>
                 ThousandsFormatter.parse(value ?? '') <= 0
-                ? 'Summani kiriting'
+                ? 'amount_required'.tr()
                 : null,
           ),
           const SizedBox(height: 16),
           Text(
-            'Turi',
+            'debt_type_label'.tr(),
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -142,7 +136,7 @@ class _DebtFormState extends State<DebtForm> {
             children: <Widget>[
               Expanded(
                 child: _TypeOption(
-                  label: 'Men qarzdorman',
+                  label: 'i_owe'.tr(),
                   color: theme.red,
                   isSelected: _type == DebtType.iOwe,
                   onTap: () => setState(() => _type = DebtType.iOwe),
@@ -151,7 +145,7 @@ class _DebtFormState extends State<DebtForm> {
               const SizedBox(width: 10),
               Expanded(
                 child: _TypeOption(
-                  label: 'Menga qarz',
+                  label: 'owed_to_me'.tr(),
                   color: theme.green,
                   isSelected: _type == DebtType.owedToMe,
                   onTap: () => setState(() => _type = DebtType.owedToMe),
@@ -162,8 +156,8 @@ class _DebtFormState extends State<DebtForm> {
           const SizedBox(height: 16),
           AppTextField(
             controller: _descriptionController,
-            label: 'Izoh (ixtiyoriy)',
-            hint: 'Nima uchun berilgan?',
+            label: 'notes_optional'.tr(),
+            hint: 'debt_desc_hint'.tr(),
             maxLines: 2,
           ),
           const SizedBox(height: 24),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
@@ -33,13 +34,13 @@ class SettingsScreen extends ConsumerWidget {
     final bool remindersEnabled = ref.watch(notificationsEnabledProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sozlamalar')),
+      appBar: AppBar(title: Text('settings'.tr())),
       body: SafeArea(
         top: false,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
           children: <Widget>[
-            const SectionTitle(title: 'Ko\'rinish'),
+            SectionTitle(title: 'appearance'.tr()),
             AppCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +54,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Mavzu',
+                        'theme'.tr(),
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -131,7 +132,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const SectionTitle(title: 'Bildirishnomalar'),
+            SectionTitle(title: 'notifications'.tr()),
             AppCard(
               child: Row(
                 children: <Widget>[
@@ -146,7 +147,7 @@ class SettingsScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Ish vaqti eslatmalari',
+                          'reminders'.tr(),
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -174,31 +175,77 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const SectionTitle(title: 'Til'),
+            SectionTitle(title: 'language'.tr()),
             AppCard(
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(IconsaxPlusLinear.global, size: 17, color: theme.textGray),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Interfeys tili',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: theme.mainDarkBlue,
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        IconsaxPlusLinear.global,
+                        size: 17,
+                        color: theme.textGray,
                       ),
-                    ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'language'.tr(),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: theme.mainDarkBlue,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'O\'zbekcha',
-                    style: TextStyle(fontSize: 13, color: theme.textGray),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: <Widget>[
+                      for (final MapEntry<String, String> entry in const [
+                        MapEntry('uz', "O'zbek"),
+                        MapEntry('ru', 'Русский'),
+                        MapEntry('en', 'English'),
+                      ])
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: entry.key == 'en' ? 0 : 8,
+                            ),
+                            child: GestureDetector(
+                              onTap: () => context.setLocale(Locale(entry.key)),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 160),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 13,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: context.locale.languageCode == entry.key
+                                      ? theme.blue
+                                      : theme.glassFill,
+                                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                                ),
+                                child: Text(
+                                  entry.value,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.locale.languageCode == entry.key
+                                        ? CustomTheme.onAccent
+                                        : theme.mainDarkBlue,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            const SectionTitle(title: 'Ilova haqida'),
+            SectionTitle(title: 'about'.tr()),
             AppCard(
               child: Row(
                 children: <Widget>[
@@ -210,7 +257,7 @@ class SettingsScreen extends ConsumerWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Versiya',
+                      'version'.tr(),
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,

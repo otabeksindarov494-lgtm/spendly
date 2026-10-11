@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +35,7 @@ class ReportScreen extends ConsumerWidget {
     final String currency = profile?.currency ?? 'so\'m';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Hisobot')),
+      appBar: AppBar(title: Text('report_title'.tr())),
       body: SafeArea(
         top: false,
         child: ListView(
@@ -52,14 +53,16 @@ class ReportScreen extends ConsumerWidget {
             else
               _buildStatsGrid(theme, summary),
             const SizedBox(height: 24),
-            const SectionTitle(title: 'Kunlik yozuvlar'),
+            SectionTitle(title: 'daily_records'.tr()),
             // Oyning HAR BIR kuni (kelmagan va dam olish kunlari ham).
             // Elementlar to'g'ridan-to'g'ri ListView'ga qo'yiladi — faqat
             // ekranda ko'ringan kunlar (va ularning selfilari) quriladi.
             ...recordsAsync.when(
               loading: () => <Widget>[const ShimmerList(itemCount: 4)],
               error: (Object e, StackTrace _) => <Widget>[
-                ErrorView(message: 'Yozuvlar yuklanmadi: $e'),
+                ErrorView(
+                  message: 'records_load_error'.tr(args: <String>[e.toString()]),
+                ),
               ],
               data: (List<Attendance> records) {
                 final List<ReportDay> days = MonthDays.build(
@@ -72,8 +75,10 @@ class ReportScreen extends ConsumerWidget {
                   return <Widget>[
                     EmptyState(
                       icon: IconsaxPlusLinear.calendar_2,
-                      title: '${Formatters.monthYear(month)} uchun yozuv yo\'q',
-                      message: 'Bu oyda hali davomat qayd etilmagan.',
+                      title: 'no_records_for_month'.tr(
+                        args: <String>[Formatters.monthYear(month)],
+                      ),
+                      message: 'no_records_for_month_msg'.tr(),
                     ),
                   ];
                 }
@@ -109,7 +114,7 @@ class ReportScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Joriy hisoblangan oylik', style: context.text.bodySmall),
+          Text('current_calculated_salary'.tr(), style: context.text.bodySmall),
           const SizedBox(height: 6),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -121,10 +126,12 @@ class ReportScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Belgilangan oylik: '
-            '${Formatters.money(profile.salaryAmount, currency: currency)}'
-            '  |  Jarima: '
-            '-${Formatters.money(summary.penaltyAmount, currency: currency)}',
+            'salary_and_penalty_format'.tr(
+              args: <String>[
+                Formatters.money(profile.salaryAmount, currency: currency),
+                Formatters.money(summary.penaltyAmount, currency: currency),
+              ],
+            ),
             style: context.text.labelSmall,
           ),
           const SizedBox(height: 16),
@@ -139,7 +146,12 @@ class ReportScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${summary.elapsedWorkDays}/${summary.plannedWorkDays} ish kuni',
+            'work_days_progress_format'.tr(
+              args: <String>[
+                summary.elapsedWorkDays.toString(),
+                summary.plannedWorkDays.toString(),
+              ],
+            ),
             style: context.text.labelSmall,
           ),
         ],
@@ -159,37 +171,41 @@ class ReportScreen extends ConsumerWidget {
       children: <Widget>[
         StatCard(
           icon: IconsaxPlusLinear.timer,
-          label: 'Jami ishlangan soat',
-          value: '${summary.workedHours.round()} soat',
+          label: 'total_worked_hours_stat'.tr(),
+          value: 'hours_suffix'.tr(
+            args: <String>[summary.workedHours.round().toString()],
+          ),
           accentColor: theme.blue,
         ),
         StatCard(
           icon: IconsaxPlusLinear.calendar_tick,
-          label: 'Kelgan kunlar',
-          value: '${summary.presentDays} kun',
+          label: 'present_days_label'.tr(),
+          value: 'days_suffix'.tr(
+            args: <String>[summary.presentDays.toString()],
+          ),
           accentColor: theme.green,
         ),
         StatCard(
           icon: IconsaxPlusLinear.calendar_remove,
-          label: 'Kelmagan kunlar',
-          value: '${summary.absentDays} kun',
+          label: 'absent_days_label'.tr(),
+          value: 'days_suffix'.tr(args: <String>[summary.absentDays.toString()]),
           accentColor: theme.red,
         ),
         StatCard(
           icon: IconsaxPlusLinear.alarm,
-          label: 'Jami kechikish',
+          label: 'total_lateness'.tr(),
           value: Formatters.minutes(summary.lateMinutes),
           accentColor: theme.yellow,
         ),
         StatCard(
           icon: IconsaxPlusLinear.logout,
-          label: 'Jami erta ketish',
+          label: 'total_early_leave'.tr(),
           value: Formatters.minutes(summary.earlyLeaveMinutes),
           accentColor: theme.yellow,
         ),
         StatCard(
           icon: IconsaxPlusLinear.minus_cirlce,
-          label: 'Jami jarima',
+          label: 'total_penalty'.tr(),
           value: Formatters.money(summary.penaltyAmount),
           accentColor: theme.red,
         ),

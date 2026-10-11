@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/debt_model.dart';
@@ -20,13 +21,15 @@ final Provider<DebtBalance> debtBalanceProvider =
 
 /// Qarzlar ro'yxati filtri.
 enum DebtFilter {
-  all('Hammasi'),
-  owedToMe('Sizdan qarz'),
-  iOwe('Siz qarzdorsiz');
+  all,
+  owedToMe,
+  iOwe;
 
-  const DebtFilter(this.label);
-
-  final String label;
+  String get label => switch (this) {
+        DebtFilter.all => 'all'.tr(),
+        DebtFilter.owedToMe => 'owed_to_me'.tr(),
+        DebtFilter.iOwe => 'i_owe'.tr(),
+      };
 }
 
 class DebtFilterNotifier extends Notifier<DebtFilter> {

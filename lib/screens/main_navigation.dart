@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,15 +34,15 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
 
   static const List<(IconData, IconData, String)> _tabs =
       <(IconData, IconData, String)>[
-        (IconsaxPlusLinear.home_2, IconsaxPlusBold.home_2, 'Bosh sahifa'),
-        (IconsaxPlusLinear.chart, IconsaxPlusBold.chart, 'Hisobot'),
-        (IconsaxPlusLinear.message, IconsaxPlusBold.message, 'Chat'),
+        (IconsaxPlusLinear.home_2, IconsaxPlusBold.home_2, 'tab_home'),
+        (IconsaxPlusLinear.chart, IconsaxPlusBold.chart, 'tab_report'),
+        (IconsaxPlusLinear.message, IconsaxPlusBold.message, 'tab_chat'),
         (
           IconsaxPlusLinear.empty_wallet,
           IconsaxPlusBold.empty_wallet,
-          'Qarzlar',
+          'tab_debts',
         ),
-        (IconsaxPlusLinear.user, IconsaxPlusBold.user, 'Profil'),
+        (IconsaxPlusLinear.user, IconsaxPlusBold.user, 'tab_profile'),
       ];
 
   @override
@@ -120,7 +121,7 @@ class _NavItem extends StatelessWidget {
             Icon(isActive ? activeIcon : icon, size: 24, color: color),
             const SizedBox(height: 4),
             Text(
-              label,
+              label.tr(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               // labelSmall (12) — eng kichik shkala darajasi; 10 px o'qishga

@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +19,6 @@ import 'manual_attendance_screen.dart';
 import 'profile_edit_sheets.dart';
 import 'settings_screen.dart';
 
-/// 5-tab: profil.
-///
-/// Ataylab sodda: dumaloq avatar, ism va bir nechta karta. Har bir
-/// bo'lim o'z ekraniga chiqarilgan — bitta ekranga hamma narsani
-/// tiqishtirish o'qishni qiyinlashtiradi.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -31,7 +27,7 @@ class ProfileScreen extends ConsumerWidget {
     final AsyncValue<UserProfile?> profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
+      appBar: AppBar(title: Text('profile_title'.tr())),
       body: SafeArea(
         top: false,
         child: profileAsync.when(
@@ -40,9 +36,9 @@ class ProfileScreen extends ConsumerWidget {
             child: ShimmerList(itemCount: 5, itemHeight: 74),
           ),
           error: (Object e, StackTrace _) =>
-              ErrorView(message: 'Profil yuklanmadi: $e'),
+              ErrorView(message: 'profile_load_error'.tr(args: [e.toString()])),
           data: (UserProfile? profile) => profile == null
-              ? const ErrorView(message: 'Profil topilmadi.')
+              ? ErrorView(message: 'profile_not_found'.tr())
               : _buildBody(context, ref, profile),
         ),
       ),
@@ -59,7 +55,7 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         Text(
           profile.fullName.trim().isEmpty
-              ? 'Ism kiritilmagan'
+              ? 'no_name'.tr()
               : profile.fullName.trim(),
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -79,27 +75,27 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 30),
         MenuCard(
           icon: IconsaxPlusLinear.personalcard,
-          title: 'Barcha ma\'lumotlar',
-          subtitle: 'Shaxsiy, ish joyi, maosh va ish jadvali',
+          title: 'menu_all_data_title'.tr(),
+          subtitle: 'menu_all_data_subtitle'.tr(),
           onTap: () => AllDataScreen.open(context),
         ),
         MenuCard(
           icon: IconsaxPlusLinear.calendar_add,
-          title: 'Davomat',
-          subtitle: 'Qo\'lda kiritish yoki vaqtni tuzatish',
+          title: 'menu_attendance_title'.tr(),
+          subtitle: 'menu_attendance_subtitle'.tr(),
           accentColor: theme.green,
           onTap: () => ManualAttendanceScreen.open(context),
         ),
         MenuCard(
           icon: IconsaxPlusLinear.setting_2,
-          title: 'Sozlamalar',
-          subtitle: 'Mavzu, eslatmalar, til va versiya',
+          title: 'menu_settings_title'.tr(),
+          subtitle: 'menu_settings_subtitle'.tr(),
           onTap: () => SettingsScreen.open(context),
         ),
         MenuCard(
           icon: IconsaxPlusLinear.logout,
-          title: 'Chiqish',
-          subtitle: 'Ma\'lumotlaringiz o\'chirilmaydi',
+          title: 'menu_logout_title'.tr(),
+          subtitle: 'menu_logout_subtitle'.tr(),
           accentColor: theme.red,
           showChevron: false,
           onTap: () => _confirmLogout(context, ref, theme),
@@ -177,19 +173,16 @@ class ProfileScreen extends ConsumerWidget {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Chiqish'),
-        content: const Text(
-          'Hisobingizdan chiqmoqchimisiz? Ma\'lumotlaringiz saqlanib '
-          'qoladi — qayta kirganingizda hammasi o\'z holicha tiklanadi.',
-        ),
+        title: Text('logout_dialog_title'.tr()),
+        content: Text('logout_dialog_content'.tr()),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Bekor qilish'),
+            child: Text('cancel'.tr()),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Chiqish', style: TextStyle(color: theme.red)),
+            child: Text('logout_button'.tr(), style: TextStyle(color: theme.red)),
           ),
         ],
       ),
@@ -197,8 +190,6 @@ class ProfileScreen extends ConsumerWidget {
 
     if (confirmed ?? false) {
       await ref.read(authServiceProvider).signOut();
-      // Faqat qurilmadagi keshni tozalaymiz. Firestore'dagi profil,
-      // davomat, qarzlar va yozishmalar JOYIDA QOLADI.
       await ref
           .read(sharedPreferencesProvider)
           .remove(ThemeModeNotifier.storageKey);

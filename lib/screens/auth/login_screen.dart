@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +13,6 @@ import '../../widgets/common/app_toast.dart';
 import '../../widgets/common/app_text_field.dart';
 import '../../widgets/common/glass.dart';
 
-/// Kirish va ro'yxatdan o'tish (PROJECT.md 1-bosqich).
-///
-/// Kompozitsiya uch zonaga bo'lingan: yuqorida brend va sarlavha,
-/// o'rtada forma, pastda harakatlar va huquqiy matn. Zonalar orasidagi
-/// bo'shliq `MainAxisAlignment.spaceBetween` bilan taqsimlanadi —
-/// `Spacer` bu yerda ishlamaydi, chunki scroll ichida balandlik cheksiz.
-/// `ConstrainedBox(minHeight: ...)` esa klaviatura ochilganda kontentni
-/// siqib emas, scroll qilib ko'rsatadi.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -34,11 +27,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   late final TapGestureRecognizer _termsRecognizer = TapGestureRecognizer()
     ..onTap = () =>
-        _showLegalSheet(title: 'Foydalanish shartlari', body: _termsText);
+        _showLegalSheet(title: 'auth_terms'.tr(), body: _termsText);
 
   late final TapGestureRecognizer _privacyRecognizer = TapGestureRecognizer()
     ..onTap = () =>
-        _showLegalSheet(title: 'Maxfiylik siyosati', body: _privacyText);
+        _showLegalSheet(title: 'auth_privacy'.tr(), body: _privacyText);
 
   bool _isRegisterMode = false;
   bool _obscurePassword = true;
@@ -53,8 +46,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _privacyRecognizer.dispose();
     super.dispose();
   }
-
-  // --- Harakatlar ----------------------------------------------------------
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
@@ -72,7 +63,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        // Yangi foydalanuvchi uchun bo'sh profil hujjatini tayyorlaymiz.
         await ref.read(profileServiceProvider).createIfMissing(user.uid);
       } else {
         await auth.signIn(
@@ -80,13 +70,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           password: _passwordController.text,
         );
       }
-      // Muvaffaqiyatli bo'lsa AuthGate o'zi keyingi ekranga o'tkazadi.
     } on AuthFailure catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = 'Kutilmagan xatolik: $e');
+      setState(() => _errorMessage = '${'error'.tr()}: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -96,8 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final String email = _emailController.text.trim();
     if (email.isEmpty || !email.contains('@')) {
       setState(
-        () => _errorMessage =
-            'Parolni tiklash uchun avval email manzilingizni kiriting.',
+        () => _errorMessage = 'Parolni tiklash uchun avval email manzilingizni kiriting.'.tr(),
       );
       return;
     }
@@ -120,8 +108,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
   }
 
-  // --- Qurish --------------------------------------------------------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,22 +122,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 child: Center(
                   child: ConstrainedBox(
-                    // Planshet/katta ekranda forma cho'zilib ketmasin.
                     constraints: const BoxConstraints(maxWidth: 440),
                     child: Form(
                       key: _formKey,
                       child: Column(
-                        // `spaceBetween` emas: baland ekranda u bo'shliqni
-                        // 150dp gacha cho'zib yuborardi. Bo'shliq qat'iy,
-                        // blok esa markazda — kontent o'sganda scroll bo'ladi.
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           _buildHeader(),
                           const SizedBox(height: 32),
-                          // Forma va asosiy tugma — haqiqiy blur'li shisha
-                          // panelda; orqadagi rangli nurlar xiralashib
-                          // ko'rinadi.
                           GlassPanel(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(AppRadius.xl),
@@ -164,8 +143,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 const SizedBox(height: 24),
                                 AppButton(
                                   label: _isRegisterMode
-                                      ? 'Hisob yaratish'
-                                      : 'Kirish',
+                                      ? 'register'.tr()
+                                      : 'login'.tr(),
                                   isLoading: _isLoading,
                                   onPressed: _submit,
                                 ),
@@ -187,7 +166,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// 1-zona: brend belgisi, sarlavha va tushuntirish.
   Widget _buildHeader() {
     final CustomTheme theme = context.theme;
 
@@ -197,22 +175,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         const AppLogo(size: 56),
         const SizedBox(height: 24),
         Text(
-          _isRegisterMode ? 'Keling, boshlaymiz' : 'Xush kelibsiz',
+          _isRegisterMode
+              ? 'auth_header_register'.tr()
+              : 'auth_header_login'.tr(),
           style: context.text.displaySmall,
         ),
         const SizedBox(height: 8),
         Text(
           _isRegisterMode
-              ? 'Bir daqiqada hisob yarating — ish vaqtingiz va '
-                    'moliyangiz shu yerda yig\'iladi.'
-              : 'Davomat, maosh va qarzlaringiz sizni kutmoqda.',
+              ? 'auth_subtitle_register'.tr()
+              : 'auth_subtitle_login'.tr(),
           style: context.text.bodyMedium?.copyWith(color: theme.textGray),
         ),
       ],
     );
   }
 
-  /// 2-zona: kiritish maydonlari va xato xabari.
   Widget _buildForm() {
     final CustomTheme theme = context.theme;
 
@@ -221,15 +199,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       children: <Widget>[
         AppTextField(
           controller: _emailController,
-          label: 'Email manzil',
-          hint: 'ism@example.com',
+          label: 'email_label'.tr(),
+          hint: 'email_hint'.tr(),
           prefixIcon: IconsaxPlusLinear.sms,
           keyboardType: TextInputType.emailAddress,
           validator: (String? value) {
             final String text = (value ?? '').trim();
-            if (text.isEmpty) return 'Email kiriting';
+            if (text.isEmpty) return 'email_empty'.tr();
             if (!text.contains('@') || !text.contains('.')) {
-              return 'Email manzili noto\'g\'ri';
+              return 'email_invalid'.tr();
             }
             return null;
           },
@@ -237,8 +215,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         const SizedBox(height: 18),
         AppTextField(
           controller: _passwordController,
-          label: 'Parol',
-          hint: 'Kamida 6 ta belgi',
+          label: 'password_label'.tr(),
+          hint: 'password_hint'.tr(),
           prefixIcon: IconsaxPlusLinear.lock,
           obscureText: _obscurePassword,
           suffix: IconButton(
@@ -253,9 +231,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 setState(() => _obscurePassword = !_obscurePassword),
           ),
           validator: (String? value) {
-            if ((value ?? '').isEmpty) return 'Parol kiriting';
+            if ((value ?? '').isEmpty) return 'password_empty'.tr();
             if ((value ?? '').length < 6) {
-              return 'Parol kamida 6 ta belgi bo\'lsin';
+              return 'password_short'.tr();
             }
             return null;
           },
@@ -271,7 +249,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                'Parolni unutdingizmi?',
+                'forgot_password'.tr(),
                 style: context.text.labelMedium?.copyWith(color: theme.blue),
               ),
             ),
@@ -308,7 +286,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// 3-zona: rejim almashtirish va huquqiy matn.
   Widget _buildFooter() {
     final CustomTheme theme = context.theme;
 
@@ -320,7 +297,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Expanded(child: Divider(color: theme.borderGray, height: 1)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text('yoki', style: context.text.labelSmall),
+              child: Text('or_text'.tr(), style: context.text.labelSmall),
             ),
             Expanded(child: Divider(color: theme.borderGray, height: 1)),
           ],
@@ -337,11 +314,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: <InlineSpan>[
                   TextSpan(
                     text: _isRegisterMode
-                        ? 'Hisobingiz bormi? '
-                        : 'Hisobingiz yo\'qmi? ',
+                        ? 'have_account'.tr()
+                        : 'no_account'.tr(),
                   ),
                   TextSpan(
-                    text: _isRegisterMode ? 'Kirish' : 'Ro\'yxatdan o\'tish',
+                    text: _isRegisterMode
+                        ? 'login_link'.tr()
+                        : 'register_link'.tr(),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       color: theme.blue,
@@ -374,31 +353,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         children: <InlineSpan>[
           TextSpan(
             text: _isRegisterMode
-                ? 'Hisob yaratish orqali siz '
-                : 'Davom etish orqali siz ',
+                ? 'terms_prefix_register'.tr()
+                : 'terms_prefix_login'.tr(),
           ),
           TextSpan(
-            text: 'Foydalanish shartlari',
+            text: 'auth_terms'.tr(),
             style: linkStyle,
             recognizer: _termsRecognizer,
           ),
-          const TextSpan(text: ' va '),
+          TextSpan(text: 'auth_and'.tr()),
           TextSpan(
-            text: 'Maxfiylik siyosati',
+            text: 'auth_privacy'.tr(),
             style: linkStyle,
             recognizer: _privacyRecognizer,
           ),
-          const TextSpan(text: 'ga rozilik bildirasiz.'),
+          TextSpan(text: 'terms_suffix'.tr()),
         ],
       ),
       textAlign: TextAlign.center,
     );
   }
 
-  // --- Huquqiy matnlar -----------------------------------------------------
-
-  /// Bu matnlar — o'rinbosar. Haqiqiy hujjatlar tayyor bo'lgach shu ikki
-  /// konstantani almashtirish kifoya (yoki ularni veb-sahifaga ulash).
   static const String _termsText =
       'Spendly — shaxsiy foydalanish uchun mo\'ljallangan ilova. Siz kiritgan '
       'ma\'lumotlar (ish vaqti, maosh, qarzlar) faqat sizning hisobingizga '
@@ -462,7 +437,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: 18),
                   AppButton(
-                    label: 'Tushunarli',
+                    label: 'understand'.tr(),
                     variant: AppButtonVariant.secondary,
                     onPressed: () => Navigator.of(sheetContext).pop(),
                   ),

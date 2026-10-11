@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../theme/app_theme.dart';
@@ -25,10 +26,8 @@ class LunchBreakStep extends StatelessWidget {
     final CustomTheme theme = context.theme;
 
     return OnboardingStep(
-      title: 'Tushlik tanaffusi qancha?',
-      subtitle:
-          'Bu vaqt ish soatidan ayiriladi va soatlik stavkaga '
-          'ta\'sir qiladi.',
+      title: 'onboarding_lunch_title'.tr(),
+      subtitle: 'onboarding_lunch_subtitle'.tr(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -56,7 +55,7 @@ class LunchBreakStep extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      preset == 0 ? 'Yo\'q' : Formatters.minutes(preset),
+                      preset == 0 ? 'none_label'.tr() : Formatters.minutes(preset),
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,

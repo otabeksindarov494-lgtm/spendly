@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -49,7 +50,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bildirishnomalar'),
+        title: Text('notifications_title'.tr()),
         actions: <Widget>[
           if (received.isNotEmpty)
             TextButton(
@@ -57,7 +58,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   .read(notificationHistoryProvider.notifier)
                   .clearReceived(),
               child: Text(
-                'Tozalash',
+                'clear'.tr(),
                 style: context.text.labelLarge?.copyWith(color: theme.blue),
               ),
             ),
@@ -67,11 +68,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       body: SafeArea(
         top: false,
         child: received.isEmpty
-            ? const Center(
+            ? Center(
                 child: EmptyState(
                   icon: IconsaxPlusLinear.notification,
-                  title: 'Hozircha bildirishnoma yo\'q',
-                  message: 'Ish vaqti eslatmalari shu yerda ko\'rinadi.',
+                  title: 'no_notifications_title'.tr(),
+                  message: 'no_notifications_message'.tr(),
                 ),
               )
             : ListView.separated(

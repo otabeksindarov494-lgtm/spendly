@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class DebtsScreen extends ConsumerWidget {
         ref.watch(profileProvider).value?.currency ?? 'so\'m';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Qarzlar')),
+      appBar: AppBar(title: Text('debts_title'.tr())),
       body: SafeArea(
         top: false,
         child: ListView(
@@ -43,7 +44,7 @@ class DebtsScreen extends ConsumerWidget {
                 Expanded(
                   child: _AddButton(
                     icon: IconsaxPlusBold.microphone_2,
-                    label: 'Ovoz orqali',
+                    label: 'voice_entry'.tr(),
                     background: theme.blue,
                     foreground: CustomTheme.onAccent,
                     onTap: () => VoiceDebtSheet.show(context),
@@ -53,7 +54,7 @@ class DebtsScreen extends ConsumerWidget {
                 Expanded(
                   child: _AddButton(
                     icon: IconsaxPlusLinear.edit,
-                    label: 'Qo\'lda',
+                    label: 'manual_entry'.tr(),
                     background: theme.glassFill,
                     foreground: theme.mainDarkBlue,
                     borderColor: theme.borderGray,
@@ -68,21 +69,19 @@ class DebtsScreen extends ConsumerWidget {
             debtsAsync.when(
               loading: () => const ShimmerList(itemCount: 4, itemHeight: 78),
               error: (Object e, StackTrace _) =>
-                  ErrorView(message: 'Qarzlar yuklanmadi: $e'),
+                  ErrorView(message: 'debts_load_error'.tr(args: [e.toString()])),
               data: (List<Debt> all) {
                 if (all.isEmpty) {
-                  return const EmptyState(
+                  return EmptyState(
                     icon: IconsaxPlusLinear.empty_wallet,
-                    title: 'Qarzlar ro\'yxati bo\'sh',
-                    message:
-                        'Mikrofon tugmasini bosib aytib yuboring yoki qo\'lda '
-                        'qo\'shing.',
+                    title: 'debts_empty_title'.tr(),
+                    message: 'debts_empty_message'.tr(),
                   );
                 }
                 if (filtered.isEmpty) {
-                  return const EmptyState(
+                  return EmptyState(
                     icon: IconsaxPlusLinear.filter,
-                    title: 'Bu filtrga mos qarz yo\'q',
+                    title: 'filter_empty_title'.tr(),
                   );
                 }
                 return Column(
@@ -112,7 +111,7 @@ class DebtsScreen extends ConsumerWidget {
             children: <Widget>[
               Expanded(
                 child: _BalanceColumn(
-                  label: 'Sizdan qarz',
+                  label: 'owed_to_me'.tr(),
                   amount: balance.owedToMe,
                   color: theme.green,
                   currency: currency,
@@ -121,7 +120,7 @@ class DebtsScreen extends ConsumerWidget {
               Container(width: 1, height: 44, color: theme.borderGray),
               Expanded(
                 child: _BalanceColumn(
-                  label: 'Siz qarzsiz',
+                  label: 'i_owe'.tr(),
                   amount: balance.iOwe,
                   color: theme.red,
                   currency: currency,
@@ -140,8 +139,7 @@ class DebtsScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
             child: Text(
-              'Sof holat: '
-              '${Formatters.signedMoney(balance.net, currency: currency)}',
+              'net_status'.tr(args: [Formatters.signedMoney(balance.net, currency: currency)]),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
